@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{%endblock%}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <nav class="navbar bg-dark {% block position %}{% endblock position %} top-0 py-lg-3" style="z-index:2;">
+        <div class="container-fluid d-flex justify-content-evenly">
+            <a class="navbar-brand text-white ">MBCART</a>
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
+            </svg>
+
+            <form class="d-flex w-50" role="search" action='/searchResult' method="get">
+                <div class="input-group ">
+                    <input type="text" class="form-control" placeholder="Search" aria-label="Search"
+                        aria-describedby="basic-addon1" name="search" id="search" value="{{query}}">
+                    <button type="submit" class="border-0 px-3 text-bg-danger"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+            <a href="/cart" class="btn btn-primary">
+                <i class="bi bi-cart3"></i> <span id="cart_items_count" class="badge badge-light">0</span>
+            </a>
+        </div>
+    </nav>
+
+    {%block body%}
+
+    {%endblock%}
+</body>
+<script>
+    if (localStorage.getItem('cart') == null) {
+        let cart = {}
+    }
+    else {
+        cart = JSON.parse(localStorage.getItem('cart'))
+    }
+    document.getElementById("cart_items_count").innerHTML = Object.keys(cart).length;
+</script>
+{%block script%}
+{%endblock%}
+
+</html>

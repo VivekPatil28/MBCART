@@ -1,0 +1,14 @@
+{% extends 'shop/basic.html' %}
+
+
+{%block script%}
+<script>
+     if (localStorage.getItem('cart') == null) {
+    var cart = {}
+  }
+  else {
+    cart = JSON.parse(localStorage.getItem('cart'))
+  }
+     document.getElementById("cart_items_count").innerHTML=Object.keys(cart).length;
+</script>
+{%endblock%}
