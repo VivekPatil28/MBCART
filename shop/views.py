@@ -1,6 +1,3 @@
-from ast import For
-import email
-from itertools import product
 from operator import imod
 from unicodedata import category
 from django.http import HttpResponse

@@ -48,7 +48,7 @@ class Coursal(models.Model):
     coursal_image=models.ImageField(upload_to='shop/coursal_images',default="")
     def __str__(self):
         return "Coursal_Image "+str(self.coursal_id)
-    
+
 # Contact model
 class Contact(models.Model):
     message_id=models.AutoField(primary_key=True)
