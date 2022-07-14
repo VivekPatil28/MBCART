@@ -1,4 +1,5 @@
 {%extends 'shop/basic.html'%}
+{%block title%}MBCART / Search{%endblock title%}
 {%block body%}
 {% load humanize %}
 {% load static %}
@@ -8,7 +9,7 @@
         {% for i in product %}
             {% if i.product_id in ids %}
         <div class="col">
-            <div class="card shadow-sm" style="min-height:450px;">
+            <div class="card shadow-sm" style="min-height:500px;">
                 <img class="" style="height:200px;object-fit: contain;" src='/media/{{i.product_image}}' />
                 <div class="card-body"  style="display: flex;justify-content:end;align-items:stretch;flex-flow: column;">
                     <p class="card-text">
@@ -28,21 +29,26 @@
                         </font>
                     </p>
                     <div class="d-flex justify-content-center align-items-center">
-                        <div class="btn-group w-100">
-                            <button type="button" class="btn btn-sm btn-outline-danger" style="border-right: none;">
-                                <font style="vertical-align: inherit;">
-                                    <font id="pr{{i.id}}" style="vertical-align: inherit;" class="cart">Add to Cart
-                                    </font>
-                                </font>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-success">
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">Buy Now</font>
-                                </font>
-                            </button>
-                        </div>
+            <div class="btn-group w-100">
+              <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
+                {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger w-100" style="border-right: none;border-radius:5px 0px 0px 5px;">
+                <font style="vertical-align: inherit;">
+                  <font style="vertical-align: inherit;" class="cart">Add to Cart</font>
+                </font>
+              </button>
+              </form>
+               <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
+                {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-success w-100" style="border-radius:0px 5px 5px 0px;">
+                <font style="vertical-align: inherit;">
+                  <font style="vertical-align: inherit;">Buy Now</font>
+                </font>
+              </button>
+            </form>
+            </div>
 
-                    </div>
+          </div>
                 </div>
             </div>
         </div>

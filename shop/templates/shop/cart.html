@@ -2,7 +2,7 @@
 
 
 {%block script%}
-<script>
+{% comment %} <script>
      if (localStorage.getItem('cart') == null) {
     var cart = {}
   }
@@ -10,5 +10,5 @@
     cart = JSON.parse(localStorage.getItem('cart'))
   }
      document.getElementById("cart_items_count").innerHTML=Object.keys(cart).length;
-</script>
+</script> {% endcomment %}
 {%endblock%}

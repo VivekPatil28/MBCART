@@ -1,12 +1,6 @@
-{% extends 'shop/basic.html'%}
-
-{% block position %}position-sticky{% endblock position %}
-{% block bodyclasses %}{% endblock bodyclasses %}
-{%block body%}
-<div id="suc">
-
-</div>
-<form action="/submitform" method="post">
+{% extends 'shop/basic.html' %}
+{% block body %}
+    <form action="/submitform" method="post">
     {%csrf_token%}
     <div class="container w-50 my-5">
         <div class="mb-3">
@@ -23,18 +17,11 @@
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">How may we help you?</label>
-            <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="1"></textarea>
+            <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="3"></textarea>
         </div>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <input class="btn btn-primary" type="submit" value="Submit">
         </div>
     </div>
 </form>
-<script>
-    const success=parseInt('{{success}}')
-    if (success) {
-        document.getElementById('suc').innerHTML= '<div class="alert alert-success" role="alert"><strong>Success!</strong> Your response has been submitted.</div>';
-    }
-</script>
-<!-- {{contact.5.message_id}} -->
-{%endblock%}
+{% endblock body %}

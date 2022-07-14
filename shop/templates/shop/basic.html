@@ -5,16 +5,64 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% comment %} <meta http-equiv="refresh" content="2"> {% endcomment %}
     <title>{% block title %}{%endblock%}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
 </head>
+<!-- Button trigger modal -->
 
-<body>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">SIGN IN</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body container">
+                <form action="{% url 'Authenticate' %}" method="post">
+                    {%csrf_token%}
+                    <div class="container">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                            <input type="email" name="username" class="form-control" id="exampleFormControlInput1"
+                                placeholder="Enter Your Email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" id="exampleFormControlInput1"
+                                placeholder="Enter Your Password">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+                            <label class="form-check-label" for="form2Example31"> Remember me </label>
+                        </div>
+                        <div class="text-center mt-4">
+                            <p>Not a member? <a href="#!" class="text-decoration-none">signup</a></p>
+                        </div>
+                        <div class="d-grid gap-2 mt-5 d-md-flex justify-content-center">
+                            <input class="btn w-100 btn-primary" type="submit" value="SIGN IN" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+<body class="{% block bodyclasses %}{% endblock bodyclasses %}">
+        
+
+
+
+
 
     <nav class="navbar bg-dark {% block position %}{% endblock position %} top-0 py-lg-3" style="z-index:2;">
-        <div class="container-fluid d-flex justify-content-evenly">
+        <div class="container-fluid d-flex justify-content-around">
             <a class="navbar-brand text-white ">MBCART</a>
 
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -29,9 +77,15 @@
                     <button type="submit" class="border-0 px-3 text-bg-danger"><i class="bi bi-search"></i></button>
                 </div>
             </form>
-            <a href="/cart" class="btn btn-primary">
-                <i class="bi bi-cart3"></i> <span id="cart_items_count" class="badge badge-light">0</span>
-            </a>
+            <div>
+                <a href="/cart" class="btn btn-primary">
+                    <i class="bi bi-cart3"></i> <span id="cart_items_count" class="badge badge-light">0</span>
+                </a>
+                <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Login
+                </button>
+
+            </div>
         </div>
     </nav>
 
@@ -39,7 +93,7 @@
 
     {%endblock%}
 </body>
-<script>
+{% comment %} <script>
     if (localStorage.getItem('cart') == null) {
         let cart = {}
     }
@@ -47,8 +101,6 @@
         cart = JSON.parse(localStorage.getItem('cart'))
     }
     document.getElementById("cart_items_count").innerHTML = Object.keys(cart).length;
-</script>
-{%block script%}
-{%endblock%}
+</script> {% endcomment %}
 
 </html>

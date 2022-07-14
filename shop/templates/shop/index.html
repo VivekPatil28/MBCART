@@ -1,5 +1,5 @@
 {% extends 'shop/basic.html' %}
-
+{%block title%}MBCART{%endblock title%}
 {% block position %}position-sticky{% endblock position %}
 {%block body%}
 {% load humanize %}
@@ -35,13 +35,13 @@
 <div class="container my-3">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
     {% for i in product %}
-    <div class="col" >
+    <div class="col">
       <div class="card shadow-sm" style="min-height:500px;">
         <img class="" style="height:200px;object-fit: contain;" src='/media/{{i.product_image}}' />
-        <div class="card-body"  style="display: flex;justify-content:end;align-items:stretch;flex-flow: column;">
+        <div class="card-body" style="display: flex;justify-content:end;align-items:stretch;flex-flow: column;">
           <p class="card-text">
             <font style="vertical-align: inherit;width: 250px;">
-              <a href="/product/{{i.product_id}}" style="vertical-align: inherit;-webkit-line-clamp: 3;text-decoration: none;
+              <a href="/product/{{i.product_id}}" target="_blank" style="vertical-align: inherit;-webkit-line-clamp: 3;text-decoration: none;
                 display: -webkit-box;-webkit-box-orient: vertical;overflow: hidden;">{{i.product_name}}</a>
               <span class="text-bg-success"
                 style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
@@ -56,16 +56,22 @@
           </p>
           <div class="d-flex justify-content-center align-items-center">
             <div class="btn-group w-100">
-              <button type="button" class="btn btn-sm btn-outline-danger" style="border-right: none;">
+              <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
+                {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger w-100" style="border-right: none;border-radius:5px 0px 0px 5px;">
                 <font style="vertical-align: inherit;">
-                  <font id="pr{{i.product_id}}" style="vertical-align: inherit;" class="cart">Add to Cart</font>
+                  <font style="vertical-align: inherit;" class="cart">Add to Cart</font>
                 </font>
               </button>
-              <button type="button" class="btn btn-sm btn-outline-success">
+              </form>
+               <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
+                {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-success w-100" style="border-radius:0px 5px 5px 0px;">
                 <font style="vertical-align: inherit;">
                   <font style="vertical-align: inherit;">Buy Now</font>
                 </font>
               </button>
+            </form>
             </div>
 
           </div>
@@ -83,6 +89,7 @@
   integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
   crossorigin="anonymous"></script>
+{% comment %}
 <script>
   $('.cart').click(function () {
     var idstr = this.id.toString();
@@ -103,5 +110,6 @@
 
 
 
-</script>
+</script> {% endcomment %}
+
 {%endblock%}
