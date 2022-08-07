@@ -480,7 +480,7 @@
         e.addEventListener("submit", function (i) {
             i.preventDefault();
             e.children[2].childNodes[2].data++;
-            let formData = new FormData(e);
+            let formData = new FormData(e); 
 
             fetch("{%url 'liked' %}", {
                 method: 'POST',
