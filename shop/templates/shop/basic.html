@@ -4,18 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% comment %} <meta http-equiv="refresh" content="2"> {% endcomment %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    {% comment %}
+    <meta http-equiv="refresh" content="2"> {% endcomment %}
     <title>{% block title %}{%endblock%}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+        integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+    <link rel="stylesheet" type="text/css"
+        href="https://unpkg.com/file-upload-with-preview/dist/file-upload-with-preview.min.css" />
+
+    <script src="https://unpkg.com/file-upload-with-preview/dist/file-upload-with-preview.iife.js"></script>
+
 </head>
 <!-- Button trigger modal -->
-
+{% load static %}
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="signinModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -23,17 +35,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body container">
-                <form action="{% url 'Authenticate' %}" method="post">
+                <form action="/signin" method="post">
                     {%csrf_token%}
                     <div class="container">
                         <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Email address</label>
-                            <input type="email" name="username" class="form-control" id="exampleFormControlInput1"
+                            <label for="exampleFormControlInput10" class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" id="exampleFormControlInput10"
                                 placeholder="Enter Your Email">
                         </div>
                         <div class="mb-3">
-                            <label for="exampleFormControlInput1" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" id="exampleFormControlInput1"
+                            <label for="exampleFormControlInput20" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" id="exampleFormControlInput20"
                                 placeholder="Enter Your Password">
                         </div>
                         <div class="form-check">
@@ -41,7 +53,8 @@
                             <label class="form-check-label" for="form2Example31"> Remember me </label>
                         </div>
                         <div class="text-center mt-4">
-                            <p>Not a member? <a href="#!" class="text-decoration-none">signup</a></p>
+                            <p>Not a member? <a href="" data-bs-toggle="modal" data-bs-target="#signupModal"
+                                    class="text-decoration-none">signup</a></p>
                         </div>
                         <div class="d-grid gap-2 mt-5 d-md-flex justify-content-center">
                             <input class="btn w-100 btn-primary" type="submit" value="SIGN IN" />
@@ -49,58 +62,158 @@
                     </div>
                 </form>
             </div>
-           
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} SignUpModal {% endcomment %}
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">SIGN UP</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body container">
+                <form action="/signup" method="post">
+                    {%csrf_token%}
+                    <div class="container">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" id="exampleFormControlInput1"
+                                placeholder="Enter Your Username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput2" class="form-label">Enter Your First Name</label>
+                            <input type="text" name="fname" class="form-control" id="exampleFormControlInput2"
+                                placeholder="Enter Your First Name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput3" class="form-label">Enter Your Last Name</label>
+                            <input type="text" name="lname" class="form-control" id="exampleFormControlInput3"
+                                placeholder="Enter Your Last Name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput4" class="form-label">Mobile No</label>
+                            <input type="text" name="mobileno" class="form-control" id="exampleFormControlInput4"
+                                placeholder="Enter Your Mobile No">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput5" class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" id="exampleFormControlInput5"
+                                placeholder="Enter Your Email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput6" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" id="exampleFormControlInput6"
+                                placeholder="Enter Your Password">
+                        </div>
+                        <div class="d-grid gap-2 mt-3 d-md-flex justify-content-center">
+                            <input class="btn w-100 btn-primary" type="submit" value="SIGN UP" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 </div>
 
 <body class="{% block bodyclasses %}{% endblock bodyclasses %}">
-        
 
 
 
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
 
 
-    <nav class="navbar bg-dark {% block position %}{% endblock position %} top-0 py-lg-3" style="z-index:2;">
-        <div class="container-fluid d-flex justify-content-around">
-            <a class="navbar-brand text-white ">MBCART</a>
+    <nav class="navbar bg-dark {% block position %}{% endblock position %} top-0" style="z-index:2;">
+        <div class="nav container-fluid d-flex justify-content-around mx-sm-4  ">
+            <a class="navbar-brand text-white order-sm-0 mx-sm-5">MBCART</a>
 
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
-            </svg>
+            <div class="d-flex order-sm-2 ">
+                <a href="/cart" class="btn btn-primary me-2">
+                    <i class="bi bi-cart3"></i> <span id="cart_items_count" class="badge badge-light">0</span>
+                </a>
+                {% if user.is_authenticated %}
+                <form method="post" action="/signout">
+                    {%csrf_token%}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Profile
+                        </button>
 
-            <form class="d-flex w-50" role="search" action='/searchResult' method="get">
-                <div class="input-group ">
-                    <input type="text" class="form-control" placeholder="Search" aria-label="Search"
+                        <ul class="dropdown-menu">
+                            <li>
+                                <h6 class="text-center">{{request.user}}</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#">Go To Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button type="submit" class="btn btn-primary ms-3">
+                                    Logout
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+
+                {% else %}
+                <button type="button" class="btn btn-primary ms-3 " data-bs-toggle="modal"
+                    data-bs-target="#signinModal">
+                    Login
+                </button>
+                {% endif %}
+            </div>
+            <form class="d-flex flex-grow-1 order-sm-1 p-3 mx-sm-5" role="search" action='/searchResult' method="get">
+                <div class="input-group mx-lg-5">
+                    <input type="text" class="form-control  " placeholder="Search" aria-label="Search"
                         aria-describedby="basic-addon1" name="search" id="search" value="{{query}}">
                     <button type="submit" class="border-0 px-3 text-bg-danger"><i class="bi bi-search"></i></button>
                 </div>
             </form>
-            <div>
-                <a href="/cart" class="btn btn-primary">
-                    <i class="bi bi-cart3"></i> <span id="cart_items_count" class="badge badge-light">0</span>
-                </a>
-                <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Login
-                </button>
-
-            </div>
         </div>
     </nav>
+    <nav class="category d-flex justify-content-evenly align-items-baseline">
 
+        <div class="all">
+
+        </div>
+        <a href=""></a>
+
+        
+
+    </nav>
     {%block body%}
 
     {%endblock%}
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+        crossorigin="anonymous"></script>
 </body>
-{% comment %} <script>
-    if (localStorage.getItem('cart') == null) {
-        let cart = {}
-    }
-    else {
-        cart = JSON.parse(localStorage.getItem('cart'))
-    }
-    document.getElementById("cart_items_count").innerHTML = Object.keys(cart).length;
-</script> {% endcomment %}
 
 </html>

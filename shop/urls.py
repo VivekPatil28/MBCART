@@ -17,6 +17,8 @@ Including another URLconf
 from xml.etree.ElementInclude import include
 from django.urls import path
 from . import views
+from django.contrib import admin
+
 
 urlpatterns = [
     path('', views.index, name="ShopHome"),
@@ -24,8 +26,13 @@ urlpatterns = [
     path('cart', views.cart, name="Cart"),
     path('contact', views.contact, name="contact"),
     path('submitform', views.submitform, name="submitform"),
-    path('Authenticate', views.Authenticate, name="Authenticate"),
+    path('signup', views.signup, name="signup"),
+    path('signin', views.signin, name="signin"),
+    path('signout', views.signout, name="signout"),
+    path('submitReview', views.submitReview, name="submitReview"),
+    path('insertProduct', views.insertProduct, name="insertProduct"),
     path('searchResult', views.search, name="search"),
     path('product/<int:id>', views.product_desc, name="addtocart"),
     path('AddToCart/<int:id>', views.AddToCart, name="addtocart"),
+    path('liked', views.liked, name="liked"),
 ]

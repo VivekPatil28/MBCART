@@ -29,19 +29,39 @@
 
             .infcont {
                 margin-top: 0vh;
+
             }
 
         }
     </style>
+
+
+    </div>
     <div class="container ">
         <div class="row gx-4 gx-lg-5 align-items-start clss">
-            <div id="imgcont" class="col-md-6"><img class="card-img-top mb-5 mb-md-0"
-                    src='/media/{{product.product_image}}' alt="..." />
+            <div id="imgcont" class="col-md-6 mt-5">
+                <!-- {% comment %} {% for img in thumbnail %}
+
+        {% if i.product_id == img.product_id %}
+        <img class="" style="height:200px;object-fit: contain;" src='/media/{{img.image}}' />
+        {% endif %}
+        {% endfor %} {% endcomment %} -->
+                <img style="width:80%;" id="main_img" class="card-img-top mb-5 mb-md-0" src='/media/{{product.image}}'
+                    alt="image" />
+
+                <div class="d-flex py-3 mt-2 ">
+                    <img style="width:10%;box-shadow:0px 0px 2px 2px rgba(0, 128, 0, 0.358);border: 2px solid green;box-sizing:border-box;"
+                        class="card-img-top  mx-2 product_images" src='/media/{{product.image}}' alt="image" />
+                    {% for img in productimgs %}
+                    <img style="width:10%;box-sizing:border-box;" class="card-img-top  mx-2 product_images"
+                        src='/media/{{img.image}}' alt="image" />
+                    {% endfor %}
+                </div>
             </div>
 
             <div class="col-md-6 infcont">
                 <div class="small mb-1" style="color:rgba(0, 0, 0, 0.8);">{{product.category}}</div>
-                <h2 class="display-10 fw-bolder">{{product.product_name}}</h2>
+                <h3 class="display-10 fw-bolder user-select-none">{{product.product_name}}</h3>
                 <div>
                     <style>
                         .checked {
@@ -56,16 +76,80 @@
                     <span>&nbsp;{{product.product_rating}}</span>
                 </div>
                 <div>
-                    <h5 class="small mt-2" style="color:rgba(0, 0, 0, 0.8);">6,660 Ratings & 844 Reviews</h5>
+                    <h5 class="small mt-2" style="color:rgba(0, 0, 0, 0.5);">6,660 Ratings & 844 Reviews</h5>
                 </div>
                 <div class="fs-5 mb-5">
                     <span>
-                        <h1>₹{{product.product_price|intcomma}}</h1>
+                        <h1 id="sp">₹{{product.product_price|intcomma}}</h1>
                     </span>
-                    <span class="text-decoration-line-through">₹{{product.product_initial_price|intcomma}}</span>
+                    <span>M.R.P. : <span class="text-decoration-line-through"
+                            id="mrp">₹{{product.product_initial_price|intcomma}}</span></span>
+                    <h6>You save : <span id="yousave"></span></h6>
                 </div>
-                <p class="lead">{{product.product_desc}}</p>
-                
+                <style>
+                    .inf i {
+                        font-size: 30px;
+                    }
+
+                    .inf {
+                        background-color: rgb(247, 247, 247);
+                        padding: 5px 0;
+                        display: flex;
+                        justify-content: space-evenly;
+                        align-items: center;
+                        flex-wrap: wrap;
+                    }
+
+                    .inf h6 {
+                        font-size: 12px;
+                        text-align: center;
+                    }
+
+                    /* .inf .icon-width:not(:last-of-type) {
+                    border-right: 2px solid grey;
+                } */
+
+                    .icon-width {
+                        margin: 5px 10px;
+                        width: 20%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        flex-flow: column;
+
+                        padding: 0 40px;
+                    }
+                </style>
+
+                <div class="inf">
+                    <div class="icon-width border-right-2 border-secondary">
+                        <i class="bi bi-wallet2"></i>
+                        <h6>Pay on Delivery</h6>
+                    </div>
+                    <div class="icon-width">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <h6>7 days Replacement</h6>
+                    </div>
+                    <div class="icon-width">
+                        <i class="bi bi-truck"></i>
+                        <h6>MBCART Delivered</h6>
+                    </div>
+                    <div class="icon-width">
+                        <i class="bi bi-shield-check"></i>
+                        <h6>1 Year Warranty</h6>
+                    </div>
+                </div>
+                <div class="container desc mt-5">
+                    <h6 style="font-weight: bold;">About this item</h6>
+                    <ul class="lead fs-6">
+                        <style>
+                            .desc li {
+                                font-weight: 500;
+                            }
+                        </style>
+                        {{aboutthisitem|unordered_list}}
+                    </ul>
+                </div>
                 <div class="d-flex justify-content-center align-items-center mb-5">
                     <div class="btn-group w-100">
                         <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
@@ -73,23 +157,26 @@
                             <button type="submit" class="btn btn-sm btn-outline-danger w-100"
                                 style="border-right: none;border-radius:5px 0px 0px 5px;">
                                 <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;" class="cart"><i class="bi-cart-fill me-1"></i>Add to Cart</font>
+                                    <font style="vertical-align: inherit;" class="cart"><i
+                                            class="bi-cart-fill me-1"></i>Add
+                                        to Cart</font>
                                 </font>
                             </button>
                         </form>
                         <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-success w-100" style="border-radius:0px 5px 5px 0px;">
+                            <button type="submit" class="btn btn-sm btn-outline-success w-100"
+                                style="border-radius:0px 5px 5px 0px;">
                                 <font style="vertical-align: inherit;">
                                     <font style="vertical-align: inherit;">Buy Now</font>
                                 </font>
                             </button>
                         </form>
                     </div>
-                
+
                 </div>
                 <!--  -->
-                <table class="table table-striped ">
+                <!-- <table class="table table-striped ">
                     <thead>
                         <h2>Specifications</h2>
                     </thead>
@@ -137,7 +224,7 @@
                             <td>UHD11235845</td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
 
             </div>
         </div>
@@ -145,9 +232,153 @@
 
 
 
-
     </div>
 </section>
+
+<!-- Description Images -->
+<div class="w-100 container-fluid mt-5 p-0">
+    {% for img in product_desc %}
+    <img src="/media/{{img.image}}" class="img-fluid w-100" alt="DescImages" loading="lazy">
+    {% endfor %}
+</div>
+
+
+<section style="background-color: #e7effd;" class="py-5">
+    {% for review in Reviews %}
+    <div class="container  py-2 text-dark">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-11 col-lg-9 col-xl-7">
+                <style>
+                    .link-muted {
+                        color: #aaa;
+                    }
+
+                    .stars {
+                        color: #aaa;
+                    }
+
+                    .link-muted:hover {
+                        color: #1266f1;
+                    }
+
+                    a {
+                        text-decoration: none;
+                    }
+                </style>
+
+                <div class="d-flex flex-start">
+                    <div class="card w-100">
+                        <div class="card-body p-4">
+                            <div class="">
+                                <h6 class="d-inline-block me-2">{{review.name}}</h6>
+                                <div class="d-inline-block review_rating_container">
+                                    {{review.rating}}
+                                </div>
+                                <p class="small">{{review.created}}</p>
+                                <h6 class="">{{review.heading}}</h6>
+
+
+                                <br>
+                                {% for revImg in ReviewImages%}
+                                {% if review.id == revImg.review_id %}
+                                <a>
+                                    <img class="img-fluid z-depth-2 img-thumbnail" loading="lazy" style="height:100px;"
+                                        src="/media/{{revImg.image}}" alt="image" data-toggle="modal"
+                                        data-target="#modal1"></a>
+                                {% endif %}
+                                {% endfor %}
+                                <p>
+                                    {{review.body}}
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <form action="{%url 'liked'%}" class="formdata" method="POST" role="form"
+                                            class="contactForm">
+                                            {%csrf_token%}
+                                            <input type="text" name="reviewId" value="{{review.id}}" hidden>
+                                            <button type="submit" name="like" class="link-muted me-2 bg-white border-0">
+                                                <i class="fas fa-thumbs-up me-1"></i>{{review.likes}}</button>
+                                        </form>
+                                        <button class="link-muted border-0 bg-white"><i
+                                                class="fas fa-thumbs-down me-1"></i>{{review.dislikes}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+{% comment %} {% endcomment %}
+{% if user.is_authenticated %}
+<div class="container  mt-5 mb-5 bg-light  ">
+    <form action="/submitReview" method="post" enctype="multipart/form-data">
+        {%csrf_token%}
+        <div class="d-flex justify-content-center row">
+            <div class="col-md-8">
+                <div class="d-flex flex-column comment-section">
+                    <div class="bg-light py-5">
+                        <input type="hidden" name="username" value="{{request.user}}">
+                        <input type="hidden" name="product" value="{{product.product_id}}">
+                        <input type="hidden" name="rating" id="review_rating" value="">
+
+                        <div class="mb-3">
+                            <input type="file" name="imgs[]" multiple class="form-control " aria-label="Choose File">
+                        </div>
+                        <div class="mb-3">
+
+
+                            <div class="col-auto">
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text me-4">Select Rating</div>
+                                    </div>
+                                    <style>
+                                        .review_rating_input {
+                                            cursor: pointer;
+                                        }
+                                    </style>
+                                    <div id="review_rating">
+                                        <span class="fa fa-star review_rating_input fs-4" data-number="0"></span>
+                                        <span class="fa fa-star review_rating_input fs-4" data-number="1"></span>
+                                        <span class="fa fa-star review_rating_input fs-4" data-number="2"></span>
+                                        <span class="fa fa-star review_rating_input fs-4" data-number="3"></span>
+                                        <span class="fa fa-star review_rating_input fs-4" data-number="4"></span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" name="heading" class="form-control" placeholder="Review Heading">
+                        </div>
+                        <textarea class="form-control ml-1 shadow-none textarea" name="body"
+                            placeholder="Review Body"></textarea>
+                        <div class="mt-2 text-right "><button class="btn btn-primary btn-sm shadow-none me-2"
+                                type="submit">Submit Review</button><button
+                                class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% else %}
+<div class="fluid-container d-flex justify-content-center p-5">
+    <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#signinModal">
+        Login To Write a Review
+    </button>
+</div>
+{% endif %}
 
 <!-- Related items section-->
 
@@ -162,14 +393,14 @@
                     <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
                     </div>
                     <!-- Product image-->
-                    <img class="card-img-top" style="height:150px;object-fit:contain;" src='/media/{{i.product_image}}'
-                        alt="..." />
+                    <img class="card-img-top" style="height:150px;object-fit:contain;" src='/media/{{i.image}}'
+                        alt="image" />
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
                             <!-- Product name-->
                             <a href="/product/{{i.product_id}}" style="text-decoration:none;"
-                                class="fw-bolder">{{i.product_name}}</a>
+                                class="fw-bolder user-select-none">{{i.product_name}}</a>
                             <!-- Product price-->
                             <br>
                             <span class="text-bg-success "
@@ -195,8 +426,23 @@
     </div>
 </section>
 <script>
+    let product_images = document.getElementsByClassName("product_images")
+    let main_img = document.getElementById("main_img")
+    Array.from(product_images).forEach(e => {
+        e.addEventListener('mouseover', function () {
+            let src = e.getAttribute('src')
+            Array.from(product_images).forEach(e => {
+                e.style.border = "None"
+                e.style.boxShadow = "None";
+            });
+            e.style.border = "2px solid green"
+            e.style.boxShadow = "0px 0px 2px 2px rgba(0, 128, 0, 0.358)";
+            main_img.setAttribute('src', src)
+
+        })
+    });
+
     const rating = parseInt("{{product.product_rating}}");
-    console.log(rating);
     const rating_stars = document.querySelectorAll('.fa-star');
     // console.log(rating_stars);
     // rating_stars.forEach(element => {
@@ -206,6 +452,81 @@
         rating_stars[i].classList.add("checked")
     }
 
+    let mrp = document.getElementById("mrp").innerHTML;
+    let sp = document.getElementById("sp").innerHTML;
+    mrp = mrp.replace("₹", '');
+
+    mrp = mrp.replace(",", '')
+
+    sp = sp.replace("₹", '')
+    sp = sp.replace(",", '')
+
+    mrp = parseInt(mrp)
+    sp = parseInt(sp)
+
+
+
+
+
+    let discount = "₹" + (mrp - sp) + "(" + (((mrp - sp) / mrp) * 100).toFixed(2) + "%)";
+    document.getElementById("yousave").innerHTML = discount;
+
+
+
+</script>
+<script>
+    const review_likes = document.getElementsByClassName("formdata")
+    Array.from(review_likes).forEach(e => {
+        e.addEventListener("submit", function (i) {
+            i.preventDefault();
+            e.children[2].childNodes[2].data++;
+            let formData = new FormData(e);
+
+            fetch("{%url 'liked' %}", {
+                method: 'POST',
+                body: formData
+            }).then(Response => {
+                console.log("success");
+            }).catch(resopnse => {
+                console.log("Error");
+            })
+        })
+    })
+
 </script>
 
+<script>
+    let review_rating_input = document.getElementsByClassName("review_rating_input")
+    Array.from(review_rating_input).forEach(e => {
+        e.addEventListener("click", () => {
+            let val = parseInt(e.getAttribute('data-number'));
+            for (let i = val + 1; i < 5; i++) {
+                if (review_rating_input[i].classList.contains('checked'))
+                    review_rating_input[i].classList.remove("checked")
+            }
+            for (let i = 0; i <= val; i++) {
+                review_rating_input[i].classList.add("checked")
+            }
+            document.getElementById("review_rating").value = val + 1;
+        })
+    })
+
+</script>
+<script>
+    let review_rating_container = document.getElementsByClassName("review_rating_container");
+    Array.from(review_rating_container).forEach(e => {
+        let rating = e.innerHTML
+        // console.log(rating);
+        e.innerHTML = "";
+        for (let i = 1; i <= 5; i++) {
+            let star = document.createElement('span');
+            star.classList.add('fa', 'fa-star')
+            if (i <= rating) {
+                // console.log("gone");
+                star.classList.add('checked')
+            }
+            e.appendChild(star)
+        }
+    })
+</script>
 {% endblock body %}
