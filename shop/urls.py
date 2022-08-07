@@ -32,7 +32,8 @@ urlpatterns = [
     path('submitReview', views.submitReview, name="submitReview"),
     path('insertProduct', views.insertProduct, name="insertProduct"),
     path('searchResult', views.search, name="search"),
-    path('product/<int:id>', views.product_desc, name="addtocart"),
+    path('product/<int:id>', views.product_desc, name="product_desc"),
     path('AddToCart/<int:id>', views.AddToCart, name="addtocart"),
     path('liked', views.liked, name="liked"),
+    path('removecartitem', views.removecartitem, name="removecartitem"),
 ]

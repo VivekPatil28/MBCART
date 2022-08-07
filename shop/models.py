@@ -1,6 +1,7 @@
 from distutils.archive_util import make_zipfile
 from distutils.command.upload import upload
 from email.mime import image
+from itertools import product
 from unicodedata import category
 from django.db import models
 from django.contrib.auth.models import User
@@ -27,8 +28,9 @@ class SubCategory(models.Model):
 class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     Sub_Category = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
+    Category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     product_name = models.CharField(max_length=400)
-    product_desc = models.CharField(max_length=1000)
+    product_desc = models.TextField(max_length=10000)
     product_price = models.IntegerField()
     image = models.ImageField(upload_to='shop/thumbnail_image', default='')
     product_rating = models.FloatField()
@@ -81,7 +83,15 @@ class Contact(models.Model):
     def __str__(self):
         return self.name
 
-
+class Cart(models.Model):
+    user=models.ForeignKey(User,on_delete=models.DO_NOTHING)
+    product=models.ForeignKey(Product,on_delete=models.DO_NOTHING)
+    quantity=models.IntegerField(default=1)
+    totalprice=models.IntegerField()
+    
+    def __str__(self):
+        return str(self.user)
+    
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(

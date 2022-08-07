@@ -1,14 +1,200 @@
 {% extends 'shop/basic.html' %}
+{% load humanize %}
+{% block body %}
+<style>
+  .quantity-input {
+    text-align: center;
+  }
+
+  .form-control::-webkit-outer-spin-button,
+  .form-control::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+</style>
+<section class="h-100 gradient-custom ">
+  <div class="container-xl py-5 ">
+    <div class="row d-flex justify-content-center my-4">
+      <div class="col-md-8">
+        <div class="card mb-4">
+          <div class="card-header py-3">
+            <h5 class="mb-0">Total - <span>{{cartitems.count}}</span> items</h5>
+            <h6 class="fs-6 text-secondary"><span>&nbsp;&nbsp; </span><span class="totalselecteditems"></span> items selected</h6>
+          </div>
+          <div class="card-body">
+
+            {% for item in cartitems %}
 
 
-{%block script%}
-{% comment %} <script>
-     if (localStorage.getItem('cart') == null) {
-    var cart = {}
+            <!-- Single item -->
+            <div class="row">
+              <label for="{{item.id}}"
+                class="col-lg-1 col-md-1 p-0 py-2 d-flex justify-content-center align-items-center card-header border-0 rounded"
+                style="cursor: pointer;">
+                <input type="checkbox" name="check" id="{{item.id}}" class="form-check-input checkbox" checked>
+              </label>
+              <div class="col-lg-3 col-md-4 mb-lg-0 p-0">
+                <!-- Image -->
+                <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                  <a href="/product/{{item.product_id}}">
+                    <img src="media/{{item.product.image}}" style="max-height:200px;object-fit: contain;"
+                      class="w-100" />
+                  </a>
+                </div>
+                <!-- Image -->
+              </div>
+
+              <div class="col-lg-5 col-md-7 p-lg-0">
+                <!-- Data -->
+                <a href="/product/{{item.product_id}}"
+                  class="text-decoration-none"><strong>{{item.product.product_name|truncatechars:70}}</strong></a>
+                <p class="mb-1">In stock</p>
+                <p class="mb-1">Size: M</p>
+
+                <form action="{%url 'removecartitem'%}" method="post" class="d-inline-block">
+                  {%csrf_token%}
+                  <input type="text" name="id" hidden value="{{item.id}}">
+                  <button type="submit" class="btn btn-primary btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
+                    title="Remove item">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+
+                <button type="button" class="btn btn-danger btn-sm mb-2" data-mdb-toggle="tooltip"
+                  title="Move to the wish list">
+                  <i class="fas fa-heart"></i>
+                </button>
+                <!-- Data -->
+                <div class="d-flex mb-4" style="max-width: 150px">
+                  <button class="btn btn-primary px-2 me-2"
+                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                    <i class="fas fa-minus"></i>
+                  </button>
+
+                  <div class="form-outline col-xs-2">
+
+                    <input min="1" name="quantity" value="{{item.quantity}}" type="number"
+                      class="form-control quantity-input " />
+                  </div>
+
+                  <button class="btn btn-primary px-2 ms-2"
+                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-lg-3 col-md-8">
+                <!-- Quantity -->
+
+                <!-- Quantity -->
+
+                <!-- Price -->
+                <p class="text-start text-md-center">
+                  <strong class="mt-2"><span>Price :
+                      ₹</span><span>{{item.product.product_price|intcomma}}</span></strong>
+                </p>
+                <!-- Price -->
+              </div>
+            </div>
+            <!-- Single item -->
+            <hr class="my-4" />
+            {% endfor %}
+
+
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-body">
+            <p><strong>Expected shipping delivery</strong></p>
+            <p class="mb-0">12.10.2020 - 14.10.2020</p>
+          </div>
+        </div>
+        <div class="card mb-4 mb-lg-0">
+          <div class="card-body">
+            <p><strong>We accept</strong></p>
+            <img class="me-2" width="45px"
+              src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+              alt="Visa" />
+            <img class="me-2" width="45px"
+              src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+              alt="American Express" />
+            <img class="me-2" width="45px"
+              src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+              alt="Mastercard" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div class="card-header py-3">
+            <h5 class="mb-0">Summary</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+              <span>Subtotal (<span class="totalselecteditems"></span> items):</span>
+                <span id="totalcartprice"></span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                <span>Shipping Charges</span>
+                <span class="Shippingcharges"></span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                <div>
+                  <strong>Total amount</strong>
+                  <strong>
+                    <p class="mb-0"></p>
+                  </strong>
+                </div>
+                <strong><span ></span></strong>
+              </li>
+            </ul>
+
+            <button type="button" class="btn btn-primary btn-lg btn-block">
+              Go to checkout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  let checkboxes = document.getElementsByClassName("checkbox")
+  Array.from(checkboxes).forEach(e => {
+    e.addEventListener('change', i => {
+      if (!i.target.checked) {
+        e.parentElement.parentNode.style.filter = "grayscale(1)"
+        reflectChange()
+      }
+      else {
+        e.parentElement.parentNode.style.filter = "grayscale(0)"
+        reflectChange()
+      }
+    })
+  })
+  function reflectChange() {
+    let total_price=0;
+    let checkedCheckbox = document.querySelectorAll('.checkbox:checked');
+    let totalselecteditems=document.getElementsByClassName("totalselecteditems")
+    Array.from(totalselecteditems).forEach(e=>{
+      e.innerHTML = checkedCheckbox.length;
+    })
+
+
+
+    Array.from(checkedCheckbox).forEach(e=>{
+      let num= e.parentElement.parentElement.children[3].children[0].children[0].children[1].innerHTML
+      num=num.replace(",",'')
+      total_price+=parseInt(num);
+    })
+    let dollarIndianLocale = Intl.NumberFormat('en-IN');
+    document.getElementById("totalcartprice").innerHTML= dollarIndianLocale.format(total_price);
   }
-  else {
-    cart = JSON.parse(localStorage.getItem('cart'))
-  }
-     document.getElementById("cart_items_count").innerHTML=Object.keys(cart).length;
-</script> {% endcomment %}
-{%endblock%}
+
+  reflectChange();
+  
+</script>
+{% endblock body %}

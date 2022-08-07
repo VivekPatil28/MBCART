@@ -8,36 +8,38 @@
 <div id="carouselExampleControls" class="carousel slide p-0" data-bs-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img src='/media/{{coursal.0.coursal_image}}' style="object-fit: contain;" class="d-block w-100"
-        alt="...">
+      <img src='/media/{{coursal.0.coursal_image}}' style="object-fit: contain;" class="d-block w-100" alt="...">
     </div>
     {% for j in coursal|slice:"1:" %}
     <div class="carousel-item">
-     <a href="{{j.coursal_id}}">
-      <img src='/media/{{j.coursal_image}}' style="object-fit: contain;" class="d-block w-100" alt="...">
-     </a>
+      <a href="{{j.coursal_id}}">
+        <img src='/media/{{j.coursal_image}}' style="object-fit: contain;" class="d-block w-100" alt="...">
+      </a>
     </div>
     {% endfor %}
   </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+  <button class="carousel-control-prev" style="width:5%;" type="button" data-bs-target="#carouselExampleControls"
+    data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
   </button>
-  <button class="carousel-control-next"  type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+  <button class="carousel-control-next"  style="width:5%;" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
   </button>
 </div>
 
 
-<div class="categories d-flex justify-content-evenly align-items-center p-5">
-  
-  {% for StaticImage in StaticImages %}
-    <div class="staticimage">
-      <img src="/media/{{StaticImage.image}}" style="height:150px;" alt="">
-    </div>
-  {% endfor %}
 
+
+<div class="container p-2">
+  <div class="row d-flex justify-content-center">
+    {% for StaticImage in StaticImages %}
+    <a href="" class="col-6 col-sm-6 col-md-4 col-lg-3 my-4 d-flex justify-content-center">
+      <img src="/media/{{StaticImage.image}}" style="height:155px;" class="img-fluid p-2" alt="">
+    </a>
+    {% endfor %}
+  </div>
 </div>
 
 
@@ -45,53 +47,47 @@
 
 
 <div class="container my-3">
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+  <!-- row-cols-1 row-cols-sm-3 row-cols-md-4 g-4 -->
+  <div class="row">
     {% for i in product %}
-    <div class="col">
+    <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-3">
       <div class="card shadow-sm" style="min-height:500px;">
-       
-        {% comment %} {% for img in thumbnail %}
 
-        {% if i.product_id == img.product_id %}
-        <img class="" style="height:200px;object-fit: contain;" src='/media/{{img.image}}' />
-        {% endif %}
-        {% endfor %} {% endcomment %}
-        
-        <img class="" style="height:200px;object-fit: contain;" src='/media/{{i.image}}' />
-        <div class="card-body" style="display: flex;justify-content:start;align-items:stretch;flex-flow: column;">
+        <a href="/product/{{i.product_id}}" style="display:grid;place-items: center;"><img class="" style="height:200px;object-fit: contain;" src='/media/{{i.image}}' /></a>
+        <div class="card-body" style="display:flex;justify-content:stretch;flex-flow: column;">
           <p class="card-text">
-            <font style="vertical-align: inherit;width: 250px;">
-              <a href="/product/{{i.product_id}}" target="_blank" style="vertical-align: inherit;-webkit-line-clamp: 3;text-decoration: none;
-                display: -webkit-box;-webkit-box-orient: vertical;overflow: hidden;">{{i.product_name}}</a>
+            <div style="vertical-align: inherit;">
+              <a href="/product/{{i.product_id}}" target="_blank" style="display:inline-block;min-height:50px;text-decoration: none;">{{i.product_name|truncatechars:55}}</a>
+                          <br>
               <span class="text-bg-success"
                 style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
                   style="position:relative;top: -1px;left:4px;font-size:9px;" class="bi bi-star-fill"></small></span>
               <span>(53,265)</span>
-              <h6 class="blockquote">₹{{i.product_price|intcomma}} &nbsp;<strike
+              <h6 class="blockquote mt-3">₹{{i.product_price|intcomma}} &nbsp;<strike
                   class="text-muted "><small>₹{{i.product_initial_price|intcomma}}</small></strike></h6>
-              <font style="vertical-align: inherit;-webkit-line-clamp: 2;
-                display: -webkit-box;-webkit-box-orient: vertical;overflow: hidden;">{{i.product_desc}}
-              </font>
-            </font>
+              <p >{{i.product_desc|truncatechars:60}}</p>
+            </div>
           </p>
           <div class="d-flex justify-content-center align-items-center">
             <div class="btn-group w-100">
               <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
                 {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-outline-danger w-100" style="border-right: none;border-radius:5px 0px 0px 5px;">
-                <font style="vertical-align: inherit;">
-                  <font style="vertical-align: inherit;" class="cart">Add to Cart</font>
-                </font>
-              </button>
+                <button type="submit" class="btn btn-sm btn-outline-danger w-100"
+                  style="border-right: none;border-radius:5px 0px 0px 5px;">
+                  <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;" class="cart">Add to Cart</font>
+                  </font>
+                </button>
               </form>
-               <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
+              <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
                 {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-outline-success w-100" style="border-radius:0px 5px 5px 0px;">
-                <font style="vertical-align: inherit;">
-                  <font style="vertical-align: inherit;">Buy Now</font>
-                </font>
-              </button>
-            </form>
+                <button type="submit" class="btn btn-sm btn-outline-success w-100"
+                  style="border-radius:0px 5px 5px 0px;">
+                  <font style="vertical-align: inherit;">
+                    <font style="vertical-align: inherit;">Buy Now</font>
+                  </font>
+                </button>
+              </form>
             </div>
 
           </div>

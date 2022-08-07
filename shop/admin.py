@@ -8,6 +8,7 @@ admin.site.register(Contact)
 admin.site.register(Category)
 admin.site.register(SubCategory)
 admin.site.register(StaticImage)
+admin.site.register(Cart)
 
 
 admin.site.register(ProductImages)

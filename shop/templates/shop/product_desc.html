@@ -60,7 +60,7 @@
             </div>
 
             <div class="col-md-6 infcont">
-                <div class="small mb-1" style="color:rgba(0, 0, 0, 0.8);">{{product.category}}</div>
+                <div class="mb-1" style="color:rgba(0, 0, 0, 0.8);">{{sub_cat.name}}</div>
                 <h3 class="display-10 fw-bolder user-select-none">{{product.product_name}}</h3>
                 <div>
                     <style>
@@ -150,33 +150,29 @@
                         {{aboutthisitem|unordered_list}}
                     </ul>
                 </div>
-                <div class="d-flex justify-content-center align-items-center mb-5">
+                <div class="d-flex justify-content-center align-items-center my-5">
                     <div class="btn-group w-100">
-                        <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
+                        <form action="/AddToCart/{{product.product_id}}" method="post" class="w-100">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-danger w-100"
+                            <!-- <input type="text" value="{{i.product_id}}" hidden> -->
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100 p-2"
                                 style="border-right: none;border-radius:5px 0px 0px 5px;">
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;" class="cart"><i
-                                            class="bi-cart-fill me-1"></i>Add
-                                        to Cart</font>
-                                </font>
+                                <i class="bi-cart-fill me-1"></i>
+                                Add to Cart
                             </button>
+
                         </form>
-                        <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
+                        <form action="/AddToCart/{{product.product_id}}" method="post" class="w-100">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-success w-100"
-                                style="border-radius:0px 5px 5px 0px;">
-                                <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">Buy Now</font>
-                                </font>
+                            <button type="submit" class="btn btn-sm btn-outline-success w-100 p-2"
+                                style="border-radius:0px 5px 5px 0px;">Buy Now
                             </button>
                         </form>
                     </div>
 
                 </div>
                 <!--  -->
-                <!-- <table class="table table-striped ">
+                <table class="table table-striped ">
                     <thead>
                         <h2>Specifications</h2>
                     </thead>
@@ -224,7 +220,7 @@
                             <td>UHD11235845</td>
                         </tr>
                     </tbody>
-                </table> -->
+                </table>
 
             </div>
         </div>
@@ -393,14 +389,13 @@
                     <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
                     </div>
                     <!-- Product image-->
-                    <img class="card-img-top" style="height:150px;object-fit:contain;" src='/media/{{i.image}}'
-                        alt="image" />
+                    <a href="/product/{{i.product_id}}"><img class="card-img-top" style="height:150px;object-fit:contain;" src='/media/{{i.image}}' alt="image" /></a>
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
                             <!-- Product name-->
                             <a href="/product/{{i.product_id}}" style="text-decoration:none;"
-                                class="fw-bolder user-select-none">{{i.product_name}}</a>
+                                class="fw-bolder user-select-none">{{i.product_name|truncatechars:55}}</a>
                             <!-- Product price-->
                             <br>
                             <span class="text-bg-success "
@@ -480,7 +475,7 @@
         e.addEventListener("submit", function (i) {
             i.preventDefault();
             e.children[2].childNodes[2].data++;
-            let formData = new FormData(e); 
+            let formData = new FormData(e);
 
             fetch("{%url 'liked' %}", {
                 method: 'POST',

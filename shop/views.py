@@ -54,11 +54,11 @@ def search(request):
                 ids.add(i.product_id)
                 print("ids "+ str(ids))
 
-     # for product in products:
-     #     subcat=SubCategory.objects.filter(id==product.Sub_Category_id)
-     #     s = find_near_matches(query, subcat.lower(), max_l_dist=1)
-     #     if (s != []):
-     #         ids.add(product.product_id)
+    #  for product in products:
+    #      subcat=SubCategory.objects.filter(id==product.Sub_Category_id)
+    #      s = find_near_matches(query, subcat.lower(), max_l_dist=1)
+    #      if (s != []):
+    #          ids.add(product.product_id)
 
     # if (len(ids) == 0):
     #     for product in products:
@@ -82,11 +82,6 @@ def about(request):
     return render(request, 'shop/about.html')
 
 
-# Cart
-def cart(request):
-    pass
-
-
 # contact page
 def contact(request):
     return render(request, 'shop/contact.html', {"success": '0'})
@@ -108,14 +103,15 @@ def submitform(request):
 
 # profuct Description page
 def product_desc(request, id):
-    product = Product.objects.filter(product_id=id)[0]
-
+    product = Product.objects.get(product_id=id)
+    sub_cat = SubCategory.objects.get(id=product.Sub_Category_id)
     productimg = ProductImages.objects.filter(product_id=id)
-
     product_desc_imgs = ProductDescriptionImages.objects.filter(product_id=id)
 
     samecategory = (Product.objects.filter(
-        Sub_Category_id = product.Sub_Category_id)).exclude(product_id=id)
+        Category_id=product.Category_id)).exclude(product_id=id)
+    
+    print(samecategory)
 
     desc=product.product_desc
     desc=desc.split("$")
@@ -126,7 +122,7 @@ def product_desc(request, id):
     
     ReviewImages = ReviewImage.objects.filter(product_id=product)
     
-    params = {'product': product, 'sc': samecategory,
+    params = {'product': product, 'sc': samecategory,'sub_cat':sub_cat,
               'Reviews': Reviews, 'ReviewImages': ReviewImages, 'productimgs': productimg, 'product_desc': product_desc_imgs, 'aboutthisitem':desc}
 
     return render(request, 'shop/product_desc.html', params)
@@ -134,9 +130,23 @@ def product_desc(request, id):
 
 # Cart page
 def AddToCart(request, id):
-    return index(request)
+    product=Product.objects.get(product_id=id)
+    cartitem,is_added = Cart.objects.get_or_create(user=request.user,product=product,totalprice=product.product_price)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 # Signup
+def removecartitem(request):
+    if request.method=='POST':
+        id=request.POST['id']
+        Cart.objects.filter(id=id).delete()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def cart(request):
+    cartitems=Cart.objects.filter(user=request.user)
+    params={
+        'cartitems':cartitems,
+    }
+    return render(request,'shop/cart.html',params)
 
 
 def signup(request):
