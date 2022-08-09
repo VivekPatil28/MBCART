@@ -29,8 +29,8 @@ class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     Sub_Category = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
     Category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
-    product_name = models.CharField(max_length=400)
-    product_desc = models.TextField(max_length=10000)
+    product_name = models.TextField()
+    product_desc = models.TextField()
     product_price = models.IntegerField()
     image = models.ImageField(upload_to='shop/thumbnail_image', default='')
     product_rating = models.FloatField()
@@ -78,7 +78,7 @@ class Contact(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=50)
     phoneNumber = models.IntegerField()
-    description = models.CharField(max_length=1000)
+    description = models.TextField()
 
     def __str__(self):
         return self.name
@@ -97,7 +97,7 @@ class Review(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='comments')
     name = models.CharField(max_length=500)
-    heading = models.CharField(max_length=100)
+    heading = models.CharField(max_length=1000)
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField(default=0)
@@ -124,6 +124,7 @@ class ReviewImage(models.Model):
     
 class StaticImage(models.Model):
     cat=models.CharField(default="",max_length=500)
+    category=models.ForeignKey(Category,on_delete=models.CASCADE)
     image = models.ImageField(upload_to='shop/static')
     
     def __str__(self):

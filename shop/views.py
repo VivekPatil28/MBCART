@@ -1,3 +1,4 @@
+from math import prod
 from operator import imod
 from sre_constants import SUCCESS
 from unicodedata import category
@@ -107,7 +108,6 @@ def product_desc(request, id):
     sub_cat = SubCategory.objects.get(id=product.Sub_Category_id)
     productimg = ProductImages.objects.filter(product_id=id)
     product_desc_imgs = ProductDescriptionImages.objects.filter(product_id=id)
-
     samecategory = (Product.objects.filter(
         Category_id=product.Category_id)).exclude(product_id=id)
     
@@ -119,11 +119,26 @@ def product_desc(request, id):
     
     Reviews = Review.objects.filter(product=product)
     
+    total_ratings=0
+    for r in Reviews:
+        total_ratings+=r.rating
+    
+    if (len(Reviews)>0):
+        product_rating=total_ratings/len(Reviews)
+    else:
+        product_rating=0
+    
+    product.product_rating=product_rating
+    product.save(force_update=True)
+    
+    
+    
+    
     
     ReviewImages = ReviewImage.objects.filter(product_id=product)
     
     params = {'product': product, 'sc': samecategory,'sub_cat':sub_cat,
-              'Reviews': Reviews, 'ReviewImages': ReviewImages, 'productimgs': productimg, 'product_desc': product_desc_imgs, 'aboutthisitem':desc}
+              'Reviews': Reviews, 'ReviewImages': ReviewImages, 'productimgs': productimg, 'product_desc': product_desc_imgs, 'aboutthisitem': desc}
 
     return render(request, 'shop/product_desc.html', params)
 
@@ -219,3 +234,10 @@ def liked(request):
         # data = {'likes':review.likes}
         # return JsonResponse(data, safe=False)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def category(request,string):
+    cat=Category.objects.get(name=string)
+    product = Product.objects.filter(Category_id=cat.id)
+    print(product)
+    params={'products':product}
+    return render(request,'shop/category_desc.html',params)

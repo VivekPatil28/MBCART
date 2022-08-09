@@ -36,4 +36,5 @@ urlpatterns = [
     path('AddToCart/<int:id>', views.AddToCart, name="addtocart"),
     path('liked', views.liked, name="liked"),
     path('removecartitem', views.removecartitem, name="removecartitem"),
+    path('category/<str:string>', views.category, name="removecartitem"),
 ]
