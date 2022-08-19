@@ -1,0 +1,185 @@
+{% extends 'UserProfile/base.html' %}
+{% block myaddressesactive %}active{% endblock myaddressesactive %}
+{% block body %}
+<div class="container my-3">
+    <div class="row">
+        <div class="col-12 center">
+            <a href="addAddress" class="btn btn-primary btn-lg btn-block float-end">
+                + Add a new address
+            </a>
+        </div>
+
+    </div>
+
+    {% for address in address %}
+    <div>
+        <div class="mt-4 ms-2">
+            <div class="form-check form-switch">
+                <input class="form-check-input checkboxes" type="radio" id="SwitchCheck" name="check">
+                <p class="text-muted mb-1">Primary Address</p>
+            </div>
+        </div>
+        <div class="col-lg-12 p-4 card">
+
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Full Name</p>
+                </div>
+                <div class="col-sm-3">
+                    <p class="text-muted mb-0">{{address.full_name}}</p>
+                </div>
+
+                <div class="col-md-1">
+                    <hr class="d-md-none">
+                </div>
+
+                <div class="col-sm-3 col-md-2">
+                    <p class="mb-0">Address Type</p>
+                </div>
+                <div class="col-sm-3">
+                    <p class="text-muted mb-0">
+
+                        {% if address.home_work_address %}
+                        Home Address
+                        {% else %}
+                        Work Address
+                        {% endif %}
+                    </p>
+                </div>
+
+            </div>
+
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Mobile No</p>
+                </div>
+                <div class="col-sm-3">
+                    <p class="text-muted mb-0">{% if address.phone_number %}
+                        {{address.phone_number}}
+                        {% else %}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-dash"></i>
+                        {% endif %}</p>
+                </div>
+
+                <div class="col-md-1">
+                    <hr class="d-md-none">
+                </div>
+
+                <div class="col-sm-3 col-md-2">
+                    <p class="mb-0">Alternate Mobile No</p>
+                </div>
+                <div class="col-sm-3">
+                    <p class="text-muted mb-0">{% if address.alternate_phone_number %}
+                        {{address.alternate_phone_number}}
+                        {% else %}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-dash"></i>
+                        {% endif %}</p>
+                </div>
+
+            </div>
+            <hr>
+
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Pincode</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0">
+                        {{address.pincode}}
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">State</p>
+                </div>
+                <div class="col-sm-3">
+                    <p class="text-muted mb-0">{{address.state}}</p>
+                </div>
+
+                <div class="col-md-1">
+                    <hr class="d-md-none">
+                </div>
+
+                <div class="col-sm-3 col-md-2">
+                    <p class="mb-0">City</p>
+                </div>
+                <div class="col-sm-3">
+                    <p class="text-muted mb-0">{{address.city}}</p>
+                </div>
+
+            </div>
+
+
+
+
+
+
+
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">House no, Building Name</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0">{{address.house_no}}</p>
+                </div>
+            </div>
+
+
+
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="mb-0">Road Name, Area, Colony</p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="text-muted mb-0">{{address.area}}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% endfor %}
+
+</div>
+
+<script>
+
+    // let checkboxes=document.querySelectorAll(".checkboxes")
+
+    //     Array.from(checkboxes).forEach(e =>{
+    //         e.addEventListener('change',()=>{
+    //             console.log(e.parentNode.parentNode.parentElement.children[1].style.backgroundColor="red");
+    //         })
+    //         e.style.backgroundColor = "white";
+    //     })
+
+
+   
+    // let Checkbox = document.querySelectorAll('.checkboxes');
+
+    // Array.from(Checkbox).forEach(e => {
+
+        
+    //     e.addEventListener('change', () => {
+    //          Array.from(Checkbox).forEach(e => {
+    //             e.parentNode.parentNode.parentElement.children[1].classList.remove('bg-secondary');
+    //         })
+    //          let checkedCheckbox = document.querySelectorAll('.checkboxes:checked');
+    //         checkedCheckbox[0].parentNode.parentNode.parentElement.children[1].classList.add('bg-secondary')
+           
+    //     })
+    // })
+
+
+
+</script>
+
+{% endblock body %}

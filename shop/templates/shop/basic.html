@@ -146,37 +146,24 @@
             <a class="navbar-brand text-white order-sm-0 mx-sm-5">MBCART</a>
 
             <div class="d-flex order-sm-2 ">
+                {% if user.is_authenticated %}
                 <a href="/cart" class="btn btn-primary me-2">
                     <i class="bi bi-cart3"></i> <span id="cart_items_count" class="badge badge-light">0</span>
                 </a>
-                {% if user.is_authenticated %}
-                <form method="post" action="/signout">
-                    {%csrf_token%}
+                <!-- <form method="post" action="/signout"> -->
+                <!-- <form method="post" action="/profile">
+                    {%csrf_token%} -->
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Profile
-                        </button>
-
-                        <ul class="dropdown-menu">
-                            <li>
-                                <h6 class="text-center">{{request.user}}</h6>
-                            </li>
-                            <li><a class="dropdown-item" href="#">Go To Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <button type="submit" class="btn btn-primary ms-3">
-                                    Logout
-                                </button>
-                            </li>
-                        </ul>
+                        <a href="/profile" class="btn btn-primary dropdown-toggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Go to Profile">
+                            {{request.user|truncatechars:'15'}}
+                        </a>
                     </div>
-                </form>
+                <!-- </form> -->
 
                 {% else %}
+                <button type="button" class="btn btn-primary me-2 px-4" data-bs-toggle="modal" data-bs-target="#signinModal">
+                    <i class="bi bi-cart3"></i>
+                </button>
                 <button type="button" class="btn btn-primary ms-3 " data-bs-toggle="modal"
                     data-bs-target="#signinModal">
                     Login
@@ -199,15 +186,25 @@
         </div>
         <a href=""></a>
 
-        
-
     </nav>
+
     {%block body%}
 
     {%endblock%}
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
         crossorigin="anonymous"></script>
+        <script>
+            fetch("{%url 'getCartItems' %}", {
+                    method: 'GET',
+                }).then(response => response.json())
+                        .then(data => {
+                            document.getElementById("cart_items_count").innerText=data['num']
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+        </script>
 </body>
 
 </html>

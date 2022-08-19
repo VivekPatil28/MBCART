@@ -6,15 +6,20 @@
 
 <div class="container my-3 d-flex justify-content-center align-items-center flex-column">
       {% for i in products %}
-    <div class="row ">
+    <div class="row px-3">
         <div class="col-lg-4 col-xl-3">
           <a href="/product/{{i.product_id}}"><img style="height:200px;object-fit: contain;"
               src='/media/{{i.image}}' /></a>
         </div>
         <div class="card-body col-lg-8 col-xl-9" >
           <p class="card-text">
-              <a href="/product/{{i.product_id}}" target="_blank" style="text-decoration: none;font-size: large;font-weight: 600;">{{i.product_name}}</a>
-              <br>
+              <a href="/product/{{i.product_id}}" target="_blank" style="text-decoration: none;font-size: large;font-weight: 600;width:auto;
+                          display: -webkit-box;
+                          -webkit-box-orient: vertical;
+                          -webkit-line-clamp:2;
+                          overflow: hidden;">
+                          
+                  {{i.product_name}}</a>
               <span class="text-bg-success"
                 style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
                   style="position:relative;top: -1px;left:4px;font-size:9px;" class="bi bi-star-fill"></small></span>

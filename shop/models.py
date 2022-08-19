@@ -5,10 +5,13 @@ from itertools import product
 from unicodedata import category
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+
 
 # Create your models here.
 
 
+    
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=250)
@@ -95,7 +98,8 @@ class Cart(models.Model):
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='comments')
+        Product, on_delete=models.DO_NOTHING, related_name='comments')
+    user=models.ForeignKey(User,on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=500)
     heading = models.CharField(max_length=1000)
     body = models.TextField()
@@ -105,7 +109,7 @@ class Review(models.Model):
     active = models.BooleanField(default=True)
     likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0)
-
+    
     class Meta:
         ordering = ('created',)
 
@@ -129,6 +133,3 @@ class StaticImage(models.Model):
     
     def __str__(self):
         return str(self.image)
-       
-
-

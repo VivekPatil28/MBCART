@@ -1,0 +1,72 @@
+{% extends 'UserProfile/base.html' %}
+{% block myreviewsactive %}active{% endblock myreviewsactive %}
+{% block body %}
+<section class="py-1">
+    {% for review in reviews %}
+    <div class="container py-2 text-dark card my-3 ">
+        <div class="row">
+            <div class="col-md-4 col-lg-3 col-xl-2">
+               <a href="/product/{{review.product.product_id}}">
+                 <img src="/media/{{review.product.image}}" style="height:200px;object-fit: contain;" alt="image">
+               </a>
+            </div>
+
+            <div class="col-md-7 col-lg-8 col-xl-8">
+                <style>
+                    .link-muted {
+                        color: #aaa;
+                    }
+
+                    .stars {
+                        color: #aaa;
+                    }
+
+                    .link-muted:hover {
+                        color: #1266f1;
+                    }
+
+                    a {
+                        text-decoration: none;
+                    }
+                </style>
+
+                <div class="d-flex flex-start">
+                    <div class="w-100">
+                        <div class="card-body p-4">
+                            <div class="">
+                                <h6 class="d-inline-block me-2">{{review.name}}</h6>
+                                <div class="d-inline-block review_rating_container">
+                                    {{review.rating}} Stars
+                                </div>
+                                <p class="small">{{review.created}}</p>
+                                <h6 class="">{{review.heading}}</h6>
+                                {% for revImg in ReviewImages%}
+                                {% if review.id == revImg.review_id %}
+                                <a>
+                                    <img class="img-fluid z-depth-2 img-thumbnail" loading="lazy" style="height:100px;"
+                                        src="/media/{{revImg.image}}" alt="image" data-toggle="modal"
+                                        data-target="#modal1"></a>
+                                {% endif %}
+                                {% endfor %}
+                                <pre>{{review.body}}</pre>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                            <button type="button" name="like" class="link-muted me-2 bg-white border-0">
+                                                <i class="fas fa-thumbs-up me-1"></i>{{review.likes}}</button>
+                                    
+                                        <button class="link-muted border-0 bg-white"><i
+                                                class="fas fa-thumbs-down me-1"></i>{{review.dislikes}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+{% endblock body %}

@@ -1,0 +1,502 @@
+{% extends 'UserProfile/base.html' %}
+{% block body %}
+
+<div class="row d-flex justify-content-center align-items-center flex-column">
+    <div class="col-md-8 mb-4">
+        <div class="card mb-4 ">
+            <div class="card-header py-3 ">
+                <h5 class="mb-0">Add a New Address</h5>
+            </div>
+            <div class="card-body">
+                <form action="addAddress" method="POST" class="needs-validation" novalidate autocomplete="on">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <input type="radio" class="btn-check" name="addresstype" id="homeselected" value="True"
+                            autocomplete="off" checked>
+                        <label class="btn btn-outline-success" for="homeselected">Home Address</label>
+
+                        <input type="radio" class="btn-check" name="addresstype" value="False" id="workselected"
+                            autocomplete="off">
+                        <label class="btn btn-outline-success" for="workselected">Work Address</label>
+
+
+                    </div>
+
+
+                    <!-- Full Name input -->
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="fullname" placeholder="Full Name" name="fullname"
+                            required>
+                        <label for="fullname">Full Name</label>
+                    </div>
+
+
+                    <!-- Mobile Number input -->
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="Mobilenumber" placeholder="Mobile Number"
+                            name="number" required>
+                        <label for="Mobilenumber">Mobile Number</label>
+                    </div>
+
+
+                    <!-- Alternate Mobile Number input -->
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="alternatemobilenumber"
+                            placeholder="Alternate Mobile Number" name="alternateNumber">
+                        <label for="alternatemobilenumber">Alternate Mobile Number</label>
+                    </div>
+
+                    <!-- 2 column grid layout with text inputs for the first and last names -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <!-- state input -->
+                            <div class="form-floating">
+                                <input type="text" class="form-control" list="states" id="State" placeholder="State"
+                                    name="state" required>
+                                <label for="State">State</label>
+                                <datalist id="states">
+                                    <option value="Andhra Pradesh">
+                                    <option value="Arunachal Pradesh">
+                                    <option value="Assam">
+                                    <option value="Bihar">
+                                    <option value="Chhattisgarh">
+                                    <option value="Goa">
+                                    <option value="Gujarat">
+                                    <option value="Haryana">
+                                    <option value="Himachal Pradesh">
+                                    <option value="Jharkhand">
+                                    <option value="Karnataka">
+                                    <option value="Kerala">
+                                    <option value="Madhya Pradesh">
+                                    <option value="Maharashtra">
+                                    <option value="Manipur">
+                                    <option value="Meghalaya">
+                                    <option value="Mizoram">
+                                    <option value="Nagaland">
+                                    <option value="Odisha">
+                                    <option value="Punjab">
+                                    <option value="Rajasthan">
+                                    <option value="Sikkim">
+                                    <option value="Tamil Nadu">
+                                    <option value="Telangana">
+                                    <option value="Tripura">
+                                    <option value="Uttar Pradesh">
+                                    <option value="Uttarakhand">
+                                    <option value="West Bengal">
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <!--city input -->
+                        <div class="col">
+                            <div class="form-floating">
+                                <input type="text" list="cities" class="form-control" id="City" placeholder="City" name="city"
+                                    required>
+                                <label for="City">City</label>
+                                <datalist id="cities">
+                                    <option value="Delhi">
+                                    <option value="Bangalore">
+                                    <option value="Hyderabad">
+                                    <option value="Ahmedabad">
+                                    <option value="Chennai">
+                                    <option value="Kolkata">
+                                    <option value="Surat">
+                                    <option value="Pune">
+                                    <option value="Jaipur">
+                                    <option value="Lucknow">
+                                    <option value="Kanpur">
+                                    <option value="Nagpur">
+                                    <option value="Indore">
+                                    <option value="Thane">
+                                    <option value="Bhopal">
+                                    <option value="Visakhapatnam">
+                                    <option value="Pimpri-Chinchwad">
+                                    <option value="Patna">
+                                    <option value="Vadodara">
+                                    <option value="Ghaziabad">
+                                    <option value="Ludhiana">
+                                    <option value="Agra">
+                                    <option value="Nashik">
+                                    <option value="Faridabad">
+                                    <option value="Meerut">
+                                    <option value="Rajkot">
+                                    <option value="Kalyan-Dombivli">
+                                    <option value="Vasai-Virar">
+                                    <option value="Varanasi">
+                                    <option value="Srinagar">
+                                    <option value="Aurangabad">
+                                    <option value="Dhanbad">
+                                    <option value="Amritsar">
+                                    <option value="Navi Mumbai">
+                                    <option value="Allahabad">
+                                    <option value="Howrah">
+                                    <option value="Ranchi">
+                                    <option value="Gwalior">
+                                    <option value="Jabalpur">
+                                    <option value="Coimbatore">
+                                    <option value="Vijayawada">
+                                    <option value="Jodhpur">
+                                    <option value="Madurai">
+                                    <option value="Raipur">
+                                    <option value="Kota">
+                                    <option value="Chandigarh">
+                                    <option value="Guwahati">
+                                    <option value="Solapur">
+                                    <option value="Hubliâ€“Dharwad">
+                                    <option value="Mysore">
+                                    <option value="Tiruchirappalli">
+                                    <option value="Bareilly">
+                                    <option value="Aligarh">
+                                    <option value="Tiruppur">
+                                    <option value="Gurgaon">
+                                    <option value="Moradabad">
+                                    <option value="Jalandhar">
+                                    <option value="Bhubaneswar">
+                                    <option value="Salem">
+                                    <option value="Warangal">
+                                    <option value="Mira-Bhayandar">
+                                    <option value="Jalgaon">
+                                    <option value="Guntur">
+                                    <option value="Thiruvananthapuram">
+                                    <option value="Bhiwandi">
+                                    <option value="Saharanpur">
+                                    <option value="Gorakhpur">
+                                    <option value="Bikaner">
+                                    <option value="Amravati">
+                                    <option value="Noida">
+                                    <option value="Jamshedpur">
+                                    <option value="Bhilai">
+                                    <option value="Cuttack">
+                                    <option value="Firozabad">
+                                    <option value="Kochi">
+                                    <option value="Nellore">
+                                    <option value="Bhavnagar">
+                                    <option value="Dehradun">
+                                    <option value="Durgapur">
+                                    <option value="Asansol">
+                                    <option value="Rourkela">
+                                    <option value="Nanded">
+                                    <option value="Kolhapur">
+                                    <option value="Ajmer">
+                                    <option value="Akola">
+                                    <option value="Gulbarga">
+                                    <option value="Jamnagar">
+                                    <option value="Ujjain">
+                                    <option value="Loni">
+                                    <option value="Siliguri">
+                                    <option value="Jhansi">
+                                    <option value="Ulhasnagar">
+                                    <option value="Jammu">
+                                    <option value="Sangli-Miraj & Kupwad">
+                                    <option value="Mangalore">
+                                    <option value="Erode">
+                                    <option value="Belgaum">
+                                    <option value="Kurnool">
+                                    <option value="Ambattur">
+                                    <option value="Rajahmundry">
+                                    <option value="Tirunelveli">
+                                    <option value="Malegaon">
+                                    <option value="Gaya">
+                                    <option value="Udaipur">
+                                    <option value="Karur">
+                                    <option value="Kakinada">
+                                    <option value="Davanagere">
+                                    <option value="Kozhikode">
+                                    <option value="Maheshtala">
+                                    <option value="Rajpur Sonarpur">
+                                    <option value="Bokaro">
+                                    <option value="South Dumdum">
+                                    <option value="Bellary">
+                                    <option value="Patiala">
+                                    <option value="Gopalpur">
+                                    <option value="Agartala">
+                                    <option value="Bhagalpur">
+                                    <option value="Muzaffarnagar">
+                                    <option value="Bhatpara">
+                                    <option value="Panihati">
+                                    <option value="Latur">
+                                    <option value="Dhule">
+                                    <option value="Rohtak">
+                                    <option value="Sagar">
+                                    <option value="Korba">
+                                    <option value="Bhilwara">
+                                    <option value="Berhampur">
+                                    <option value="Muzaffarpur">
+                                    <option value="Ahmednagar">
+                                    <option value="Mathura">
+                                    <option value="Kollam">
+                                    <option value="Avadi">
+                                    <option value="Kadapa">
+                                    <option value="Anantapuram">
+                                    <option value="Kamarhati">
+                                    <option value="Bilaspur">
+                                    <option value="Sambalpur">
+                                    <option value="Shahjahanpur">
+                                    <option value="Satara">
+                                    <option value="Bijapur">
+                                    <option value="Rampur">
+                                    <option value="Shimoga">
+                                    <option value="Chandrapur">
+                                    <option value="Junagadh">
+                                    <option value="Thrissur">
+                                    <option value="Alwar">
+                                    <option value="Bardhaman">
+                                    <option value="Kulti">
+                                    <option value="Nizamabad">
+                                    <option value="Parbhani">
+                                    <option value="Tumkur">
+                                    <option value="Khammam">
+                                    <option value="Uzhavarkarai">
+                                    <option value="Bihar Sharif">
+                                    <option value="Panipat">
+                                    <option value="Darbhanga">
+                                    <option value="Bally">
+                                    <option value="Aizawl">
+                                    <option value="Dewas">
+                                    <option value="Ichalkaranji">
+                                    <option value="Karnal">
+                                    <option value="Bathinda">
+                                    <option value="Jalna">
+                                    <option value="Eluru">
+                                    <option value="Barasat">
+                                    <option value="Kirari Suleman Nagar">
+                                    <option value="Purnia">
+                                    <option value="Satna">
+                                    <option value="Mau">
+                                    <option value="Sonipat">
+                                    <option value="Farrukhabad">
+                                    <option value="Durg">
+                                    <option value="Imphal">
+                                    <option value="Ratlam">
+                                    <option value="Hapur">
+                                    <option value="Arrah">
+                                    <option value="Anantapur">
+                                    <option value="Karimnagar">
+                                    <option value="Etawah">
+                                    <option value="Ambarnath">
+                                    <option value="North Dumdum">
+                                    <option value="Bharatpur">
+                                    <option value="Begusarai">
+                                    <option value="New Delhi">
+                                    <option value="Gandhidham">
+                                    <option value="Baranagar">
+                                    <option value="Tiruvottiyur">
+                                    <option value="Pondicherry">
+                                    <option value="Sikar">
+                                    <option value="Thoothukudi">
+                                    <option value="Rewa">
+                                    <option value="Mirzapur">
+                                    <option value="Raichur">
+                                    <option value="Pali">
+                                    <option value="Ramagundam">
+                                    <option value="Silchar">
+                                    <option value="Haridwar">
+                                    <option value="Vijayanagaram">
+                                    <option value="Tenali">
+                                    <option value="Nagercoil">
+                                    <option value="Sri Ganganagar">
+                                    <option value="Karawal Nagar">
+                                    <option value="Mango">
+                                    <option value="Thanjavur">
+                                    <option value="Bulandshahr">
+                                    <option value="Uluberia">
+                                    <option value="Katni">
+                                    <option value="Sambhal">
+                                    <option value="Singrauli">
+                                    <option value="Nadiad">
+                                    <option value="Secunderabad">
+                                    <option value="Naihati">
+                                    <option value="Yamunanagar">
+                                    <option value="Bidhannagar">
+                                    <option value="Pallavaram">
+                                    <option value="Bidar">
+                                    <option value="Munger">
+                                    <option value="Panchkula">
+                                    <option value="Burhanpur">
+                                    <option value="Kharagpur">
+                                    <option value="Dindigul">
+                                    <option value="Gandhinagar">
+                                    <option value="Hospet">
+                                    <option value="Nangloi Jat">
+                                    <option value="Malda">
+                                    <option value="Ongole">
+                                    <option value="Deoghar">
+                                    <option value="Chhapra">
+                                    <option value="Puri">
+                                    <option value="Haldia">
+                                    <option value="Khandwa">
+                                    <option value="Nandyal">
+                                    <option value="Morena">
+                                    <option value="Amroha">
+                                    <option value="Anand">
+                                    <option value="Bhind">
+                                    <option value="Bhalswa Jahangir Pur">
+                                    <option value="Madhyamgram">
+                                    <option value="Bhiwani">
+                                    <option value="Berhampore">
+                                    <option value="Ambala">
+                                    <option value="Morbi">
+                                    <option value="Fatehpur">
+                                    <option value="Raebareli">
+                                    <option value="Khora, Ghaziabad">
+                                    <option value="Chittoor">
+                                    <option value="Bhusawal">
+                                    <option value="Orai">
+                                    <option value="Bahraich">
+                                    <option value="Phusro">
+                                    <option value="Vellore">
+                                    <option value="Mehsana">
+                                    <option value="Raiganj">
+                                    <option value="Sirsa">
+                                    <option value="Danapur">
+                                    <option value="Serampore">
+                                    <option value="Sultan Pur Majra">
+                                    <option value="Guna">
+                                    <option value="Jaunpur">
+                                    <option value="Panvel">
+                                    <option value="Shivpuri">
+                                    <option value="Surendranagar Dudhrej">
+                                    <option value="Unnao">
+                                    <option value="Chinsurah">
+                                    <option value="Alappuzha">
+                                    <option value="Kottayam">
+                                    <option value="Machilipatnam">
+                                    <option value="Shimla">
+                                    <option value="Midnapore">
+                                    <option value="Adoni">
+                                    <option value="Udupi">
+                                    <option value="Katihar">
+                                    <option value="Proddatur">
+                                    <option value="Budaun">
+                                    <option value="Mahbubnagar">
+                                    <option value="Saharsa">
+                                    <option value="Dibrugarh">
+                                    <option value="Jorhat">
+                                    <option value="Hazaribagh">
+                                    <option value="Hindupur">
+                                    <option value="Raigarh">
+                                    <option value="Nagaon">
+                                    <option value="Hajipur">
+                                    <option value="Sasaram">
+                                    <option value="Giridih">
+                                    <option value="Bhimavaram">
+                                    <option value="Port Blair">
+                                    <option value="Kumbakonam">
+                                    <option value="Bongaigaon">
+                                    <option value="Dehri">
+                                    <option value="Madanapalle">
+                                    <option value="Siwan">
+                                    <option value="Bettiah">
+                                    <option value="Ramgarh">
+                                    <option value="Tinsukia">
+                                    <option value="Guntakal">
+                                    <option value="Srikakulam">
+                                    <option value="Motihari">
+                                    <option value="Dharmavaram">
+                                    <option value="Medininagar">
+                                    <option value="Gudivada">
+                                    <option value="Phagwara">
+                                    <option value="Pudukkottai">
+                                    <option value="Hosur">
+                                    <option value="Narasaraopet">
+                                    <option value="Suryapet">
+                                    <option value="Miryalaguda">
+                                    <option value="Anantnag">
+                                    <option value="Tadipatri">
+                                    <option value="Karaikudi">
+                                    <option value="Kishanganj">
+                                    <option value="Gangavathi">
+                                    <option value="Jamalpur">
+                                    <option value="Ballia">
+                                    <option value="Kavali">
+                                    <option value="Tadepalligudem">
+                                    <option value="Amaravati">
+                                    <option value="Buxar">
+                                    <option value="Tezpur">
+                                    <option value="Jehanabad">
+                                    <option value="Aurangabad">
+                                    <option value="Gangtok">
+                                    <option value="Vasco Da Gam">
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- PinCode input -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="pincode" placeholder="Pin Code"
+                                    name="pincode" required>
+                                <label for="pincode">Pin Code</label>
+                            </div>
+                        </div>
+
+                        <!-- Address input -->
+                        <div class="col">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="houseno" name="houseno"
+                                    placeholder="House no, Building Name" required>
+                                <label for="houseno">House no, Building Name</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- <div class="form-floating mb-4">
+                            <textarea class="form-control" placeholder="Road Name, Area, Colony" id="rac"
+                                style="height: 100px" required></textarea>
+                            <label for="rac">Road Name, Area, Colony</label>
+                        </div> -->
+
+
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" id="rdc" placeholder="Road Name, Area, Colony"
+                            name="area" required>
+                        <label for="rdc">Road Name, Area, Colony</label>
+                    </div>
+
+                    <!-- <div class="float-right w-25 mb-4">
+                        <select class="form-select" required aria-label="select example" required>
+                            <option value="">Type of Address</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div> -->
+
+
+                    <button type="submit" class="w-100 btn btn-primary btn-lg btn-block">Add Address</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+</script>
+{% endblock body %}

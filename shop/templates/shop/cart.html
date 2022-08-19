@@ -23,11 +23,9 @@
               selected</h6>
           </div>
           <div class="card-body">
- {% if cartitems.count is not 0 %}
+            {% if cartitems.count is not 0 %}
             {% for item in cartitems %}
-
-               
-<!-- Single item -->
+            <!-- Single item -->
             <div class="row">
               <label for="{{item.id}}"
                 class="col-lg-1 col-md-1 p-0 py-2 d-flex justify-content-center align-items-center card-header border-0 rounded"
@@ -67,29 +65,23 @@
                 </button>
                 <!-- Data -->
                 <div class="d-flex mb-4" style="max-width: 150px">
-                  <button class="btn btn-primary px-2 me-2"
-                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                  <button class="btn btn-primary px-2 me-2" onclick="stepdown(this)">
                     <i class="fas fa-minus"></i>
                   </button>
 
                   <div class="form-outline col-xs-2">
 
                     <input min="1" name="quantity" value="{{item.quantity}}" type="number"
-                      class="form-control quantity-input " />
+                      class="form-control quantity-input " readonly />
                   </div>
-
-                  <button class="btn btn-primary px-2 ms-2"
-                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                  <!-- Quantity -->
+                  <button class="btn btn-primary px-2 ms-2" onclick="stepup(this)">
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
               </div>
 
               <div class="col-lg-3 col-md-8">
-                <!-- Quantity -->
-
-                <!-- Quantity -->
-
                 <!-- Price -->
                 <p class="text-start text-md-center">
                   <strong class="mt-2"><span>Price :
@@ -99,14 +91,16 @@
               </div>
             </div>
             <!-- Single item -->
+            {% if not forloop.last %}
             <hr class="my-4" />
+            {% endif %}
+
             {% endfor %}
             {% else %}
-            <a href="/"  class="btn btn-primary btn-lg btn-block">
+            <a href="/" class="btn btn-primary btn-lg btn-block">
               Add items to Cart
             </a>
-          {% endif %}
-
+            {% endif %}
 
           </div>
         </div>
@@ -131,8 +125,9 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card mb-4">
+
+      <div class="col-md-4" >
+        <div class="card mb-4" style="position:sticky;top:20px;">
           <div class="card-header py-3">
             <h5 class="mb-0">Summary</h5>
           </div>
@@ -157,9 +152,12 @@
               </li>
             </ul>
 
-            <button type="button" class="btn btn-primary btn-lg btn-block">
+            <form action="/payment" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary btn-lg btn-block">
               Go to checkout
             </button>
+            </form>
           </div>
         </div>
       </div>
@@ -168,6 +166,7 @@
 </section>
 
 <script>
+
   let checkboxes = document.getElementsByClassName("checkbox")
   Array.from(checkboxes).forEach(e => {
     e.addEventListener('change', i => {
@@ -181,6 +180,7 @@
       }
     })
   })
+
   function reflectChange() {
     let total_price = 0;
     let checkedCheckbox = document.querySelectorAll('.checkbox:checked');
@@ -193,14 +193,26 @@
 
     Array.from(checkedCheckbox).forEach(e => {
       let num = e.parentElement.parentElement.children[3].children[0].children[0].children[1].innerHTML
+      let quantity = e.parentElement.parentElement.children[2].children[5].children[1].children[0].value
       num = num.replace(",", '')
-      total_price += parseInt(num);
+      num = parseInt(num)
+      num = num * quantity
+      total_price += num;
     })
     let dollarIndianLocale = Intl.NumberFormat('en-IN');
     document.getElementById("totalcartprice").innerHTML = dollarIndianLocale.format(total_price);
   }
 
   reflectChange();
+
+  function stepup(a) {
+    a.parentNode.querySelector('.quantity-input').stepUp()
+    reflectChange()
+  }
+  function stepdown(a) {
+    a.parentNode.querySelector('.quantity-input').stepDown()
+    reflectChange()
+  }
 
 </script>
 {% endblock body %}

@@ -45,51 +45,58 @@
 
 
 
-
 <div class="container my-3">
   <!-- row-cols-1 row-cols-sm-3 row-cols-md-4 g-4 -->
   <div class="row">
     {% for i in product %}
     <div class="col col-sm-12 col-md-6 col-lg-6 col-xl-3 my-3 ">
-      <div class="card shadow-sm" style="min-height:500px;">
-
-        <a href="/product/{{i.product_id}}" style="display:grid;place-items: center;"><img class="" style="height:200px;object-fit: contain;" src='/media/{{i.image}}' /></a>
+      <div class="card shadow-sm" style="min-height:460px;">
+        <div class="">
+          <a href="/product/{{i.product_id}}" style="display:grid;place-items: center;">
+          <img class="" style="height:200px;object-fit: contain;" src='/media/{{i.image}}' />
+        </a>
+        </div>
         <div class="card-body" style="display:flex;justify-content:stretch;flex-flow: column;">
           <p class="card-text">
-            <div style="vertical-align: inherit;">
-              <a href="/product/{{i.product_id}}" target="_blank" style="display:inline-block;min-height:50px;text-decoration: none;">{{i.product_name|truncatechars:55}}</a>
-                          <br>
-              <span class="text-bg-success"
+            <div>
+              <a href="/product/{{i.product_id}}" target="_blank" style="display:inline-block;min-height:100px;text-decoration: none;text-align:center;">{{i.product_name|truncatechars:100}}</a>
+              <div class="text-center">
+                <span class="text-bg-success"
                 style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
                   style="position:relative;top: -1px;left:4px;font-size:9px;" class="bi bi-star-fill"></small></span>
               <span>(53,265)</span>
-              <h6 class="blockquote mt-3">₹{{i.product_price|intcomma}} &nbsp;<strike
+              </div>
+              <h6 class="blockquote mt-3 text-center">₹{{i.product_price|intcomma}} &nbsp;<strike
                   class="text-muted "><small>₹{{i.product_initial_price|intcomma}}</small></strike></h6>
-              <p >{{i.product_desc|truncatechars:60}}</p>
             </div>
           </p>
           <div class="d-flex justify-content-center align-items-center">
             <div class="btn-group w-100">
+            {% comment %} {% if user.is_authenticated %}
               <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-sm btn-outline-danger w-100"
                   style="border-right: none;border-radius:5px 0px 0px 5px;">
+                  
                   <font style="vertical-align: inherit;">
                     <font style="vertical-align: inherit;" class="cart">Add to Cart</font>
                   </font>
                 </button>
               </form>
-              <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
+
+            {% endif %} {% endcomment %}
+              {% comment %} <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-sm btn-outline-success w-100"
-                  style="border-radius:0px 5px 5px 0px;">
+                /*<button type="submit" class="btn btn-sm btn-outline-success w-100"
+                  style="border-radius:0px 5px 5px 0px;">*/
+                     <button type="submit" class="btn btn-sm btn-outline-success w-100"
+                  style="border-radius:5px;">
                   <font style="vertical-align: inherit;">
                     <font style="vertical-align: inherit;">Buy Now</font>
                   </font>
                 </button>
-              </form>
+              </form> {% endcomment %}
             </div>
-
           </div>
         </div>
       </div>

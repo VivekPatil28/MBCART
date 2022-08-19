@@ -89,6 +89,8 @@
           </p>
           <div class="d-flex justify-content-center align-items-center">
             <div class="btn-group w-100">
+              {% comment %} {% if user.is_authenticated %}
+              
               <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
                 {% csrf_token %}
               <button type="submit" class="btn btn-sm btn-outline-danger w-100" style="border-right: none;border-radius:5px 0px 0px 5px;">
@@ -97,16 +99,21 @@
                 </font>
               </button>
               </form>
+              {% else %}
+              <button type="button" class="btn btn-sm btn-outline-danger w-100" style="border-right: none;border-radius:5px 0px 0px 5px;">
+                        Login for Add to Cart
+              </button>
+              {% endif %} {% endcomment %}
+
                <form action="/AddToCart/{{i.product_id}}" method="post" class="w-100">
                 {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-outline-success w-100" style="border-radius:0px 5px 5px 0px;">
+              <button type="submit" class="btn btn-sm btn-outline-success w-100" style="border-radius:5px;">
                 <font style="vertical-align: inherit;">
                   <font style="vertical-align: inherit;">Buy Now</font>
                 </font>
               </button>
             </form>
             </div>
-
           </div>
         </div>
       </div>

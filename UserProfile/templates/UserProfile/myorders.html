@@ -1,0 +1,251 @@
+{% extends 'UserProfile/base.html' %}
+{% block myordersactive %}active{% endblock myordersactive %}
+{% block body %}
+
+{% comment %} <style>
+    .gradient-custom-2 {
+        /* fallback for old browsers */
+        background: #a1c4fd;
+
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1));
+
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, rgba(161, 196, 253, 1), rgba(194, 233, 251, 1))
+    }
+
+    #progressbar-1 {
+        color: #455A64;
+    }
+
+    a {
+        text-decoration: none;
+
+    }
+
+    #progressbar-1 li {
+        list-style-type: none;
+        font-size: 13px;
+        width: 33.33%;
+        float: left;
+        position: relative;
+    }
+
+    #progressbar-1 #step1:before {
+        content: "1";
+        color: #fff;
+        width: 29px;
+        margin-left: 50px;
+        padding-left: 11px;
+    }
+
+    #progressbar-1 #step2:before {
+        content: "2";
+        color: #fff;
+        width: 29px;
+    }
+
+    #progressbar-1 #step3:before {
+        content: "3";
+        color: #fff;
+        width: 29px;
+        margin-right: 50px;
+        text-align: center;
+    }
+
+    #progressbar-1 li:before {
+        line-height: 29px;
+        display: block;
+        font-size: 12px;
+        background: #455A64;
+        border-radius: 50%;
+        margin: auto;
+    }
+
+    #progressbar-1 li:after {
+        content: '';
+        width: 121%;
+        height: 2px;
+        background: #455A64;
+        position: absolute;
+        left: 0%;
+        right: 0%;
+        top: 15px;
+        z-index: -1;
+    }
+
+    #progressbar-1 li:nth-child(2):after {
+        left: 50%
+    }
+
+    #progressbar-1 li:nth-child(1):after {
+        left: 25%;
+        width: 121%
+    }
+
+    #progressbar-1 li:nth-child(3):after {
+        left: 25%;
+        width: 50%;
+    }
+
+    #progressbar-1 li.active:before,
+    #progressbar-1 li.active:after {
+        background: #1266f1;
+    }
+
+    .card-stepper {
+        z-index: 0
+    }
+</style>
+
+<section class="gradient-custom-2">
+    {% for order in orders %}
+    <div class="container py-5 vh-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-12 col-lg-10 col-xl-9">
+                <div class="card card-stepper" style="border-radius: 16px;">
+                    <div class="card-header p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-2"> Order ID <span class="fw-bold text-body">1222528743</span>
+                                </p>
+                                <p class="text-muted mb-0"> Place On <span class="fw-bold text-body">12,March
+                                        2019</span> </p>
+                            </div>
+                            <div>
+                                <h6 class="mb-0"> <a href="#">View Details</a> </h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-row mb-4 pb-2">
+                            <div class="flex-fill mt-4 ms-3">
+                                <h5 class="bold">{{order.product.product_name|truncatechars:'50'}}</h5>
+                                <p class="text-muted"> Qt: {{order.quantity}} item</p>
+                                <h4 class="mb-3"> $ 299 <span class="small text-muted"> via (COD) </span></h4>
+                                <p class="text-muted">Tracking Status on: <span class="text-body">11:30pm, Today</span>
+                                </p>
+                            </div>
+                            <div>
+                                <img class="align-self-center img-fluid" src="/media/{{order.product.image}}"
+                                    width="250">
+                            </div>
+                        </div>
+                        <ul id="progressbar-1" class="mx-0 mt-0 mb-5 px-0 pt-0 pb-4">
+
+                            <li class="step0 active" id="step1"><span
+                                    style="margin-left:40px; margin-top: 12px;">PLACED</span></li>
+                            <li class="step0 active text-center" id="step2"><span>SHIPPED</span></li>
+                            <li class="step0 text-muted text-end" id="step3"><span
+                                    style="margin-right:35px;">DELIVERED</span></li>
+                        </ul>
+                    </div>
+                    <div class="card-footer p-4">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="fw-normal mb-0"><a href="#!">Track</a></h5>
+                            <div class="border-start h-100"></div>
+                            <h5 class="fw-normal mb-0"><a href="#!">Cancel</a></h5>
+                            <div class="border-start h-100"></div>
+                            <h5 class="fw-normal mb-0"><a href="#!">Pre-pay</a></h5>
+                            <div class="border-start h-100"></div>
+                            <h5 class="fw-normal mb-0"><a href="#!" class="text-muted">
+                                    <i class="fas fa-ellipsis-v"></i></a>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section> {% endcomment %}
+
+<style>
+    .track-line {
+        height: 2px !important;
+        border-top: 0px;
+        background-color: #488978;
+        opacity: 1;
+    }
+
+    .dot {
+        height: 10px;
+        width: 10px;
+        margin-left: 3px;
+        margin-right: 3px;
+        margin-top: 0px;
+        background-color: #488978;
+        border-radius: 50%;
+        display: inline-block
+    }
+
+    .big-dot {
+        height: 25px;
+        width: 25px;
+        margin-left: 0px;
+        margin-right: 0px;
+        margin-top: 0px;
+        background-color: #488978;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .big-dot i {
+        font-size: 12px;
+    }
+
+    .card-stepper {
+        z-index: 0
+    }
+</style>
+
+<section class="vh-100" style="background-color: #eee;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+                <div class="card card-stepper" style="border-radius: 10px;">
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex flex-column">
+                                <span class="lead fw-normal">Your order has been delivered</span>
+                                <span class="text-muted small">by DHFL on 21 Jan, 2020</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-outline-primary" type="button">Track order details</button>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+
+                        <div class="d-flex flex-row justify-content-between align-items-center align-content-center">
+                            <span class="dot"></span>
+                            <hr class="flex-fill track-line"><span class="dot"></span>
+                            <hr class="flex-fill track-line"><span class="dot"></span>
+                            <hr class="flex-fill track-line"><span class="dot"></span>
+                            <hr class="flex-fill track-line"><span
+                                class="d-flex justify-content-center align-items-center big-dot dot">
+                                <i class="fa fa-check text-white"></i></span>
+                        </div>
+
+                        <div class="d-flex flex-row justify-content-between align-items-center">
+                            <div class="d-flex flex-column align-items-start"><span>15 Mar</span><span>Order
+                                    placed</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center"><span>15 Mar</span><span>Order
+                                    placed</span></div>
+                            <div class="d-flex flex-column justify-content-center align-items-center"><span>15
+                                    Mar</span><span>Order Dispatched</span></div>
+                            <div class="d-flex flex-column align-items-center"><span>15 Mar</span><span>Out for
+                                    delivery</span></div>
+                            <div class="d-flex flex-column align-items-end"><span>15 Mar</span><span>Delivered</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock body %}

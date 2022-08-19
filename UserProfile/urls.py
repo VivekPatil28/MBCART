@@ -14,19 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
-from django.urls import path,include
+from xml.etree.ElementInclude import include
+from django.urls import path
 from . import views
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 
-admin.site.site_header = 'MBCART'
-admin.site.index_title = 'Welcome User'
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('',include('shop.urls')),
-    path('blog/',include('blog.urls')),
-    path('profile/', include('UserProfile.urls')),
-]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+    path('', views.profile, name="ShopHome"),
+    path('myaddresses', views.address, name="addresses"),
+    path('myorders', views.myorders, name="orders"),
+    path('myreviews', views.myreviews, name="reviews"),
+    path('addAddress', views.addAddress, name="addAddress"),
+    # path('myaddresses', views.address, name="ok"),
+]
