@@ -4,4 +4,4 @@ from .models import *
 
 admin.site.register(Order)
 admin.site.register(Address)
-admin.site.register(User)
+# admin.site.register(User)

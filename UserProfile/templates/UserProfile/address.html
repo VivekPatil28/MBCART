@@ -1,26 +1,67 @@
-{% extends 'UserProfile/base.html' %}
-{% block myaddressesactive %}active{% endblock myaddressesactive %}
+{% extends 'UserProfile/base.html' %} {% block myaddressesactive %}active{%endblock myaddressesactive %} 
 {% block body %}
+<style>
+    .radio{
+        cursor: pointer;
+    }
+</style>
 <div class="container my-3">
     <div class="row">
         <div class="col-12 center">
-            <a href="addAddress" class="btn btn-primary btn-lg btn-block float-end">
-                + Add a new address
+            <a href="addAddress" class="btn btn-primary btn-md btn-block float-end">
+                <i class="bi bi-plus"> </i> Add a new address
             </a>
         </div>
-
     </div>
+
+    {% if address.count %}
+
 
     {% for address in address %}
     <div>
-        <div class="mt-4 ms-2">
-            <div class="form-check form-switch">
-                <input class="form-check-input checkboxes" type="radio" id="SwitchCheck" name="check">
-                <p class="text-muted mb-1">Primary Address</p>
+        <div class="mt-4 ms-2 row align-items-center">
+            <div class="form-check form-switch col">
+                <form action="{%url 'defaultAddressChanged'%}" class='default_address_form' method="post">
+                    {% csrf_token %}
+                    <input class="form-check-input radio" type="radio" id="SwitchCheck" value="{{address.id}}" name="check" {% if address.default_address %} checked {% endif %} />
+                    <p class="text-muted mb-1 d-none d-sm-inline">Primary Address</p>
+                </form>
+            </div>
+            <div class="col">
+
+                <!--Confirm Address Delete Modal -->
+                <div class="modal fade" id="deleteAddressModal" role="dialog" tabindex="-1"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                    Delete Address
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body container">
+                                Are You Sure to Delete this Address
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <a href="deleteAddress/{{address.id}}" type="button" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-danger btn-sm btn-block float-end m-2" data-bs-toggle="modal"
+                    data-bs-target="#deleteAddressModal">
+                    <i class="bi bi-trash"></i>
+                    <p class="m-0 d-none d-md-inline">Remove this Address</p>
+                </button>
             </div>
         </div>
         <div class="col-lg-12 p-4 card">
-
             <div class="row">
                 <div class="col-sm-3">
                     <p class="mb-0">Full Name</p>
@@ -30,7 +71,7 @@
                 </div>
 
                 <div class="col-md-1">
-                    <hr class="d-md-none">
+                    <hr class="d-md-none" />
                 </div>
 
                 <div class="col-sm-3 col-md-2">
@@ -38,61 +79,51 @@
                 </div>
                 <div class="col-sm-3">
                     <p class="text-muted mb-0">
-
-                        {% if address.home_work_address %}
-                        Home Address
-                        {% else %}
-                        Work Address
-                        {% endif %}
+                        {% if address.home_work_address %} Home Address {% else %} Work
+                        Address {% endif %}
                     </p>
                 </div>
-
             </div>
 
-
-            <hr>
+            <hr />
             <div class="row">
                 <div class="col-sm-3">
                     <p class="mb-0">Mobile No</p>
                 </div>
                 <div class="col-sm-3">
-                    <p class="text-muted mb-0">{% if address.phone_number %}
-                        {{address.phone_number}}
-                        {% else %}
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-dash"></i>
-                        {% endif %}</p>
+                    <p class="text-muted mb-0">
+                        {% if address.phone_number %} {{address.phone_number}} {% else %}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-dash"></i> {% endif %}
+                    </p>
                 </div>
 
                 <div class="col-md-1">
-                    <hr class="d-md-none">
+                    <hr class="d-md-none" />
                 </div>
 
                 <div class="col-sm-3 col-md-2">
                     <p class="mb-0">Alternate Mobile No</p>
                 </div>
                 <div class="col-sm-3">
-                    <p class="text-muted mb-0">{% if address.alternate_phone_number %}
-                        {{address.alternate_phone_number}}
-                        {% else %}
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-dash"></i>
-                        {% endif %}</p>
+                    <p class="text-muted mb-0">
+                        {% if address.alternate_phone_number %}
+                        {{address.alternate_phone_number}} {% else %}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="bi bi-dash"></i> {% endif %}
+                    </p>
                 </div>
-
             </div>
-            <hr>
+            <hr />
 
             <div class="row">
                 <div class="col-sm-3">
                     <p class="mb-0">Pincode</p>
                 </div>
                 <div class="col-sm-9">
-                    <p class="text-muted mb-0">
-                        {{address.pincode}}
-                    </p>
+                    <p class="text-muted mb-0">{{address.pincode}}</p>
                 </div>
             </div>
 
-            <hr>
+            <hr />
             <div class="row">
                 <div class="col-sm-3">
                     <p class="mb-0">State</p>
@@ -102,7 +133,7 @@
                 </div>
 
                 <div class="col-md-1">
-                    <hr class="d-md-none">
+                    <hr class="d-md-none" />
                 </div>
 
                 <div class="col-sm-3 col-md-2">
@@ -111,17 +142,9 @@
                 <div class="col-sm-3">
                     <p class="text-muted mb-0">{{address.city}}</p>
                 </div>
-
             </div>
 
-
-
-
-
-
-
-
-            <hr>
+            <hr />
             <div class="row">
                 <div class="col-sm-3">
                     <p class="mb-0">House no, Building Name</p>
@@ -131,9 +154,7 @@
                 </div>
             </div>
 
-
-
-            <hr>
+            <hr />
             <div class="row">
                 <div class="col-sm-3">
                     <p class="mb-0">Road Name, Area, Colony</p>
@@ -142,44 +163,48 @@
                     <p class="text-muted mb-0">{{address.area}}</p>
                 </div>
             </div>
-
         </div>
     </div>
-
     {% endfor %}
 
+    {% else %}
+
+    <p class="bg-primary mt-5 fs-5 text-center p-2 text-white ">You haven't added any Addresses</p>
+
+    
+    
+    {% endif %}
 </div>
 
 <script>
 
-    // let checkboxes=document.querySelectorAll(".checkboxes")
 
-    //     Array.from(checkboxes).forEach(e =>{
-    //         e.addEventListener('change',()=>{
-    //             console.log(e.parentNode.parentNode.parentElement.children[1].style.backgroundColor="red");
-    //         })
-    //         e.style.backgroundColor = "white";
-    //     })
-
-
-   
-    // let Checkbox = document.querySelectorAll('.checkboxes');
-
-    // Array.from(Checkbox).forEach(e => {
-
-        
-    //     e.addEventListener('change', () => {
-    //          Array.from(Checkbox).forEach(e => {
-    //             e.parentNode.parentNode.parentElement.children[1].classList.remove('bg-secondary');
-    //         })
-    //          let checkedCheckbox = document.querySelectorAll('.checkboxes:checked');
-    //         checkedCheckbox[0].parentNode.parentNode.parentElement.children[1].classList.add('bg-secondary')
-           
-    //     })
-    // })
+    const default_address_form=document.querySelectorAll(".default_address_form")
+    Array.from(default_address_form).forEach(e => {
+        e.addEventListener("change", function (i) {
+           nowchecked=e.children[1];
+            i.preventDefault();
+            let formData = new FormData(e);
+            fetch("{%url 'defaultAddressChanged' %}", {
+                method: 'POST',
+                body: formData
+            }).then(Response => {
+            }).catch(resopnse => {
+                console.log("Error");
+            })
 
 
+            let checkedCheckbox = document.querySelectorAll('.radio:checked');
+            Array.from(checkedCheckbox).forEach(i => {
+                if (!i.isEqualNode(nowchecked)) {
+                    i.checked=false
+                }
 
+            })
+            
+        })
+
+    })
 </script>
 
 {% endblock body %}

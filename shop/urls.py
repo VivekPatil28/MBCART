@@ -37,8 +37,10 @@ urlpatterns = [
     path('liked', views.liked, name="liked"),
     path('disliked', views.disliked, name="disliked"),
     path('removecartitem', views.removecartitem, name="removecartitem"),
-    path('category/<str:string>', views.category, name="removecartitem"),
+    path('category/<str:string>', views.category, name="category_desc"),
+    path('subcategory/<str:string>', views.subcategory, name="sub_cat_desc"),
     path('getCartItems', views.getCartItems, name="getCartItems"),
     path('payment', views.payment, name="payment"),
+   
     # path('checkout', views.checkout, name="checkout"),
 ]

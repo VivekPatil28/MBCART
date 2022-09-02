@@ -2,12 +2,24 @@
 {% load humanize %}
 {%block title%}MBCART / Products{%endblock title%}
 {% block body %}
+
+
+<style>
+    .uparr{
+        position:fixed;
+        bottom:15px;
+        right:20px;
+    }
+</style>
+
+<a id="back-to-top" href="#" class="btn btn-info btn-lg back-to-top uparr visually-hidden" role="button"><i class="fas fa-chevron-up"></i></a>
+
 <!-- Product section-->
 <section>
     <style>
         #imgcont {
             position: sticky;
-            top: 80px;
+            top: 40px;
         }
 
         .infcont {
@@ -17,6 +29,10 @@
         .table td+td {
             width: 75%;
         }
+        #main_img{
+                height:500px;
+            }
+
 
         @media only screen and (max-width: 770px) {
             #imgcont {
@@ -32,29 +48,28 @@
                 margin-top: 0vh;
 
             }
+            #main_img{
+                height:250px;
+            }
 
         }
     </style>
-    <div class="container ">
-        <div class="row gx-4 gx-lg-5 align-items-start clss">
-            <div id="imgcont" class="col-md-5 mt-5 ">
-                <!-- {% comment %} {% for img in thumbnail %}
-
-        {% if i.product_id == img.product_id %}
-        <img class="" style="height:200px;object-fit: contain;" src='/media/{{img.image}}' />
-        {% endif %}
-        {% endfor %} {% endcomment %} -->
-                <img style="width:100%;" id="main_img" class="card-img-top mb-5 mb-md-0" src='/media/{{product.image}}'
+    <div class="container-fluid ">
+        <div class="row align-items-start clss">
+            <div id="imgcont" class="mt-2 col-md-5 mt-md-5 d-flex justify-content-start align-items-center flex-column">
+    
+                    <img style="width:80%;object-fit: contain;" id="main_img" class="card-img-top mb-md-5" src='/media/{{product.image}}'
                     alt="image" />
-
-                <div class="d-flex py-3 mt-2 ">
-                    <img style="width:10%;box-shadow:0px 0px 2px 2px rgba(0, 128, 0, 0.358);border: 2px solid green;box-sizing:border-box;"
+                <div class="d-flex justify-content-center">
+                    <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;box-shadow:0px 0px 2px 2px rgba(0, 128, 0, 0.358);border: 2px solid green;box-sizing:border-box;"
                         class="card-img-top mx-2 product_images" src='/media/{{product.image}}' alt="image" />
                     {% for img in productimgs %}
-                    <img style="width:10%;box-sizing:border-box;" class="card-img-top  mx-2 product_images"
+                    <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;border: 1px solid grey;" class="card-img-top  mx-2 product_images" 
                         src='/media/{{img.image}}' alt="image" />
                     {% endfor %}
                 </div>
+            
+
             </div>
 
             <div class="col-md-7 infcont">
@@ -137,17 +152,7 @@
                         <h6>1 Year Warranty</h6>
                     </div>
                 </div>
-                <div class="container desc mt-5">
-                    <h6 style="font-weight: bold;">About this item</h6>
-                    <ul class="lead fs-6">
-                        <style>
-                            .desc li {
-                                font-weight: 500;
-                            }
-                        </style>
-                        {{aboutthisitem|unordered_list}}
-                    </ul>
-                </div>
+                
                 <div class="d-flex justify-content-center align-items-center my-5">
                     <div class="btn-group w-100">
                         {% if user.is_authenticated %}      
@@ -186,9 +191,26 @@
 
                 </div>
                 <!--  -->
+
+
+
+                <div class="container desc mt-5">
+                    <h5 style="font-weight: bold;">About this item</h5>
+                    <ul class="lead fs-6">
+                        <style>
+                            .desc li {
+                                font-weight: 500;
+                            }
+                        </style>
+                        {{aboutthisitem|unordered_list}}
+                    </ul>
+                </div>
+                
+
+                <div class="container desc mt-5">
                 <table class="table table-striped ">
                     <thead>
-                        <h2>Specifications</h2>
+                        <h5 style="font-weight: bold;">Specifications</h5>
                     </thead>
                     <tbody>
                         <tr>
@@ -235,6 +257,7 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
 
             </div>
         </div>
@@ -245,10 +268,33 @@
     </div>
 </section>
 
+<!-- What is in the Box -->
+<div class="container-fluid ">
+    <hr class="my-4" />
+    <div class="px-5">
+        <h5 style="font-weight: bold;">What is in the Box?</h5>
+        <style>
+            .whatinthebox li {
+                font-weight: 500;
+            }
+        </style>
+        <ul class="whatinthebox lead fs-6">
+            {{what_is_in_the_box|unordered_list}}
+        </ul>
+    </div>
+
+    <hr class="my-4" />
+</div>
+
+
+
 <!-- Description Images -->
-<div class="w-100 container-fluid mt-5 p-0">
+<h4 class="mt-2 ms-4">From the manufacturer</h4>
+<div class="w-100 container mt-3 p-0">
     {% for img in product_desc %}
-    <img src="/media/{{img.image}}" class="img-fluid w-100" alt="DescImages" loading="lazy">
+    <div class="">
+        <img src="/media/{{img.image}}" class="img-fluid w-100" alt="DescImages" loading="lazy">
+    </div>
     {% endfor %}
 </div>
 
@@ -319,7 +365,6 @@
                                                 {{review.dislikes}}
                                             </button>
                                         </form>
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -333,6 +378,7 @@
 </section>
 
 {% comment %} {% endcomment %}
+{% if not user_review %}
 {% if user.is_authenticated %}
 <div class="container  mt-5 mb-5 bg-light  ">
     <form action="/submitReview" method="post" enctype="multipart/form-data">
@@ -346,10 +392,9 @@
                         <input type="hidden" name="rating" id="review_rating" value="">
 
                         <div class="mb-3">
-                            <input type="file" name="imgs[]" multiple class="form-control " aria-label="Choose File">
+                            <input type="file" name="imgs[]" multiple class="form-control" aria-label="Choose Product Images">
                         </div>
                         <div class="mb-3">
-
 
                             <div class="col-auto">
                                 <div class="d-flex justify-content-start align-items-center">
@@ -389,13 +434,15 @@
     </form>
 </div>
 {% else %}
+
+
 <div class="fluid-container d-flex justify-content-center p-5">
     <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#signinModal">
         Login To Write a Review
     </button>
 </div>
 {% endif %}
-
+{% endif %}
 <!-- Related items section-->
 
 <section class="py-5 bg-light">
@@ -403,13 +450,13 @@
         <h2 class="fw-bolder mb-4">Recommended</h2>
         <div class="row gx-1 gx-lg-1 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
             {% for i in sc %}
-            <div class="col mb-5" style="min-width:250px;">
+            <div class="col mb-5 mx-2" style="min-width:250px;">
                 <div class="card h-100">
                     <!-- Sale badge-->
                     <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
                     </div>
                     <!-- Product image-->
-                    <a href="/product/{{i.product_id}}"><img class="card-img-top" style="height:150px;object-fit:contain;" src='/media/{{i.image}}' alt="image" /></a>
+                    <a href="/product/{{i.product_id}}"><img class="card-img-top" style="padding:20px;height:150px;object-fit:contain;" src='/media/{{i.image}}' alt="image" /></a>
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
@@ -440,6 +487,8 @@
         </div>
     </div>
 </section>
+
+
 <script>
     let product_images = document.getElementsByClassName("product_images")
     let main_img = document.getElementById("main_img")
@@ -447,7 +496,7 @@
         e.addEventListener('mouseover', function () {
             let src = e.getAttribute('src')
             Array.from(product_images).forEach(e => {
-                e.style.border = "None"
+                e.style.border = "1px solid grey"
                 e.style.boxShadow = "None";
             });
             e.style.border = "2px solid green"
@@ -496,7 +545,6 @@
             i.preventDefault();
             e.children[2].childNodes[2].data++;
             let formData = new FormData(e);
-
             fetch("{%url 'liked' %}", {
                 method: 'POST',
                 body: formData
@@ -514,7 +562,6 @@
             i.preventDefault();
             e.children[2].childNodes[2].data++;
             let formData = new FormData(e);
-
             fetch("{%url 'disliked' %}", {
                 method: 'POST',
                 body: formData
@@ -560,4 +607,40 @@
         }
     })
 </script>
+
+<script>
+    setInterval(() => {
+        if (window.pageYOffset>2000) {
+            document.getElementById("back-to-top").classList.remove('visually-hidden')  
+        }
+        else{
+            document.getElementById("back-to-top").classList.add('visually-hidden')  
+        }
+        
+    },1000);
+</script>
+
+
+<script>
+    let pid=[];
+    pid.push(parseInt('{{product.product_id}}'))
+    let isavail=JSON.parse(localStorage.getItem('recentsearches_id'))
+
+    if (isavail==null) {
+            localStorage.setItem('recentsearches_id',JSON.stringify(pid))
+    }
+    else{
+        let arr= [JSON.parse(isavail)]
+        arr.push(parseInt('{{product.product_id}}'))
+
+        localStorage.setItem('recentsearches_id', JSON.stringify(arr))
+
+    }
+
+    // localStorage.removeItem('recentsearches_id')
+
+</script>
+
+
+
 {% endblock body %}

@@ -10,7 +10,6 @@ admin.site.register(SubCategory)
 admin.site.register(StaticImage)
 admin.site.register(Cart)
 
-
 admin.site.register(ProductImages)
 admin.site.register(ProductDescriptionImages)
 

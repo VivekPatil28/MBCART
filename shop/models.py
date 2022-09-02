@@ -1,11 +1,6 @@
-from distutils.archive_util import make_zipfile
-from distutils.command.upload import upload
-from email.mime import image
-from itertools import product
-from unicodedata import category
+from xml.etree.ElementInclude import default_loader
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
@@ -15,6 +10,7 @@ from django.contrib.auth.models import AbstractUser
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=250)
+    image = models.ImageField(upload_to='shop/Category_thumbnail', default='')
 
     def __str__(self):
         return self.name
@@ -34,6 +30,7 @@ class Product(models.Model):
     Category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     product_name = models.TextField()
     product_desc = models.TextField()
+    what_is_in_the_box = models.TextField()
     product_price = models.IntegerField()
     image = models.ImageField(upload_to='shop/thumbnail_image', default='')
     product_rating = models.FloatField()
@@ -57,7 +54,7 @@ class ProductImages(models.Model):
 # Product Description Images
 class ProductDescriptionImages(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='shop/DescImages', default="")
+    image = models.ImageField(upload_to='shop/DescImages', default="shop/placeholder.png")
 
     def __str__(self):
         return self.product.product_name
@@ -69,6 +66,7 @@ class Coursal(models.Model):
     coursal_id = models.AutoField(primary_key=True)
     coursal_image = models.ImageField(
         upload_to='shop/coursal_images', default="")
+    image_url=models.CharField(max_length=1000)
 
     def __str__(self):
         return "Coursal_Image "+str(self.coursal_id)

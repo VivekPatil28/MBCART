@@ -1,7 +1,8 @@
-from sre_constants import SUCCESS
-from unicodedata import category
+from itertools import product
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+
+from UserProfile.models import Address
 from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -18,6 +19,10 @@ def index(request):
     products = Product.objects.all()
     coursal = Coursal.objects.all()
     productimg = ProductImages.objects.all()
+    category=Category.objects.all()
+    cart=""
+    if request.user.is_authenticated:
+        cart=Cart.objects.filter(user=request.user)
 
     StaticImages = StaticImage.objects.all()
 
@@ -26,6 +31,8 @@ def index(request):
               'coursal': coursal,
               'thumbnail': productimg,
               'StaticImages': StaticImages,
+              'cart':cart,
+              'category':category,
               }
     return render(request, 'shop\index.html', params)
 
@@ -36,37 +43,52 @@ def search(request):
 
     query = request.GET.get('search', '')
     query = query.strip()
-    products = Product.objects.all()
     ids = set()
-    query = query.lower()
+    query = query.lower().replace(" ", "")
+    print(query)
 
     if (query == ""):
         return index(request)
+
+    category = Category.objects.all()
     subcat = SubCategory.objects.all()
     products = Product.objects.all()
+    for cat in category:
+        s = find_near_matches(query, cat.name.lower(), max_l_dist=0)
+        print(s)
+        if (s != []):
+            product = Product.objects.filter(Category_id=cat.id)
+            for i in product:
+                ids.add(i.product_id)
+                print("ids 1st " + str(ids))  # for view
+
     for sc in subcat:
-        s = find_near_matches(query, sc.name.lower(), max_l_dist=1)
+        s = find_near_matches(query, sc.name.lower(), max_l_dist=0)
         print(s)
         if (s != []):
             product = Product.objects.filter(Sub_Category_id=sc.id)
             for i in product:
                 ids.add(i.product_id)
-                print("ids " + str(ids))
+                print("ids 2nd " + str(ids))
 
-    #  for product in products:
-    #      subcat=SubCategory.objects.filter(id==product.Sub_Category_id)
-    #      s = find_near_matches(query, subcat.lower(), max_l_dist=1)
-    #      if (s != []):
-    #          ids.add(product.product_id)
+    if (len(ids) == 0):
+        for product in products:
+            split_names = product.product_name.split(" ")
+            split_names = split_names
+            for word in split_names:
+                s = find_near_matches(query, word.lower(), max_l_dist=1)
+                print(s)
+                if (s != []):
+                    ids.add(product.product_id)
 
-    # if (len(ids) == 0):
-    #     for product in products:
-    #         split_names = product.product_name.split(" ")
-    #         split_names = split_names
-    #         for word in split_names:
-    #             s = find_near_matches(query, word.lower(), max_l_dist=1)
-    #             if (s != []):
-    #                 ids.add(product.product_id)
+        for product in products:
+            split_names = product.product_desc.split(" ")
+            split_names = split_names
+            for word in split_names:
+                s = find_near_matches(query, word.lower(), max_l_dist=1)
+                print(s)
+                if (s != []):
+                    ids.add(product.product_id)
 
     params = {'query': query,
               'ids': ids,
@@ -109,9 +131,13 @@ def product_desc(request, id):
         Category_id=product.Category_id)).exclude(product_id=id)
 
     desc = product.product_desc
-    desc = desc.split("$")
+    desc = desc.split("\n")
+
+    what_is_in_the_box = product.what_is_in_the_box
+    what_is_in_the_box = what_is_in_the_box.split("\n")
 
     Reviews = Review.objects.filter(product=product)
+    user_review = Reviews.filter(user_id=request.user.id)
 
     is_added_to_cart = False
 
@@ -136,8 +162,8 @@ def product_desc(request, id):
 
     ReviewImages = ReviewImage.objects.filter(product_id=product)
 
-    params = {'product': product, 'sc': samecategory, 'sub_cat': sub_cat, 'is_added_to_cart': is_added_to_cart,
-              'Reviews': Reviews, 'ReviewImages': ReviewImages, 'productimgs': productimg, 'product_desc': product_desc_imgs, 'aboutthisitem': desc}
+    params = {'product': product, 'sc': samecategory, 'user_review': user_review, 'sub_cat': sub_cat, 'is_added_to_cart': is_added_to_cart,
+              'Reviews': Reviews, 'ReviewImages': ReviewImages, 'productimgs': productimg, 'product_desc': product_desc_imgs, 'aboutthisitem': desc, 'what_is_in_the_box': what_is_in_the_box}
 
     return render(request, 'shop/product_desc.html', params)
 
@@ -149,16 +175,7 @@ def AddToCart(request, id):
         cartitem, is_added = Cart.objects.get_or_create(
             user=request.user, product=product, totalprice=product.product_price)
         getCartItems(request)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-
-# if request.method == 'GET':
-#             data = Cart.objects.filter(user_id=request.user.id)
-#             cartitems = {'num': len(data)}
-#             return JsonResponse(cartitems, safe=False)
-
-
-# Signup
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def removecartitem(request):
@@ -170,8 +187,10 @@ def removecartitem(request):
 
 def cart(request):
     cartitems = Cart.objects.filter(user=request.user)
+    d_address= Address.objects.get(user=request.user, default_address=True)
     params = {
         'cartitems': cartitems,
+        'd_address':d_address,
     }
     return render(request, 'shop/cart.html', params)
 
@@ -226,8 +245,8 @@ def submitReview(request):
 
         product = Product.objects.filter(product_id=product_id)[0]
 
-        review = Review.objects.create(
-            product=product, name=username, heading=heading, rating=rating, body=body)
+        review = Review.objects.create(user=request.user,
+                                       product=product, name=username, heading=heading, rating=rating, body=body)
 
         review.save()
         for img in imgs:
@@ -264,10 +283,15 @@ def disliked(request):
 
 def category(request, string):
     cat = Category.objects.get(name=string)
-    product = Product.objects.filter(Category_id=cat.id)
-    print(product)
-    params = {'products': product}
+    products = Product.objects.filter(Category_id=cat.id)
+    params = {'products': products}
     return render(request, 'shop/category_desc.html', params)
+
+def subcategory(request,string):
+    scat=SubCategory.objects.get(name=string)
+    products = Product.objects.filter(Sub_Category=scat)
+    return render(request,'shop/category_desc.html',{'products':products})
+    
 
 
 def getCartItems(request):

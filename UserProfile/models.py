@@ -30,11 +30,7 @@ class Address(models.Model):
     area=models.CharField(max_length=500)
     home_work_address=models.BooleanField(default=True)
     # true means home and false means work
+    default_address=models.BooleanField(default=False)
     
     def __str__(self):
         return str(self.user)
-    
-class User(model.User):
-    mobile_no=models.CharField(max_length=50)
-    # primary_address=models.OneToOneField(Address,on_delete=models.DO_NOTHING)
-    
