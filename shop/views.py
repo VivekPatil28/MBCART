@@ -1,8 +1,11 @@
 from itertools import product
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from datetime import date
+import itertools as itr
 
 from UserProfile.models import Address
+from UserProfile.models import Order
 from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -19,21 +22,35 @@ def index(request):
     products = Product.objects.all()
     coursal = Coursal.objects.all()
     productimg = ProductImages.objects.all()
-    category=Category.objects.all()
-    cart=""
+    category = Category.objects.all()
+    latest_laptops = Product.objects.filter(Category_id=5).order_by('-product_publish_date').values()
+    latest_mobiles = Product.objects.filter(Category_id=1).order_by('-product_publish_date').values()
+    latest_headphones = Product.objects.filter(Category_id=2).order_by('-product_publish_date').values()
+    cart = ""
     if request.user.is_authenticated:
-        cart=Cart.objects.filter(user=request.user)
+        cart = Cart.objects.filter(user=request.user)
 
     StaticImages = StaticImage.objects.all()
-
-    print(StaticImages)
     params = {'product': products,
               'coursal': coursal,
               'thumbnail': productimg,
               'StaticImages': StaticImages,
-              'cart':cart,
-              'category':category,
+              'cart': cart,
+              'category': category,
+              'latest_laptops': latest_laptops,
+              'latest_mobiles': latest_mobiles,
+              'latest_headphones': latest_headphones,
               }
+    
+    if request.COOKIES.get('recentitems'):
+        recent_items = eval(request.COOKIES.get('recentitems'))
+        params['recent_items']=recent_items
+        
+    if request.COOKIES.get('recentsearch'):
+        recent_search = eval(request.COOKIES.get('recentsearch'))
+        params['recent_search']=recent_search
+        
+    
     return render(request, 'shop\index.html', params)
 
 
@@ -45,7 +62,6 @@ def search(request):
     query = query.strip()
     ids = set()
     query = query.lower().replace(" ", "")
-    print(query)
 
     if (query == ""):
         return index(request)
@@ -55,21 +71,17 @@ def search(request):
     products = Product.objects.all()
     for cat in category:
         s = find_near_matches(query, cat.name.lower(), max_l_dist=0)
-        print(s)
         if (s != []):
             product = Product.objects.filter(Category_id=cat.id)
             for i in product:
                 ids.add(i.product_id)
-                print("ids 1st " + str(ids))  # for view
 
     for sc in subcat:
         s = find_near_matches(query, sc.name.lower(), max_l_dist=0)
-        print(s)
         if (s != []):
             product = Product.objects.filter(Sub_Category_id=sc.id)
             for i in product:
                 ids.add(i.product_id)
-                print("ids 2nd " + str(ids))
 
     if (len(ids) == 0):
         for product in products:
@@ -77,23 +89,34 @@ def search(request):
             split_names = split_names
             for word in split_names:
                 s = find_near_matches(query, word.lower(), max_l_dist=1)
-                print(s)
                 if (s != []):
                     ids.add(product.product_id)
 
         for product in products:
             split_names = product.product_desc.split(" ")
-            split_names = split_names
+            split_names = split_names 
             for word in split_names:
                 s = find_near_matches(query, word.lower(), max_l_dist=1)
-                print(s)
                 if (s != []):
                     ids.add(product.product_id)
+        # Only the result objects
+    qs=Product.objects.none()
+    for i in ids:
+        qs=qs|Product.objects.filter(product_id=i)
 
     params = {'query': query,
               'ids': ids,
-              'product': products}
-    return render(request, 'shop/searchResult.html', params)
+              'product': qs}
+    response =  render(request, 'shop/searchResult.html', params)
+    # For recent search items
+    if not request.COOKIES.get('recentsearch'):
+        response.set_cookie('recentsearch', str(ids))
+    else:
+        arr = eval(request.COOKIES.get('recentsearch'))
+        arr.update(ids)
+        response.set_cookie('recentsearch', str(arr))
+        
+    return response
 
 
 # About section page
@@ -129,7 +152,6 @@ def product_desc(request, id):
     product_desc_imgs = ProductDescriptionImages.objects.filter(product_id=id)
     samecategory = (Product.objects.filter(
         Category_id=product.Category_id)).exclude(product_id=id)
-
     desc = product.product_desc
     desc = desc.split("\n")
 
@@ -162,10 +184,30 @@ def product_desc(request, id):
 
     ReviewImages = ReviewImage.objects.filter(product_id=product)
 
-    params = {'product': product, 'sc': samecategory, 'user_review': user_review, 'sub_cat': sub_cat, 'is_added_to_cart': is_added_to_cart,
-              'Reviews': Reviews, 'ReviewImages': ReviewImages, 'productimgs': productimg, 'product_desc': product_desc_imgs, 'aboutthisitem': desc, 'what_is_in_the_box': what_is_in_the_box}
-
-    return render(request, 'shop/product_desc.html', params)
+    params = {'product': product, 
+              'sc': samecategory, 
+              'user_review': user_review, 
+              'sub_cat': sub_cat, 
+              'is_added_to_cart': is_added_to_cart,
+              'Reviews': Reviews, 
+              'ReviewImages': ReviewImages, 
+              'productimgs': productimg, 
+              'product_desc': product_desc_imgs, 
+              'aboutthisitem': desc, 
+              'what_is_in_the_box': what_is_in_the_box}
+    
+    response =  render(request, 'shop/product_desc.html', params)
+    
+    # For recent viewed items 
+    if not request.COOKIES.get('recentitems'):
+        arr=set()
+        arr.add(product.product_id)
+    else:
+        arr=eval(request.COOKIES.get('recentitems'))
+        arr.add(product.product_id)
+        
+    response.set_cookie('recentitems', str(arr)) 
+    return response
 
 
 # Cart page
@@ -187,10 +229,10 @@ def removecartitem(request):
 
 def cart(request):
     cartitems = Cart.objects.filter(user=request.user)
-    d_address= Address.objects.get(user=request.user, default_address=True)
+    # d_address= Address.objects.get(user=request.user, default_address=True)
     params = {
         'cartitems': cartitems,
-        'd_address':d_address,
+        # 'd_address':d_address,
     }
     return render(request, 'shop/cart.html', params)
 
@@ -204,12 +246,14 @@ def signup(request):
         lname = request.POST.get('lname')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        myuser = User.objects.create_user(username, email, password)
-        myuser.first_name = fname
-        myuser.last_name = lname
-        myuser.save()
-        messages.success(
-            request, "Your Account has been successfully created.")
+        try:
+            myuser = User.objects.create_user(username, email, password)
+            myuser.first_name = fname
+            myuser.last_name = lname
+            myuser.save()
+            messages.success(request, "Your Account has been successfully created.")
+        except Exception as e:
+            print('ERROR Occoured')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -243,7 +287,7 @@ def submitReview(request):
         heading = request.POST['heading']
         body = request.POST['body']
 
-        product = Product.objects.filter(product_id=product_id)[0]
+        product = Product.objects.get(product_id=product_id)
 
         review = Review.objects.create(user=request.user,
                                        product=product, name=username, heading=heading, rating=rating, body=body)
@@ -287,20 +331,79 @@ def category(request, string):
     params = {'products': products}
     return render(request, 'shop/category_desc.html', params)
 
-def subcategory(request,string):
-    scat=SubCategory.objects.get(name=string)
+
+def subcategory(request, string):
+    scat = SubCategory.objects.get(name=string)
     products = Product.objects.filter(Sub_Category=scat)
-    return render(request,'shop/category_desc.html',{'products':products})
-    
+    return render(request, 'shop/category_desc.html', {'products': products})
 
 
 def getCartItems(request):
     if request.user.is_authenticated:
         if request.method == 'GET':
-            data = Cart.objects.filter(user_id=request.user.id)
-            cartitems = {'num': len(data)}
-            return JsonResponse(cartitems, safe=False)
+            items = Cart.objects.filter(user_id=request.user.id)
+            data = {'num': len(items), 'year': str(date.today().year)
+            }
+            return JsonResponse(data, safe=False)
 
 
 def payment(request):
-    return render(request, 'shop/paymentGateway.html')
+    addresses = Address.objects.filter(user_id=request.user).order_by('-default_address')
+    
+    if request.COOKIES.get('cartitems'):
+        cart_items = eval(request.COOKIES.get('cartitems'))
+    
+    print(cart_items)
+    
+    ids=[int(x[0]) for x in cart_items]
+    
+    qs=list(Product.objects.filter(product_id__in=ids).values())
+    for j in cart_items:
+        for i in range(len(qs)):
+            if qs[i]['product_id']==int(j[0]):
+                qs[i]['quantity']=int(j[1])
+                qs[i]['total_price']=int(j[1])*qs[i]['product_price']
+
+        
+    sub_total=0
+    total=0
+    shipping_charges=0
+    for i in qs:
+        sub_total+=i['product_price']*i['quantity']
+        total+=i['product_price']*i['quantity']+i['product_shipping_charges']
+        shipping_charges+=i['product_shipping_charges']
+    
+    if sub_total>1500:
+        shipping_charges=0
+        total=sub_total
+    
+    params = {'products': qs,
+              'total':total,
+              'sub_total':sub_total,
+              'shipping_charges':shipping_charges,
+              'addresses':addresses,
+    }
+    if request.method == "POST":
+        address_id=request.POST['address_id']
+        card_holder_name=request.POST['cardholdername']
+        card_holder_number=request.POST['cardholdernumber']
+        expiry_date=request.POST["expiry_date"]
+        ccv_number=request.POST["ccv_number"]
+        address=Address.objects.get(id=address_id)
+        print(address_id,card_holder_name,card_holder_number,ccv_number,expiry_date)
+        for prd in qs:
+            product=Product.objects.get(product_id=prd['product_id'])
+            order=Order.objects.create(user=request.user,product=product,quantity=prd['quantity'],address=address,final_price=prd['total_price'])
+            order.save()
+        
+        
+    
+    return render(request, 'shop/paymentGateway.html',params)
+
+
+def getMyRecentSearchItems(request):
+    if request.method == 'GET':
+        # data_from_post = json.load(request)[p]
+        # print(data_from_post)
+        return JsonResponse("ewrdg", safe=False)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

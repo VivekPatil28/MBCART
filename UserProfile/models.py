@@ -1,21 +1,7 @@
 from shop import models as model
 from django.db import models
 
-class Order(models.Model):
-    product = models.ForeignKey(model.Product, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(model.User, on_delete=models.DO_NOTHING)
-    quantity=models.IntegerField(default=1)
-    order_date = models.DateTimeField(
-        auto_now_add=True)
-    shipped=models.BooleanField(default=False)
-    shipped_date=models.DateField()
-    outfordelivery=models.BooleanField(default=False)
-    outfordelivery_date=models.DateField(auto_now=False, auto_now_add=False)
-    delivered=models.BooleanField(default=False)
-    delivered_date=models.DateField(auto_now=False, auto_now_add=False,default='')    
-    
-    def __str__(self):
-        return str(self.product)
+
 
     
 class Address(models.Model):
@@ -34,3 +20,21 @@ class Address(models.Model):
     
     def __str__(self):
         return str(self.user)
+    
+
+class Order(models.Model):
+   product = models.ForeignKey(model.Product, on_delete=models.DO_NOTHING)
+   address=models.ForeignKey(Address,on_delete=models.CASCADE)
+   user = models.ForeignKey(model.User, on_delete=models.DO_NOTHING)
+   quantity = models.IntegerField(default=1)
+   order_date = models.DateTimeField(auto_now_add=True)
+   shipped = models.BooleanField(default=False)
+   shipped_date = models.DateField(null=True)
+   outfordelivery = models.BooleanField(default=False)
+   outfordelivery_date = models.DateField(null=True)
+   delivered = models.BooleanField(default=False)
+   delivered_date = models.DateField(null=True)
+   final_price=models.IntegerField(default=0)
+
+   def __str__(self):
+       return str(self.product)

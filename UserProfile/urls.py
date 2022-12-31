@@ -25,7 +25,7 @@ urlpatterns = [
     path('myaddresses', views.address, name="addresses"),
     path('myorders', views.myorders, name="orders"),
     path('myreviews', views.myreviews, name="reviews"),
-    path('addAddress', views.addAddress, name="addAddress"),
+    path('myaddresses/addAddress', views.addAddress, name="addAddress"),
     path('deleteAddress/<int:id>', views.removeAddress, name="RemoveAddress"),
     path('addProduct', views.addProduct, name="addProduct"),
     path('defaultAddressChanged', views.defaultAddressChanged,

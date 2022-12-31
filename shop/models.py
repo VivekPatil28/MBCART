@@ -34,6 +34,7 @@ class Product(models.Model):
     product_price = models.IntegerField()
     image = models.ImageField(upload_to='shop/thumbnail_image', default='')
     product_rating = models.FloatField()
+    product_shipping_charges = models.IntegerField(default=0)
     product_initial_price = models.IntegerField()
     product_publish_date = models.DateField()
 

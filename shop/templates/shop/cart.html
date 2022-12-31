@@ -31,15 +31,15 @@
                 class="col-lg-1 col-md-1 p-0 py-2 d-flex justify-content-center align-items-center card-header border-0 rounded"
                 style="cursor: pointer;">
                 <input type="checkbox" name="check" id="{{item.id}}" class="form-check-input checkbox" checked>
+                <input id="price" type="text" value="{{item.product.product_price}}" hidden>
+                <input class="product_id" type="text" value="{{item.product.product_id}}" hidden>
+                <input id="shipping_charges" type="text" value="{{item.product.product_shipping_charges}}" hidden>
               </label>
-              <div class="col-lg-3 col-md-4 mb-lg-0 p-0">
+              <div class="col-lg-3 col-md-4 mb-lg-0 p-0" style="display:flex;justify-content: center;align-items: center;" >
                 <!-- Image -->
-                <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
-                  <a href="/product/{{item.product_id}}">
-                    <img src="media/{{item.product.image}}" style="max-height:200px;object-fit: contain;"
-                      class="w-100" />
+                  <a href="/product/{{item.product_id}}" class="d-inline-block" style="width:80%;">
+                    <img src="media/{{item.product.image}}" style="max-height:200px;width:100%;object-fit: contain;" />
                   </a>
-                </div>
                 <!-- Image -->
               </div>
 
@@ -60,7 +60,7 @@
                 </form>
 
                 <button type="button" class="btn btn-danger btn-sm mb-2" data-mdb-toggle="tooltip"
-                  title="Move to the wish list">
+                  title="Add to the wish list">
                   <i class="fas fa-heart"></i>
                 </button>
                 <!-- Data -->
@@ -70,10 +70,10 @@
                   </button>
 
                   <div class="form-outline col-xs-2">
-
                     <input min="1" name="quantity" value="{{item.quantity}}" type="number"
                       class="form-control quantity-input " readonly />
                   </div>
+
                   <!-- Quantity -->
                   <button class="btn btn-primary px-2 ms-2" onclick="stepup(this)">
                     <i class="fas fa-plus"></i>
@@ -81,35 +81,36 @@
                 </div>
               </div>
 
-              <div class="col-lg-3 col-md-8">
+              <div class="col-lg-3 col-md-12">
                 <!-- Price -->
                 <p class="text-start text-md-center">
-                  <strong class="mt-2"><span>Price :
-                      ₹</span><span>{{item.product.product_price|intcomma}}</span></strong>
+                  <strong class="mt-2"><small class="">Price : </small><span class="">₹{{item.product.product_price|intcomma}}</span></strong>
+                  <br>
+                  <strong class="mt-2">
+                    {% if item.product.product_shipping_charges != 0 %}
+                    <small class="">Shipping Charges : </small><span class="">₹{{item.product.product_shipping_charges|intcomma}}</span>
+                    {% else %}
+                    <small class="text-muted">Free Delivery</small>
+                    {% endif %}
+                  </strong>
                 </p>
                 <!-- Price -->
               </div>
+
             </div>
             <!-- Single item -->
             {% if not forloop.last %}
             <hr class="my-4" />
             {% endif %}
-
             {% endfor %}
             {% else %}
             <a href="/" class="btn btn-primary btn-lg btn-block">
               Add items to Cart
             </a>
             {% endif %}
+          </div>
+        </div>
 
-          </div>
-        </div>
-        <div class="card mb-4">
-          <div class="card-body">
-            <p><strong>Expected shipping delivery</strong></p>
-            <p class="mb-0">12.10.2020 - 14.10.2020</p>
-          </div>
-        </div>
         <div class="card mb-4 mb-lg-0">
           <div class="card-body">
             <p><strong>We accept</strong></p>
@@ -125,7 +126,6 @@
           </div>
         </div>
       </div>
-
       <div class="col-md-4" >
         <div class="card mb-4" style="position:sticky;top:20px;">
           <div class="card-header py-3">
@@ -134,40 +134,37 @@
           <div class="card-body">
             <ul class="list-group list-group-flush">
               <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                <span>Subtotal (<span class="totalselecteditems"></span> items):</span>
-                <span id="totalcartprice"></span>
+                <span>Subtotal (<span class="totalselecteditems"></span> items) :</span>
+                <span id="subtotal"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                <span>Shipping Charges</span>
-                <span class="Shippingcharges"></span>
+                <span>Shipping Charges :</span>
+                <span id="Shippingcharges"></span>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                 <div>
                   <strong>Total amount</strong>
-                  <strong>
-                    <p class="mb-0"></p>
-                  </strong>
                 </div>
-                <strong><span></span></strong>
+                <strong id="totalcartprice"></strong>
               </li>
             </ul>
-
-            <form action="/payment" method="post">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-primary btn-lg btn-block">
+            
+            <button  onclick="checkout()" class="btn btn-primary btn-lg btn-block" id="checkoutbtn" {% if cartitems.count is 0 %} disabled {% endif %}>
               Go to checkout
             </button>
-            </form>
+            
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
 <script>
 
   let checkboxes = document.getElementsByClassName("checkbox")
+
+ 
+
   Array.from(checkboxes).forEach(e => {
     e.addEventListener('change', i => {
       if (!i.target.checked) {
@@ -183,25 +180,66 @@
 
   function reflectChange() {
     let total_price = 0;
+    let total_shipping_charges =0;
+    let sub_total_price=0;
     let checkedCheckbox = document.querySelectorAll('.checkbox:checked');
+
+
+    // for the selected quantity doc
     let totalselecteditems = document.getElementsByClassName("totalselecteditems")
-    Array.from(totalselecteditems).forEach(e => {
-      e.innerHTML = checkedCheckbox.length;
-    })
-
-
+    totalselecteditems[0].innerHTML = checkedCheckbox.length;
+    totalselecteditems[1].innerHTML = checkedCheckbox.length;
+  
 
     Array.from(checkedCheckbox).forEach(e => {
-      let num = e.parentElement.parentElement.children[3].children[0].children[0].children[1].innerHTML
-      let quantity = e.parentElement.parentElement.children[2].children[5].children[1].children[0].value
-      num = num.replace(",", '')
+      let num= e.parentElement.querySelector('#price').value
+      let shipping_charges = e.parentElement.querySelector('#shipping_charges').value
+      // let quantity = e.parentElement.parentElement.children[2].children[5].children[1].children[0].value
+      let quantity = e.parentElement.parentElement.querySelector('.quantity-input').value
       num = parseInt(num)
       num = num * quantity
-      total_price += num;
+      sub_total_price += num;
+      total_shipping_charges += parseInt(shipping_charges)
+
     })
+    if(sub_total_price<=0){
+      document.getElementById("checkoutbtn").setAttribute("disabled",'')
+    }
+    else{
+      document.getElementById("checkoutbtn").removeAttribute('disabled')
+    }
+    if (sub_total_price<1500) {
+      total_price = sub_total_price+total_shipping_charges;
+      total_shipping_charges="+"+total_shipping_charges
+    }
+    else{
+      total_price = sub_total_price;
+      total_shipping_charges="Free Delivery"
+    }
+
+ 
     let dollarIndianLocale = Intl.NumberFormat('en-IN');
+    document.getElementById("subtotal").innerHTML = dollarIndianLocale.format(sub_total_price);
+    document.getElementById("Shippingcharges").innerHTML = total_shipping_charges;
     document.getElementById("totalcartprice").innerHTML = dollarIndianLocale.format(total_price);
   }
+  function checkout() {
+    let checkedCheckbox = document.querySelectorAll('.checkbox:checked');
+    let cookie_arr=new Array()
+     Array.from(checkedCheckbox).forEach(e => {
+      let pid = e.parentElement.querySelector('.product_id').value;
+      let quantity = e.parentElement.parentElement.querySelector('.quantity-input').value
+      let id_quantity_arr=new Array()
+      id_quantity_arr.push(pid)
+      id_quantity_arr.push(quantity)
+      cookie_arr.push(id_quantity_arr)
+      
+    })
+    document.cookie="cartitems="+JSON.stringify(cookie_arr)+";path=/";
+    document.location.href = "/payment";
+  }
+
+  
 
   reflectChange();
 
@@ -209,6 +247,7 @@
     a.parentNode.querySelector('.quantity-input').stepUp()
     reflectChange()
   }
+
   function stepdown(a) {
     a.parentNode.querySelector('.quantity-input').stepDown()
     reflectChange()

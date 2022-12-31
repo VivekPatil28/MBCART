@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from xml.etree.ElementInclude import include
 from django.urls import path
 from . import views
 from django.contrib import admin
@@ -41,6 +40,8 @@ urlpatterns = [
     path('subcategory/<str:string>', views.subcategory, name="sub_cat_desc"),
     path('getCartItems', views.getCartItems, name="getCartItems"),
     path('payment', views.payment, name="payment"),
-   
+    path('getMyRecentSearchItems', views.getMyRecentSearchItems,
+         name="getMyRecentSearchItems"),
+
     # path('checkout', views.checkout, name="checkout"),
 ]

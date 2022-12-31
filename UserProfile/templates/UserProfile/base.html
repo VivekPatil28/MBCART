@@ -1,133 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no"
+    />
+    <link rel="shortcut icon" href="media/shop/logo.jpg" type="image/x-icon" />
+    <title>{% block title %}MBCART{%endblock%}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+      integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
-  <link rel="shortcut icon" href="media/shop/logo.jpg" type="image/x-icon">
-  <title>{% block title %}MBCART{%endblock%}</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
-    integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
-
-<body>
-  <!--Main Navigation-->
-  <style>
-    body {
-      background-color: #fbfbfb;
-    }
-
-    @media (min-width: 991.98px) {
-      main {
-        padding-left: 240px;
+  <body>
+  
+    <!--Main Navigation-->
+    <style>
+      body {
+        background-color: #fbfbfb;
       }
-    }
 
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      padding: 58px 0 0;
-      /* Height of navbar */
-      box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
-      width: 240px;
-      z-index: 600;
-    }
+      @media (min-width: 991.98px) {
+        main {
+          padding-left: 240px;
+        }
+      }
 
-    @media (max-width: 991.98px) {
+      /* Sidebar */
       .sidebar {
-        display: none;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        padding: 58px 0 0;
+        /* Height of navbar */
+        box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+        width: 240px;
+        z-index: 600;
       }
 
-      .display-btn {
-        display: block;
+      @media (max-width: 991.98px) {
+        .sidebar {
+          display: none;
+        }
+
+        .display-btn {
+          display: block;
+        }
       }
-    }
 
-    .sidebar .active {
-      border-radius: 5px;
-      box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
-    }
+      .sidebar .active {
+        border-radius: 5px;
+        box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+      }
 
-    .sidebar-sticky {
-      position: relative;
-      top: 0;
-      height: calc(100vh - 48px);
-      padding-top: 0.5rem;
-      overflow-x: visible;
-      overflow-y: auto;
-      /* Scrollable contents if viewport is shorter than content. */
-    }
+      .sidebar-sticky {
+        position: relative;
+        top: 0;
+        height: calc(100vh - 48px);
+        padding-top: 0.5rem;
+        overflow-x: visible;
+        overflow-y: auto;
+        /* Scrollable contents if viewport is shorter than content. */
+      }
 
-    #hamburger {
-      position: fixed;
-      top: 10px;
-      left: 20px;
-      z-index: 5;
+      #hamburger {
+        position: fixed;
+        top: 10px;
+        left: 20px;
+        z-index: 5;
+      }
+    </style>
 
-    }
-  </style>
+    <button id="hamburger" class="btn btn-secondary" onclick="openmenu()">
+      <i class="bi bi-list"></i>
+    </button>
+    <script>
+      function openmenu() {
+        document.getElementById("sidebarMenu").style.display = "block";
+      }
+    </script>
+    <header>
+      <!-- Sidebar -->
 
-  <button id="hamburger" class="btn btn-secondary" onclick="openmenu()"><i class="bi bi-list"></i></button>
-  <script>
-    function openmenu() {
-      document.getElementById("sidebarMenu").style.display = "block"
-    }
-  </script>
-  <header>
-    <!-- Sidebar -->
+      <nav id="sidebarMenu" class="d-lg-block sidebar bg-white p-0">
+        <div class="mt-5">
+          <div class="list-group list-group-flush mx-3 mt-5">
+            <a
+              href="/profile"
+              class="list-group-item list-group-item-action py-2 ripple {% block profileactive %}{% endblock profileactive %}"
+              aria-current="true"
+            >
+              <div class="row display-flex align-items-center">
+                <i class="fas fa-tachometer-alt col-3"></i>
+                <span class="col-9 p-0">Profile</span>
+              </div>
+            </a>
 
-    <nav id="sidebarMenu" class="d-lg-block sidebar bg-white p-0 ">
-      <div class="mt-5">
+            <a
+              href="/profile/myorders"
+              class="list-group-item list-group-item-action py-2 ripple {% block myordersactive %}{% endblock myordersactive %}"
+            >
+              <div class="row">
+                <i class="bi bi-cart-check-fill col-3"></i>
+                <span class="col-9 p-0">My Orders</span>
+              </div>
+            </a>
 
-        <div class="list-group list-group-flush mx-3 mt-5">
-          <a href="/profile"
-            class="list-group-item list-group-item-action py-2 ripple      {% block profileactive %}{% endblock profileactive %} "
-            aria-current="true">
-            <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Profile</span>
-          </a>
-          <a href="myorders"
-            class="list-group-item list-group-item-action py-2 ripple      {% block myordersactive %}{% endblock myordersactive %} ">
-           <i class="bi bi-cart-check-fill me-3"></i><span>My Orders</span>
-          </a>
-          <a href="myreviews"
-            class="list-group-item list-group-item-action py-2 ripple      {% block myreviewsactive %}{% endblock myreviewsactive %}">
-            <i class="bi bi-star-half me-2"></i><span>My Reviews</span></a>
-          <a href="myaddresses"
-            class="list-group-item list-group-item-action py-2 ripple      {% block myaddressesactive %}{% endblock myaddressesactive %}">
-            <i class="bi bi-geo-alt-fill me-2"></i><span>Manage Addresses</span></a>
-          <form action="/signout" method="post">
-            {% csrf_token %}
-            <button type="submit" class="list-group-item list-group-item-action py-2 ripple border-0 "><i
-                class="fas fa-money-bill me-3"></i><span>Log Out</span></button>
-          </form>
+            <a
+              href="/profile/myreviews"
+              class="list-group-item list-group-item-action py-2 ripple {% block myreviewsactive %}{% endblock myreviewsactive %}"
+            >
+              <div class="row display-flex align-items-center">
+                <i class="bi bi-star-half col-3"></i>
+                <span class="col-9 p-0">My Reviews</span>
+              </div>
+            </a>
+
+            <a
+              href="/profile/myaddresses"
+              class="list-group-item list-group-item-action py-2 ripple {% block myaddressesactive %}{% endblock myaddressesactive %}"
+            >
+              <div class="row display-flex align-items-center">
+                <i class="bi bi-geo-alt-fill col-3"></i>
+                <span class="col-9 p-0">Manage Addresses</span>
+              </div>
+            </a>
+            <a
+              href="/"
+              class="list-group-item list-group-item-action py-2 ripple"
+            >
+              <div class="row display-flex align-items-center">
+                <i class="bi bi-house-heart-fill col-3"></i>
+                <span class="col-9 p-0">Back To Home</span>
+              </div>
+            </a>
+            <form action="/signout" method="post">
+              {% csrf_token %}
+              <button
+                type="submit"
+                class="list-group-item list-group-item-action py-2 ripple border-0"
+              >
+                <div class="row display-flex align-items-center">
+                  <i class="fas fa-money-bill col-3"></i>
+                  <span class="col-9 p-0">Log Out</span>
+                </div>
+              </button>
+            </form>
+          </div>
         </div>
+      </nav>
+    </header>
+
+    <!--Main Navigation-->
+
+    <!--Main layout-->
+    <main>
+      <div
+        class="container py-2"
+        style="background-color: #eee; min-height: 100vh"
+      >
+        {% block body %} {% endblock body %}
       </div>
-    </nav>
-  </header>
-
-  <!--Main Navigation-->
-
-  <!--Main layout-->
-  <main>
-    <div class="container py-2" style="background-color: #eee;min-height: 100vh;">
-      {% block body %}
-
-      {% endblock body %}
-
-    </div>
-
-
-  </main>
-  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-    crossorigin="anonymous"></script>
-</body>
+    </main>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
