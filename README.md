@@ -17,7 +17,9 @@
   - Product suggestion
   - Product reivew system
   - Product order system
-  - product description
+  - Product description
+  - Product Review System
+ 
 ## Snapshots
 ****
 
