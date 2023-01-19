@@ -20,7 +20,8 @@
   - product description
 ## Snapshots
 ****
-  -Home Page
+
+  - Home Page
 ![Screenshot (8)](https://user-images.githubusercontent.com/87218578/213392405-0837e1ee-6b2c-483d-9571-ec8a71d8f8c5.png)
 
   -Cart
