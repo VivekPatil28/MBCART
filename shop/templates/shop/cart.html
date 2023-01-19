@@ -23,7 +23,6 @@
               selected</h6>
           </div>
           <div class="card-body">
-            {% if cartitems.count is not 0 %}
             {% for item in cartitems %}
             <!-- Single item -->
             <div class="row">
@@ -102,12 +101,13 @@
             {% if not forloop.last %}
             <hr class="my-4" />
             {% endif %}
-            {% endfor %}
-            {% else %}
+
+            {%empty%}
             <a href="/" class="btn btn-primary btn-lg btn-block">
               Add items to Cart
             </a>
-            {% endif %}
+
+            {% endfor %}
           </div>
         </div>
 

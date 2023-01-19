@@ -13,7 +13,7 @@
     {% for j in coursal|slice:":3" %}
       <div class="carousel-item  {% if forloop.first %}active{% endif %}">
       <a href="{{j.image_url}}">
-        <img src='/media/{{j.coursal_image}}' style="object-fit: contain;" class="d-block w-100" alt="...">
+        <img src='/media/{{j.coursal_image}}' style="object-fit:cover;" class="d-block w-100" alt="...">
       </a>
       </div>
     {% endfor %}
@@ -29,20 +29,6 @@
     <span class="visually-hidden">Next</span>
     </button>
   </div>
-
-
-
-
-  {% comment %} <div class="container p-2">
-    <div class="row d-flex justify-content-center">
-      {% for StaticImage in StaticImages %}
-      <a href="category/{{StaticImage.category}}"
-        class="col-6 col-sm-6 col-md-4 col-lg-3 my-4 d-flex justify-content-center">
-        <img src="/media/{{StaticImage.image}}" style="height:155px;" class="img-fluid p-2" alt="">
-      </a>
-      {% endfor %}
-    </div>
-  </div> {% endcomment %}
 
   <div class="container-xxl">
     <div class="row row-cols-1 row-cols-sm-3 row-cols-md-3 g-3 mt-1">
@@ -261,7 +247,7 @@
               <span class="text-bg-success"
                 style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
                   style="position:relative;top: -1px;left:4px;font-size:9px;" class="bi bi-star-fill"></small></span>
-              <span>(53,265)</span>
+              <span>({{i.order_set.count}})</span>
             </div>
             <h6 class="blockquote mt-3 text-center">₹{{i.product_price|intcomma}} &nbsp;<strike
                 class="text-muted "><small>₹{{i.product_initial_price|intcomma}}</small></strike></h6>
@@ -286,22 +272,10 @@
   if (s!=null) {
     p=s.slice(-4,).reverse()
   }
-  console.log(p);
-  
-
-  // fetch("{%url 'getMyRecentSearchItems' %}", {
-  //   method: 'GET',
-  //   body: JSON.stringify(p)
-  // }).then(Response => {
-
-  // }).catch(resopnse => {
-  //   console.log("Error");
-  // })
 
   fetch("{%url 'getMyRecentSearchItems' %}", {
       method: "GET",
       data: JSON.stringify(p),
-      // body: JSON.stringify({ 'post_data': p }),
       headers: {
       'Content-type': 'application/json; charset=UTF-8'
     }

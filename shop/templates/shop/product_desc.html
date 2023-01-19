@@ -89,7 +89,7 @@
                     <span>&nbsp;{{product.product_rating}}</span>
                 </div>
                 <div>
-                    <h5 class="small mt-2" style="color:rgba(0, 0, 0, 0.5);">6,660 Orders & {{Reviews.count}} Reviews</h5>
+                    <h5 class="small mt-2" style="color:rgba(0, 0, 0, 0.5);">{{product.order_set.count}} Orders & {{Reviews.count}} Reviews</h5>
                 </div>
                 <div class="fs-5 mb-5">
                     <span>
@@ -213,48 +213,13 @@
                         <h5 style="font-weight: bold;">Specifications</h5>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>In The Box</td>
-                            <td>Handset, Power Adapter, Micro USB Cable, SIM Insertion Tool, Warranty Card, User Guide
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Model Number</td>
-                            <td>UHD11235845</td>
-                        </tr>
-                        <tr>
-                            <td>Model Name</td>
-                            <td>UHD11235845</td>
-                        </tr>
-                        <tr>
-                            <td>Model Number</td>
-                            <td>UHD11235845</td>
-                        </tr>
-                        <tr>
-                            <td>Model Number</td>
-                            <td>UHD11235845</td>
-                        </tr>
-                        <tr>
-                            <td>Model Number</td>
-                            <td>UHD11235845</td>
-                        </tr>
-
-                        <tr>
-                            <td>Model Number</td>
-                            <td>UHD11235845</td>
-                        </tr>
-                        <tr>
-                            <td>Model Number</td>
-                            <td>UHD11235845</td>
-                        </tr>
-                        <tr>
-                            <td>Model Number</td>
-                            <td>UHD11235845</td>
-                        </tr>
-                        <tr>
-                            <td>Model Number</td>
-                            <td>UHD11235845</td>
-                        </tr>
+                          {% for rowval in techinical_details %}    
+                             <tr>
+                             {% for val in rowval %}
+                              <td>{{val}}</td>
+                             {% endfor %}
+                            </tr>
+                          {% endfor %}
                     </tbody>
                 </table>
                 </div>
@@ -353,7 +318,7 @@
                                             <input type="text" name="reviewId" value="{{review.id}}" hidden>
                                             <button type="submit" name="like" class="link-muted me-2 bg-white border-0">
                                                 <i class="fas fa-thumbs-up me-1"></i>
-                                                {{review.likes}}
+                                                {{review.like_set.count}}
                                             </button>
                                         </form>
                                         <form action="{%url 'disliked'%}" class="dislikeddata" method="POST" role="form"
@@ -362,7 +327,7 @@
                                             <input type="text" name="reviewId" value="{{review.id}}" hidden>
                                             <button type="submit" name="like" class="link-muted border-0 bg-white">
                                                 <i class="fas fa-thumbs-down me-1"></i>
-                                                {{review.dislikes}}
+                                                {{review.dislike_set.count}}
                                             </button>
                                         </form>
                                     </div>
@@ -377,7 +342,7 @@
     {% endfor %}
 </section>
 
-{% comment %} {% endcomment %}
+
 {% if not user_review %}
 {% if user.is_authenticated %}
 <div class="container  mt-5 mb-5 bg-light  ">
@@ -469,7 +434,7 @@
                                 style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
                                     style="position:relative;top: -1px;left:4px;font-size:9px;"
                                     class="bi bi-star-fill"></small></span>
-                            <span>(53,265)</span>
+                            <span>({{i.order_set.count|intcomma}})</span>
                             <br>
 
 

@@ -30,6 +30,7 @@ class Product(models.Model):
     Category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     product_name = models.TextField()
     product_desc = models.TextField()
+    product_techinical_details=models.TextField(default=" ")
     what_is_in_the_box = models.TextField()
     product_price = models.IntegerField()
     image = models.ImageField(upload_to='shop/thumbnail_image', default='')
@@ -88,7 +89,7 @@ class Contact(models.Model):
 class Cart(models.Model):
     user=models.ForeignKey(User,on_delete=models.DO_NOTHING)
     product=models.ForeignKey(Product,on_delete=models.DO_NOTHING)
-    quantity=models.IntegerField(default=1)
+    quantity=models.PositiveIntegerField(default=1)
     totalprice=models.IntegerField()
     
     def __str__(self):
@@ -103,11 +104,9 @@ class Review(models.Model):
     heading = models.CharField(max_length=1000)
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
-    rating = models.IntegerField(default=0)
+    rating = models.PositiveIntegerField(default=0)
     updated = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
-    likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
     
     class Meta:
         ordering = ('created',)
@@ -116,6 +115,23 @@ class Review(models.Model):
         return 'comment by {} on {}'.format(self.name, self.product)
 
 
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_object = models.ForeignKey(Review, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self) -> str:
+        return str(self.user)
+
+
+class Dislike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_object = models.ForeignKey(Review, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return str(self.user)
+    
 class ReviewImage(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

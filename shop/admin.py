@@ -12,6 +12,8 @@ admin.site.register(Cart)
 
 admin.site.register(ProductImages)
 admin.site.register(ProductDescriptionImages)
+admin.site.register(Like)
+admin.site.register(Dislike)
 
 
 class ProductImageAdmin(admin.StackedInline):

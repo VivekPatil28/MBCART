@@ -15,9 +15,6 @@
         </div>
     </div>
 
-    {% if address.count %}
-
-
     {% for address in address %}
     <div>
         <div class="mt-4 ms-2 row align-items-center">
@@ -166,15 +163,9 @@
             </div>
         </div>
     </div>
-    {% endfor %}
-
-    {% else %}
-
+    {%empty%}
     <p class="bg-primary mt-5 fs-5 text-center p-2 text-white ">You haven't added any Addresses</p>
-
-    
-    
-    {% endif %}
+    {% endfor %}
 </div>
 
 <script>

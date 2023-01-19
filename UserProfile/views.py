@@ -30,6 +30,7 @@ def address(request):
 
 def myorders(request):
     orders = Order.objects.filter(user=request.user).order_by("-order_date")
+    print(orders)
     return render(request, 'UserProfile/myorders.html', {'orders': orders})
 
 

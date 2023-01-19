@@ -19,7 +19,7 @@ class Address(models.Model):
     default_address=models.BooleanField(default=False)
     
     def __str__(self):
-        return str(self.user)
+        return str(self.full_name)
     
 
 class Order(models.Model):
