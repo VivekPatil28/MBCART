@@ -1,6 +1,6 @@
 # MBCART
 ****
-  MBCART is a E-Commerce Website developed to make the . 
+  MBCART is a E-Commerce Website developed for businesses that want to sell products or services online. It allows customers to browse and purchase items easily, and can also provide features such as product reviews, customer accounts, and shopping carts. It also offer a more convenient and accessible shopping experience for customers, as well as the ability for businesses to reach a wider market.
 
   ## Some Important Functions:-
   - The humanizeAmount Function is used to display the Account Balance of the user separated using commas to make a better understanding of Account Balance
