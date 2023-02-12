@@ -1,18 +1,17 @@
 {% extends 'shop/basic.html' %}
-{% load humanize %}
 {%block title%}MBCART / Products{%endblock title%}
-{% block body %}
-
-
+{%block body %}
+{% load humanize %}
 <style>
-    .uparr{
-        position:fixed;
-        bottom:15px;
-        right:20px;
+    .uparr {
+        position: fixed;
+        bottom: 15px;
+        right: 20px;
     }
 </style>
 
-<a id="back-to-top" href="#" class="btn btn-info btn-lg back-to-top uparr visually-hidden" role="button"><i class="fas fa-chevron-up"></i></a>
+<a id="back-to-top" href="#" class="btn btn-info btn-lg back-to-top uparr visually-hidden" role="button"><i
+        class="fas fa-chevron-up"></i></a>
 
 <!-- Product section-->
 <section>
@@ -29,15 +28,15 @@
         .table td+td {
             width: 75%;
         }
-        #main_img{
-                height:500px;
-            }
 
+        #main_img {
+            height: 500px;
+        }
 
         @media only screen and (max-width: 770px) {
             #imgcont {
                 position: static;
-                top:0px
+                top: 0px
             }
 
             .clss {
@@ -46,30 +45,27 @@
 
             .infcont {
                 margin-top: 0vh;
-
-            }
-            #main_img{
-                height:250px;
             }
 
+            #main_img {
+                height: 250px;
+            }
         }
     </style>
     <div class="container-fluid ">
         <div class="row align-items-start clss">
             <div id="imgcont" class="mt-2 col-md-5 mt-md-5 d-flex justify-content-start align-items-center flex-column">
-    
-                    <img style="width:80%;object-fit: contain;" id="main_img" class="card-img-top mb-md-5" src='/media/{{product.image}}'
-                    alt="image" />
+
+                <img style="width:80%;object-fit: contain;" id="main_img" class="card-img-top mb-md-5"
+                    src='/media/{{product.image}}' alt="image" />
                 <div class="d-flex justify-content-center">
                     <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;box-shadow:0px 0px 2px 2px rgba(0, 128, 0, 0.358);border: 2px solid green;box-sizing:border-box;"
                         class="card-img-top mx-2 product_images" src='/media/{{product.image}}' alt="image" />
                     {% for img in productimgs %}
-                    <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;border: 1px solid grey;" class="card-img-top  mx-2 product_images" 
-                        src='/media/{{img.image}}' alt="image" />
+                    <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;border: 1px solid grey;"
+                        class="card-img-top  mx-2 product_images" src='/media/{{img.image}}' alt="description images" />
                     {% endfor %}
                 </div>
-            
-
             </div>
 
             <div class="col-md-7 infcont">
@@ -89,7 +85,8 @@
                     <span>&nbsp;{{product.product_rating}}</span>
                 </div>
                 <div>
-                    <h5 class="small mt-2" style="color:rgba(0, 0, 0, 0.5);">{{product.order_set.count}} Orders & {{Reviews.count}} Reviews</h5>
+                    <h5 class="small mt-2" style="color:rgba(0, 0, 0, 0.5);">{{product.order_set.count}} Orders &
+                        {{Reviews.count}} Reviews</h5>
                 </div>
                 <div class="fs-5 mb-5">
                     <span>
@@ -129,7 +126,6 @@
                         justify-content: center;
                         align-items: center;
                         flex-flow: column;
-
                         padding: 0 40px;
                     }
                 </style>
@@ -152,35 +148,82 @@
                         <h6>1 Year Warranty</h6>
                     </div>
                 </div>
-                
+
+
+                {% comment %} sizes and color {% endcomment %}
+                {% comment %} <!-- Colors -->
+                <div data-toggle="buttons">
+                    <label class="btn btn-primary btn-circle btn-lg">
+                        <input type="radio" name="q2" value="0">
+                    </label>
+                    <label class="btn btn-info btn-circle btn-lg">
+                        <input type="radio" name="q2" value="1">
+                    </label>
+                    <label class="btn btn-danger  btn-circle btn-lg ">
+                        <input type="radio" name="q2" value="2">
+                    </label>
+                </div>
+
+                <!-- Sizes -->
+                <div class="mt-10">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-medium text-gray-900">Size</h4>
+                        <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Size guide</a>
+                    </div>
+
+                    <fieldset class="mt-2">
+                        <legend class="label">Choose a size</legend>
+                        <div class="row">
+                            <div class="col-12">
+                                <input type="radio" name='sizes' class="btn-check" id="S" autocomplete="off">
+                                <label class="btn btn-outline-primary" style="min-width:150px;" for="S">S</label>
+
+                                <input type="radio" name='sizes' class="btn-check" id="M" autocomplete="off">
+                                <label class="btn btn-outline-primary" style="min-width:150px;" for="M">M</label>
+
+                                <input type="radio" name='sizes' class="btn-check" id="L" autocomplete="off">
+                                <label class="btn btn-outline-primary" style="min-width:150px;" for="L">L</label>
+
+                                <input type="radio" name='sizes' class="btn-check" id="XL" autocomplete="off">
+                                <label class="btn btn-outline-primary" style="min-width:150px;" for="XL">XL</label>
+
+                                <input type="radio" name='sizes' class="btn-check" id="XXL" autocomplete="off">
+                                <label class="btn btn-outline-primary" style="min-width:150px;" for="XXL">XXL</label>
+
+
+                            </div>
+                        </div>
+                    </fieldset>
+                </div> {% endcomment %}
+
+
                 <div class="d-flex justify-content-center align-items-center my-5">
                     <div class="btn-group w-100">
-                        {% if user.is_authenticated %}      
-                         <form action="/AddToCart/{{product.product_id}}" method="GET" class="w-100">
-                            <!-- <input type="text" value="{{i.product_id}}" hidden> -->
-                         {% if is_added_to_cart %}
+                        {% if user.is_authenticated %}
+                        <form action="/AddToCart/{{product.product_id}}" method="GET" id='addtocartform' class="w-100">
+                            {% if is_added_to_cart %}
                             <a href="/cart" class="btn btn-sm btn-outline-danger w-100 p-2"
-                            style="border-right: none;border-radius:5px 0px 0px 5px;">
-                            Go to Cart
-                            &nbsp;&nbsp;<i class="bi-cart-fill me-1"></i>
-                        </a>
-                        {% else %}
-                       <button type="submit" class="btn btn-sm btn-outline-danger w-100 p-2" id="addtocart"
-                            style="border-right: none;border-radius:5px 0px 0px 5px;">
-                            <i class="bi-cart-fill me-1"></i>Add to Cart
-                        </button>
+                                style="border-right: none;border-radius:5px 0px 0px 5px;">
+                                Go to Cart
+                                &nbsp;&nbsp;<i class="bi-cart-fill me-1"></i>
+                            </a>
+                            {% else %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100 p-2" id="addtocart"
+                                style="border-right: none;border-radius:5px 0px 0px 5px;">
+                                <i class="bi-cart-fill me-1"></i>Add to Cart
+                            </button>
                             {% endif %}
+                        </form>
 
-                         </form>
                         {% else %}
-                        <button type="button" class="btn btn-sm btn-outline-danger w-100 p-2" data-bs-toggle="modal" data-bs-target="#signinModal"
-                            style="border-right: none;border-radius:5px 0px 0px 5px;">
+                        <button type="button" class="btn btn-sm btn-outline-danger w-100 p-2" data-bs-toggle="modal"
+                            data-bs-target="#signinModal" style="border-right: none;border-radius:5px 0px 0px 5px;">
                             <i class="bi-cart-fill me-1"></i>
-                           Login for Add to Cart
+                            Login for Add to Cart
                         </button>
                         {% endif %}
 
-                       
+
                         <form action="/AddToCart/{{product.product_id}}" method="post" class="w-100">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-outline-success w-100 p-2"
@@ -205,23 +248,23 @@
                         {{aboutthisitem|unordered_list}}
                     </ul>
                 </div>
-                
+
 
                 <div class="container desc mt-5">
-                <table class="table table-striped ">
-                    <thead>
-                        <h5 style="font-weight: bold;">Specifications</h5>
-                    </thead>
-                    <tbody>
-                          {% for rowval in techinical_details %}    
-                             <tr>
-                             {% for val in rowval %}
-                              <td>{{val}}</td>
-                             {% endfor %}
+                    <table class="table table-striped ">
+                        <thead>
+                            <h5 style="font-weight: bold;">Specifications</h5>
+                        </thead>
+                        <tbody>
+                            {% for rowval in techinical_details %}
+                            <tr>
+                                {% for val in rowval %}
+                                <td>{{val}}</td>
+                                {% endfor %}
                             </tr>
-                          {% endfor %}
-                    </tbody>
-                </table>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -299,21 +342,19 @@
                                 <h6 class="">{{review.heading}}</h6>
 
 
-                                <br>
-                                {% for revImg in ReviewImages%}
-                                {% if review.id == revImg.review_id %}
+                                <br> {% for revImg in ReviewImages%} {% if review.id == revImg.review_id %}
                                 <a>
                                     <img class="img-fluid z-depth-2 img-thumbnail" loading="lazy" style="height:100px;"
                                         src="/media/{{revImg.image}}" alt="image" data-toggle="modal"
-                                        data-target="#modal1"></a>
-                                {% endif %}
-                                {% endfor %}
+                                        data-target="#modal1">
+                                </a>
+                                {% endif %} {% endfor %}
                                 <pre>{{review.body}}</pre>
 
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
-                                        <form action="{%url 'liked'%}" class="likeddata" method="POST" role="form"
-                                            class="contactForm">
+                                        <form action="{%url 'liked'%}" class="likeddata contactform" method="POST"
+                                            role="form">
                                             {%csrf_token%}
                                             <input type="text" name="reviewId" value="{{review.id}}" hidden>
                                             <button type="submit" name="like" class="link-muted me-2 bg-white border-0">
@@ -321,8 +362,8 @@
                                                 {{review.like_set.count}}
                                             </button>
                                         </form>
-                                        <form action="{%url 'disliked'%}" class="dislikeddata" method="POST" role="form"
-                                            class="contactForm">
+                                        <form action="{%url 'disliked'%}" class="dislikeddata contactform" method="POST"
+                                            role="form">
                                             {%csrf_token%}
                                             <input type="text" name="reviewId" value="{{review.id}}" hidden>
                                             <button type="submit" name="like" class="link-muted border-0 bg-white">
@@ -343,8 +384,7 @@
 </section>
 
 
-{% if not user_review %}
-{% if user.is_authenticated %}
+{% if not user_review %} {% if user.is_authenticated %}
 <div class="container  mt-5 mb-5 bg-light  ">
     <form action="/submitReview" method="post" enctype="multipart/form-data">
         {%csrf_token%}
@@ -357,7 +397,8 @@
                         <input type="hidden" name="rating" id="review_rating" value="">
 
                         <div class="mb-3">
-                            <input type="file" name="imgs[]" multiple class="form-control" aria-label="Choose Product Images">
+                            <input type="file" name="imgs[]" multiple class="form-control"
+                                aria-label="Choose Product Images">
                         </div>
                         <div class="mb-3">
 
@@ -408,6 +449,9 @@
 </div>
 {% endif %}
 {% endif %}
+
+
+
 <!-- Related items section-->
 
 <section class="py-5 bg-light">
@@ -421,7 +465,9 @@
                     <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
                     </div>
                     <!-- Product image-->
-                    <a href="/product/{{i.product_id}}"><img class="card-img-top" style="padding:20px;height:150px;object-fit:contain;" src='/media/{{i.image}}' alt="image" /></a>
+                    <a href="/product/{{i.product_id}}"><img class="card-img-top"
+                            style="padding:20px;height:150px;object-fit:contain;" src='/media/{{i.image}}'
+                            alt="image" /></a>
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
@@ -452,7 +498,6 @@
         </div>
     </div>
 </section>
-
 
 <script>
     let product_images = document.getElementsByClassName("product_images")
@@ -499,9 +544,6 @@
 
     let discount = "₹" + (mrp - sp) + "(" + (((mrp - sp) / mrp) * 100).toFixed(2) + "%)";
     document.getElementById("yousave").innerHTML = discount;
-
-
-
 </script>
 <script>
     const review_likes = document.getElementsByClassName("likeddata")
@@ -513,8 +555,7 @@
             fetch("{%url 'liked' %}", {
                 method: 'POST',
                 body: formData
-            }).then(Response => {
-            }).catch(resopnse => {
+            }).then(Response => { }).catch(resopnse => {
                 console.log("Error");
             })
         })
@@ -530,12 +571,12 @@
             fetch("{%url 'disliked' %}", {
                 method: 'POST',
                 body: formData
-            }).then(Response => {
-            }).catch(resopnse => {
+            }).then(Response => { }).catch(resopnse => {
                 console.log("Error");
             })
         })
     })
+
 
 </script>
 
@@ -554,7 +595,6 @@
             document.getElementById("review_rating").value = val + 1;
         })
     })
-
 </script>
 <script>
     let review_rating_container = document.getElementsByClassName("review_rating_container");
@@ -575,27 +615,25 @@
 
 <script>
     setInterval(() => {
-        if (window.pageYOffset>2000) {
-            document.getElementById("back-to-top").classList.remove('visually-hidden')  
+        if (window.pageYOffset > 2000) {
+            document.getElementById("back-to-top").classList.remove('visually-hidden')
+        } else {
+            document.getElementById("back-to-top").classList.add('visually-hidden')
         }
-        else{
-            document.getElementById("back-to-top").classList.add('visually-hidden')  
-        }
-        
-    },1000);
+
+    }, 1000);
 </script>
 
 
 <script>
-    let pid=[];
+    let pid = [];
     pid.push(parseInt('{{product.product_id}}'))
-    let isavail=JSON.parse(localStorage.getItem('recentsearches_id'))
+    let isavail = JSON.parse(localStorage.getItem('recentsearches_id'))
 
-    if (isavail==null) {
-            localStorage.setItem('recentsearches_id',JSON.stringify(pid))
-    }
-    else{
-        let arr= [JSON.parse(isavail)]
+    if (isavail == null) {
+        localStorage.setItem('recentsearches_id', JSON.stringify(pid))
+    } else {
+        let arr = [JSON.parse(isavail)]
         arr.push(parseInt('{{product.product_id}}'))
 
         localStorage.setItem('recentsearches_id', JSON.stringify(arr))
@@ -603,9 +641,6 @@
     }
 
     // localStorage.removeItem('recentsearches_id')
-
 </script>
 
-
-
-{% endblock body %}
+{% endblock%}

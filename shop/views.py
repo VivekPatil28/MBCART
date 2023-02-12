@@ -28,7 +28,6 @@ def index(request):
     cart = ""
     if request.user.is_authenticated:
         cart = Cart.objects.filter(user=request.user)
-
     StaticImages = StaticImage.objects.all()
     params = {'product': products,
               'coursal': coursal,
@@ -43,7 +42,7 @@ def index(request):
 
     if request.COOKIES.get('recentitems'):
         recent_items = eval(request.COOKIES.get('recentitems'))
-        params['recent_items'] = recent_items[::-1]
+        params['recent_items'] = recent_items[6::-1]
 
     if request.COOKIES.get('recentsearch'):
         recent_search = eval(request.COOKIES.get('recentsearch'))
@@ -135,13 +134,17 @@ def contact(request):
 # to submit the user response
 def submitform(request):
     if (request.method == 'POST'):
-        name = request.POST.get('name', '')
-        email = request.POST.get('email', '')
-        phoneNumber = request.POST.get('phoneNumber', '')
-        description = request.POST.get('description', '')
-        contact = Contact(email=email, phoneNumber=phoneNumber,
-                          description=description, name=name)
-        contact.save()
+        try:
+            name = request.POST.get('name', '')
+            email = request.POST.get('email', '')
+            phoneNumber = request.POST.get('phoneNumber', '')
+            description = request.POST.get('description', '')
+            contact = Contact(email=email, phoneNumber=phoneNumber,
+                            description=description, name=name)
+            contact.save()
+            messages.success(request, "Address Successfully Added")
+        except Exception as e:
+            messages.error(request, "Something went wrong try again later !")
 
         return render(request, 'shop/contact.html', {"success": '1'})
 
@@ -164,9 +167,6 @@ def product_desc(request, id):
     details=product.product_techinical_details
     for i in details.split("\n"):
         product_tech_d.append(i.split("\t"))
-    
-    print(product_tech_d)
-    
     Reviews = Review.objects.filter(product=product)
     user_review = Reviews.filter(user_id=request.user.id)
 
@@ -226,8 +226,9 @@ def AddToCart(request, id):
         product = Product.objects.get(product_id=id)
         cartitem, is_added = Cart.objects.get_or_create(
             user=request.user, product=product, totalprice=product.product_price)
+        messages.success(request, "Item Successfully Added To Cart")
         getCartItems(request)
-        return HttpResponseRedirect('/cart')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def removecartitem(request):
@@ -259,10 +260,9 @@ def signup(request):
             myuser.first_name = fname
             myuser.last_name = lname
             myuser.save()
-            messages.success(
-                request, "Your Account has been successfully created.")
+            messages.success(request, "Your Account has been successfully created.")
         except Exception as e:
-            print('ERROR Occoured')
+            messages.error(request, "Something went wrong try again later !")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -295,31 +295,26 @@ def submitReview(request):
         rating = request.POST['rating']
         heading = request.POST['heading']
         body = request.POST['body']
+        try:
+            product = Product.objects.get(product_id=product_id)
 
-        product = Product.objects.get(product_id=product_id)
+            review = Review.objects.create(user=request.user,
+                                        product=product, name=username, heading=heading, rating=rating, body=body)
 
-        review = Review.objects.create(user=request.user,
-                                       product=product, name=username, heading=heading, rating=rating, body=body)
-
-        review.save()
-        for img in imgs:
-            ReviewImage.objects.create(
-                image=img, review=review, product=product)
+            review.save()
+            for img in imgs:
+                ReviewImage.objects.create(
+                    image=img, review=review, product=product)
+            messages.success(request, "Review Successfully Submitted")
+        except Exception as e:
+            messages.error(request, "Something went wrong try again later !")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
-
-def insertProduct(request):
-    return render(request, 'shop/seller.html')
-
 
 def liked(request):
     if request.method == 'POST':
         reviewId = request.POST['reviewId']
         review = Review.objects.get(id=reviewId)
-        if not Like.objects.filter(user=request.user, content_object=review).exists():
-            like = Like.objects.create(
-                user=request.user, content_object=review)
-            like.save()
+        item,is_added=Like.objects.get_or_create(user=request.user, content_object=review)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -327,9 +322,7 @@ def disliked(request):
     if request.method == 'POST':
         reviewId = request.POST['reviewId']
         review = Review.objects.get(id=reviewId)
-        if not Dislike.objects.filter(user=request.user, content_object=review).exists():
-            dislike = Dislike.objects.create(user=request.user, content_object=review)
-            dislike.save()
+        item,is_added=Dislike.objects.get_or_create(user=request.user,content_object=review)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
@@ -346,13 +339,7 @@ def subcategory(request, string):
     return render(request, 'shop/category_desc.html', {'products': products})
 
 
-def getCartItems(request):
-    if request.user.is_authenticated:
-        if request.method == 'GET':
-            items = Cart.objects.filter(user_id=request.user.id)
-            data = {'num': len(items), 'year': str(date.today().year)
-                    }
-            return JsonResponse(data, safe=False)
+
 
 
 def payment(request):
@@ -411,7 +398,13 @@ def payment(request):
 
 def getMyRecentSearchItems(request):
     if request.method == 'GET':
-        # data_from_post = json.load(request)[p]
-        # print(data_from_post)
         return JsonResponse("ewrdg", safe=False)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+# An Fetch request to update the cart items every time 
+def getCartItems(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            items = Cart.objects.filter(user_id=request.user.id)
+            data = {'num': len(items)}
+            return JsonResponse(data, safe=False)

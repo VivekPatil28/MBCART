@@ -1,16 +1,13 @@
-from xml.etree.ElementInclude import default_loader
 from django.db import models
 from django.contrib.auth.models import User
-
-
-# Create your models here.
+from django.utils.safestring import mark_safe
 
 
     
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=250)
-    image = models.ImageField(upload_to='shop/Category_thumbnail', default='')
+    image = models.ImageField(upload_to='Category_thumbnail', default='')
 
     def __str__(self):
         return self.name
@@ -23,17 +20,16 @@ class SubCategory(models.Model):
     def __str__(self):
         return self.name
 
-
 class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
-    Sub_Category = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
     Category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
+    Sub_Category = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
     product_name = models.TextField()
     product_desc = models.TextField()
     product_techinical_details=models.TextField(default=" ")
     what_is_in_the_box = models.TextField()
     product_price = models.IntegerField()
-    image = models.ImageField(upload_to='shop/thumbnail_image', default='')
+    image = models.ImageField(upload_to='thumbnail_image', default='')
     product_rating = models.FloatField()
     product_shipping_charges = models.IntegerField(default=0)
     product_initial_price = models.IntegerField()
@@ -47,7 +43,7 @@ class Product(models.Model):
 
 class ProductImages(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='shop/images', default="")
+    image = models.ImageField(upload_to='images', default="")
 
     def __str__(self):
         return self.product.product_name
@@ -56,7 +52,7 @@ class ProductImages(models.Model):
 # Product Description Images
 class ProductDescriptionImages(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='shop/DescImages', default="shop/placeholder.png")
+    image = models.ImageField(upload_to='DescImages',default='')
 
     def __str__(self):
         return self.product.product_name
@@ -67,15 +63,14 @@ class ProductDescriptionImages(models.Model):
 class Coursal(models.Model):
     coursal_id = models.AutoField(primary_key=True)
     coursal_image = models.ImageField(
-        upload_to='shop/coursal_images', default="")
+        upload_to='coursal_images', default="")
     image_url=models.CharField(max_length=1000)
 
     def __str__(self):
         return "Coursal_Image "+str(self.coursal_id)
 
+
 # Contact model
-
-
 class Contact(models.Model):
     message_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -97,8 +92,7 @@ class Cart(models.Model):
     
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
-    product = models.ForeignKey(
-        Product, on_delete=models.DO_NOTHING, related_name='comments')
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, related_name='comments')
     user=models.ForeignKey(User,on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=500)
     heading = models.CharField(max_length=1000)
@@ -135,7 +129,7 @@ class Dislike(models.Model):
 class ReviewImage(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='shop/Reviewimages')
+    image = models.ImageField(upload_to='Reviewimages')
 
     def __str__(self):
         return str(self.id)
@@ -144,7 +138,57 @@ class ReviewImage(models.Model):
 class StaticImage(models.Model):
     cat=models.CharField(default="",max_length=500)
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='shop/static')
+    image = models.ImageField(upload_to='static')
     
     def __str__(self):
         return str(self.image)
+    
+    
+    
+    # new
+    
+# class Color(models.Model):
+#     name = models.CharField(max_length=28)
+#     code = models.CharField(max_length=20, blank=True, null=True)
+#     def __str__(self) -> str:
+#             return self.name
+#     def color_tag(self):
+#         if self.code is not None:
+#             return mark_safe("f<p style='background-color:{self.code}'>Color</p>")
+#         else:
+#             return ""
+
+# class Size(models.Model):
+#     name = models.CharField(max_length=20)
+#     code = models.CharField(max_length=10, blank=True, null=True)
+
+#     def __str__(self) -> str:
+#         return self.name
+
+
+# class Variant(models.Model):
+#     title = models.CharField(max_length=150, blank=True, null=True)
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#     color=models.ForeignKey(Color,on_delete=models.CASCADE,blank=True,null=True)
+#     size=models.ForeignKey(Size,on_delete=models.CASCADE,blank=True,null=True)
+#     image_id = models.ForeignKey(ProductImages,on_delete=models.CASCADE)
+#     quantity=models.IntegerField(default=1)
+#     price =models.FloatField(default=0)
+    
+#     def __str__(self) -> str:
+#         return self.title
+#     def image(self):
+#         img=Image.objects.get(id=self.image_id)
+#         if img.id is not None:
+#             var=img.image.url
+#         else:
+#             var=''
+#         return var
+    
+#     def image_tag(self):
+#         img =Image.objects.get(id=self.image_id)
+#         if img.id is not None:
+#             return mark_safe(f"<img src='{img.image_url}' height='50' />")
+#         else:
+#             return ''
+    

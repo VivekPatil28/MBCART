@@ -16,8 +16,9 @@ Including another URLconf
 
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
-
 
 urlpatterns = [
     path('', views.index, name="ShopHome"),
@@ -29,7 +30,6 @@ urlpatterns = [
     path('signin', views.signin, name="signin"),
     path('signout', views.signout, name="signout"),
     path('submitReview', views.submitReview, name="submitReview"),
-    path('insertProduct', views.insertProduct, name="insertProduct"),
     path('searchResult', views.search, name="search"),
     path('product/<int:id>', views.product_desc, name="product_desc"),
     path('AddToCart/<int:id>', views.AddToCart, name="addtocart"),
@@ -40,8 +40,6 @@ urlpatterns = [
     path('subcategory/<str:string>', views.subcategory, name="sub_cat_desc"),
     path('getCartItems', views.getCartItems, name="getCartItems"),
     path('payment', views.payment, name="payment"),
-    path('getMyRecentSearchItems', views.getMyRecentSearchItems,
-         name="getMyRecentSearchItems"),
-
-    # path('checkout', views.checkout, name="checkout"),
-]
+    path('getMyRecentSearchItems', views.getMyRecentSearchItems,name="getMyRecentSearchItems"),
+    
+]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

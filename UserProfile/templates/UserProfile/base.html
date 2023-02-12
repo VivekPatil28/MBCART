@@ -33,7 +33,6 @@
   </head>
 
   <body>
-  
     <!--Main Navigation-->
     <style>
       body {
@@ -176,10 +175,13 @@
 
     <!--Main layout-->
     <main>
-      <div
-        class="container py-2"
-        style="background-color: #eee; min-height: 100vh"
-      >
+      <div class="container py-2" style="background-color: #eee; min-height: 100vh">
+        {%for message in messages%}
+        <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" ></button>
+        </div>
+        {%endfor%} 
         {% block body %} {% endblock body %}
       </div>
     </main>

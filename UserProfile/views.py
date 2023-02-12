@@ -3,23 +3,10 @@ from django.shortcuts import render,redirect
 import UserProfile
 from shop import models as model
 from .models import *
-
-
-# from django.shortcuts import render, redirect
-# from .models import *
-# from django.contrib.auth.models import User
-# from django.contrib.auth import authenticate, login, logout
-# import json
-# from django.http import JsonResponse
-
-# from fuzzysearch import find_near_matches
-# from django.contrib import messages
-
-# Create your views here.
+from django.contrib import messages
 
 
 def profile(request):
-    # address=Address.objects.get(user=request.user,default_address=True)
     return render(request, 'UserProfile/profile.html')
 
 
@@ -59,7 +46,11 @@ def addAddress(request):
 
         address, is_added = Address.objects.get_or_create(user=request.user, full_name=name, phone_number=number, alternate_phone_number=alternateNumber, pincode=pincode,
                                                           state=state, city=city, house_no=houseno, area=area, home_work_address=homeaddress)
-    
+        if(is_added):
+            messages.success(request, "Address Successfully Added")
+        else:
+            messages.error(request, "Something went wrong try again later !")
+        return redirect('/profile/myaddresses')
     
     return render(request,"UserProfile/addAddress.html")
 
