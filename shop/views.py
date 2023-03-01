@@ -645,8 +645,9 @@ def payment(request):
                     </body>
                     </html>
                     """
-        gmail.username = "vivekpatildummymail@gmail.com"
-        gmail.password = "eigpgzazyfcptmus"
+        from . import gmailkey as gk
+        gmail.username = gk.username
+        gmail.password = gk.password
         # print(request.user.email)
         gmail.send(
             subject="Order Confirmation, Your Order has been Successfully Placed",
