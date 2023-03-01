@@ -645,7 +645,7 @@ def payment(request):
                     </body>
                     </html>
                     """
-        from . import gmailkey as gk
+        from shop.keys import gmailkey as gk
         gmail.username = gk.username
         gmail.password = gk.password
         # print(request.user.email)
@@ -662,7 +662,7 @@ def payment(request):
 
 def createOrder(request,total,params):
     import razorpay
-    from . import keys as k
+    from shop.keys import keys as k
     client = razorpay.Client(auth=(k.key1,k.key2))
     payment = client.order.create({"amount": total * 100, "currency": "INR", "payment_capture": 1})
     params["payment"] = payment
