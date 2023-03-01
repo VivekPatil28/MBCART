@@ -17,250 +17,107 @@
 {% comment %} {% for product in products %}
 <h1>{{product.quantity}}</h1>
 {% endfor %} {% endcomment %}
-<form action="/payment" method="post">
+<form action="/payment" method="post" id="form-data" >
   {% csrf_token %}
-  <section id="Addresses" class="h-100">
-    <div class="container-xl py-5">
-      <div class="row d-flex justify-content-center my-4">
-        <div class="col-md-8">
-          <div class="card mb-4">
-            <div class="card-header py-3">
-              <h4 class="text-muted">Select Address</h4>
-            </div>
-            <div class="card-body">
-              <input type="radio" name="address_id" id="" required hidden />
-              {% if addresses.count %} 
-              {% for address in addresses %}
-              <div class="my-2 card">
-                <div class="row card-body">
-                  <label
-                    for="{{address.id}}"
-                    class="col-2 d-flex justify-content-center align-items-center rounded card-header border-0"
-                    style="cursor: pointer"
-                  >
-                    <input type="radio" required name="address_id" value="{{address.id}}" id="{{address.id}}" class="form-check-input radio" {%if address.default_address  %} checked {%endif%}/>
-                  </label>
+    <section id="Addresses" class="h-100">
+      <div class="container-xl py-5">
+        <div class="row d-flex justify-content-center my-4">
+          <div class="col-md-8">
+            <div class="card mb-4">
+              <div class="card-header py-3">
+                <h4 class="text-muted">Select Address</h4>
+              </div>
+              <div class="card-body">
+                <input type="radio" name="address_id" id="" required hidden />
+                {% if addresses.count %} 
+                {% for address in addresses %}
+                <div class="my-2 card">
+                  <div class="row card-body">
+                    <label
+                      for="{{address.id}}"
+                      class="col-2 d-flex justify-content-center align-items-center rounded card-header border-0"
+                      style="cursor: pointer"
+                    >
+                      <input type="radio" required name="address_id" value="{{address.id}}" id="{{address.id}}" class="form-check-input radio" {%if address.default_address  %} checked {%endif%}/>
+                    </label>
 
-                  <div class="col-9 p-2 bg-white">
-                    <div>
-                      <small class="text-muted mb-0"
-                        >{{address.full_name}}</small
-                      >
-                    </div>
-                    <div>
-                      <small class="text-muted mb-0"
-                        >{{address.house_no}}</small
-                      >
-                    </div>
-                    <div>
-                      <small class="text-muted mb-0">{{address.area}}</small>
-                    </div>
-                    <div>
-                      <small class="text-muted mb-0">{{address.city}}</small>
-                    </div>
-                    <div>
-                      <small class="text-muted mb-0"
-                        >{{address.state}} - {{address.pincode}}</small
-                      >
-                    </div>
-                    <div>
-                      <small class="text-muted mb-0"
-                        >Phone No. {{address.phone_number}} {% if address.alternate_phone_number %}, {{address.alternate_phone_number}}{% endif %}
-                      </small>
+                    <div class="col-9 p-2 bg-white">
+                      <div>
+                        <small class="text-muted mb-0"
+                          >{{address.full_name}}</small
+                        >
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0"
+                          >{{address.house_no}}</small
+                        >
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0">{{address.area}}</small>
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0">{{address.city}}</small>
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0"
+                          >{{address.state}} - {{address.pincode}}</small
+                        >
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0"
+                          >Phone No. {{address.phone_number}} {% if address.alternate_phone_number %}, {{address.alternate_phone_number}}{% endif %}
+                        </small>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              {% endfor %} 
-              {% else %}
-              <p class="bg-primary fs-5 text-center p-2 text-white">
-                You haven't added any Addresses
-              </p>
-              {% endif %}
-              <div class="col-12 center">
-                <a
-                  href="profile/myaddresses/addAddress"
-                  class="btn btn-primary btn-md btn-block float-end mt-2"
-                >
-                  <i class="bi bi-plus"> </i> Add a new address
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="card mb-4">
-            <div class="card-body">
-              <p><strong>Expected shipping delivery</strong></p>
-              <p class="mb-0">12.10.2020 - 14.10.2020</p>
-            </div>
-          </div>
-          <div class="card mb-4 mb-lg-0">
-            <div class="card-body">
-              <p><strong>We accept</strong></p>
-              <img
-                class="me-2"
-                width="45px"
-                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
-                alt="Visa"
-              />
-              <img
-                class="me-2"
-                width="45px"
-                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
-                alt="American Express"
-              />
-              <img
-                class="me-2"
-                width="45px"
-                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
-                alt="Mastercard"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
-          <div class="card mb-4" style="position: sticky; top: 20px">
-            <div class="card-header py-3">
-              <h5 class="mb-0">Summary</h5>
-            </div>
-            <div class="card-body">
-              {% for item in products %}
-              <div class="row item">
-                <div class="col-4 align-self-center">
-                  <img class="img-fluid" src="media/{{item.image}}" />
-                </div>
-                <div class="col-8">
-                  <div class="row text-muted">
-                    {{item.product_name|truncatechars:44}}
-                  </div>
-                  <b class="row">₹{{item.total_price|intcomma}}</b>
-                  <div class="row">Qty:{{item.quantity}}</div>
+                {% endfor %} 
+                {% else %}
+                <p class="bg-primary fs-5 text-center p-2 text-white">
+                  You haven't added any Addresses
+                </p>
+                {% endif %}
+                <div class="col-12 center">
+                  <a
+                    href="profile/myaddresses/addAddress"
+                    class="btn btn-primary btn-md btn-block float-end mt-2"
+                  >
+                    <i class="bi bi-plus"> </i> Add a new address
+                  </a>
                 </div>
               </div>
-              <hr class="hr mb-1" />
-              {% endfor %}
-
-              <ul class="list-group list-group-flush">
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0"
-                >
-                  <span
-                    >Subtotal (<span class="totalselecteditems"></span
-                    >items):</span
-                  >
-                  <span id="totalcartprice">{{sub_total|intcomma}}</span>
-                </li>
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center px-0"
-                >
-                  <span>Shipping Charges</span>
-                  <span class="Shippingcharges"
-                    >{{shipping_charges|intcomma}}</span
-                  >
-                </li>
-                <li
-                  class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3"
-                >
-                  <strong>Total amount</strong>
-                  <strong>
-                    <p class="mb-0">{{total|intcomma}}</p>
-                  </strong>
-                </li>
-              </ul>
-              <button type="button" onclick="submitform()" class="btn btn-primary btn-lg btn-block">
-                Continue
-              </button>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="Payment" class="h-100">
-    <div class="container-xl py-5">
-      <div class="row d-flex justify-content-center my-4">
-        <div class="col-md-8">
-          <div class="card mb-4">
-            <div class="card-header py-3">
-              <h4 class="text-muted">Payment</h4>
+            <div class="card mb-4">
+              <div class="card-body">
+                <p><strong>Expected shipping delivery</strong></p>
+                <p class="mb-0">12.10.2020 - 14.10.2020</p>
+              </div>
             </div>
-            <div class="card-body">
-              <!-- Replace "test" with your own sandbox Business account app client ID -->
-              <script src="https://www.paypal.com/sdk/js?client-id=AdG7WlWMMmjJwI9e-HvbRZjgtR7_o6u04WfzFgdfZNNxk-kss7RtxHbn2-rUWyfoueR0DNYA00KwC8Hk&currency=USD"></script>
-              <!-- Set up a container element for the button -->
-              <div id="paypal-button-container"></div>
-              <script>
-                let total = '{{total}}'
-                paypal.Buttons({
-                  // Sets up the transaction when a payment button is clicked
-                  createOrder: (data, actions) => {
-                    return actions.order.create({
-                      purchase_units: [{
-                        amount: {
-                          
-                          value: total // Can also reference a variable or function
-                        }
-                      }]
-                    });
-                  },
-                  // Finalize the transaction after payer approval
-                  onApprove: (data, actions) => {
-                    return actions.order.capture().then(function(orderData) {
-                      // Successful capture! For dev/demo purposes:
-                      console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-                      const transaction = orderData.purchase_units[0].payments.captures[0];
-                      alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
-                      // When ready to go live, remove the alert and show a success message within this page. For example:
-                      // const element = document.getElementById('paypal-button-container');
-                      // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-                      // Or go to another URL:  actions.redirect('thank_you.html');
-                      let modal = document.getElementById("staticBackdrop");
-                      modal.setAttribute('class','modal fade show')
-                      modal.setAttribute('role','dialog')
-                      modal.style.display="block";
-                      var confettiSettings = { target: 'my-canvas' };
-                      var confetti = new ConfettiGenerator(confettiSettings);
-                      confetti.render();
-                    });
-                  }
-                }).render('#paypal-button-container');
-
-                
-              </script>
-              <span class="text-muted certificate-text"
-                ><i class="fa fa-lock"></i> Your transaction is secured with ssl
-                certificate</span
-              >
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body">
+                <p><strong>We accept</strong></p>
+                <img
+                  class="me-2"
+                  width="45px"
+                  src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+                  alt="Visa"
+                />
+                <img
+                  class="me-2"
+                  width="45px"
+                  src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+                  alt="American Express"
+                />
+                <img
+                  class="me-2"
+                  width="45px"
+                  src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+                  alt="Mastercard"
+                />
+              </div>
             </div>
           </div>
 
-
-
-          <div class="card mb-4 mb-lg-0">
-            <div class="card-body">
-              <p><strong>We accept</strong></p>
-              <img
-                class="me-2"
-                width="45px"
-                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
-                alt="Visa"
-              />
-              <img
-                class="me-2"
-                width="45px"
-                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
-                alt="American Express"
-              />
-              <img
-                class="me-2"
-                width="45px"
-                src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
-                alt="Mastercard"
-              />
-            </div>
-          </div>
-        </div>
           <div class="col-md-4">
             <div class="card mb-4" style="position: sticky; top: 20px">
               <div class="card-header py-3">
@@ -282,119 +139,106 @@
                 </div>
                 <hr class="hr mb-1" />
                 {% endfor %}
-          
+
                 <ul class="list-group list-group-flush">
-                  <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                    <span>Subtotal (<span class="totalselecteditems"></span>items):</span>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0"
+                  >
+                    <span
+                      >Subtotal (<span class="totalselecteditems"></span
+                      >items):</span
+                    >
                     <span id="totalcartprice">{{sub_total|intcomma}}</span>
                   </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center px-0"
+                  >
                     <span>Shipping Charges</span>
-                    <span class="Shippingcharges">{{shipping_charges|intcomma}}</span>
+                    <span class="Shippingcharges"
+                      >{{shipping_charges|intcomma}}</span
+                    >
                   </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3"
+                  >
                     <strong>Total amount</strong>
                     <strong>
                       <p class="mb-0">{{total|intcomma}}</p>
                     </strong>
                   </li>
                 </ul>
-
-                <button type="button" class="btn btn-primary btn-lg btn-block" data-bs-toggle="modal"
-                  data-bs-target="#confirmorder">
+                <button type="button" class="btn btn-primary btn-lg btn-block" data-bs-toggle="modal" data-bs-target="#confirmorder">
                   Place Order
                 </button>
               </div>
             </div>
           </div>
-
-          <!--Confirm Address Delete Modal -->
-          <div class="modal fade" id="confirmorder" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">
-                    Place Order
-                  </h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body container">
-                  Are You Sure To Place Order
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Cancel
-                  </button>
-                  <button type="submit" class="btn btn-primary btn-block">
-                    Place Order
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+        </div>
+      </div>
+    </section>
+  <!--Confirm Address Delete Modal -->
+  <div class="modal fade" id="confirmorder" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Place Order
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body container">
+          Are You Sure To Place Order
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <input id="rzp-button1" type="submit" value="Place Order" class="btn btn-primary btn-block"/>
         </div>
       </div>
     </div>
-  </section>
-</form>
-
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-  Launch static backdrop modal
-</button>
-
-<!-- Modal -->
-<canvas id="my-canvas"></canvas>
-
-<style>
-  #my-canvas{
-    position:absolute;
-    width:100%;
-    height: 100vh;
-    z-index: 100;
-    top: 0;
-    left: 0;
-  }
-</style>
-<div class="modal fade modal-dialog-centered" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Congratulations, Order Placed</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-    
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Understood</button>
-      </div>
-    </div>
   </div>
-</div>
+  <input type="text" id="razorpay_payment_id" name="razorpay_payment_id" value="" hidden>
+  <input type="text" id="razorpay_order_id" name="razorpay_order_id" value="" hidden>
+  <input type="text" id="razorpay_signature" name="razorpay_signature" value="" hidden>
+</form>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    let options = {
+      "key":"rzp_test_5jmsbT9aIzMxzY",
+      "amount":"{{payment.amount}}",
+      "currency":"INR",
+      "name":"MBCART",
+      "description":"Test",
+      //"image":"S",
+      "order_id":"{{payment.id}}",
+      "handler":function(response){
+        document.getElementById("razorpay_payment_id").setAttribute('value',response.razorpay_payment_id)
+        document.getElementById("razorpay_order_id").setAttribute('value',response.razorpay_order_id)
+        document.getElementById("razorpay_signature").setAttribute('value',response.razorpay_signature)
+        let form = document.getElementById("form-data");
+        let formData = new FormData(form);
+          fetch("{%url 'payment' %}", {
+            method: 'POST',
+            body: formData
+          }).then(Response => { }).catch(resopnse => {
+            console.log("Error");
+          })
+      },
+      "theme":{
+        "color":"#3399cc"
+      }
+    };
 
-<script>
-  !function (e, t) { "object" == typeof exports && "undefined" != typeof module ? module.exports = t() : "function" == typeof define && define.amd ? define(t) : (e = e || self).ConfettiGenerator = t() }(this, function () { "use strict"; return function (e) { var a = { target: "confetti-holder", max: 80, size: 1, animate: !0, respawn: !0, props: ["circle", "square", "triangle", "line"], colors: [[165, 104, 246], [230, 61, 135], [0, 199, 228], [253, 214, 126]], clock: 25, interval: null, rotate: !1, start_from_edge: !1, width: window.innerWidth, height: window.innerHeight }; if (e && (e.target && (a.target = e.target), e.max && (a.max = e.max), e.size && (a.size = e.size), null != e.animate && (a.animate = e.animate), null != e.respawn && (a.respawn = e.respawn), e.props && (a.props = e.props), e.colors && (a.colors = e.colors), e.clock && (a.clock = e.clock), null != e.start_from_edge && (a.start_from_edge = e.start_from_edge), e.width && (a.width = e.width), e.height && (a.height = e.height), null != e.rotate && (a.rotate = e.rotate)), "object" != typeof a.target && "string" != typeof a.target) throw new TypeError("The target parameter should be a node or string"); if ("object" == typeof a.target && (null === a.target || !a.target instanceof HTMLCanvasElement) || "string" == typeof a.target && (null === document.getElementById(a.target) || !document.getElementById(a.target) instanceof HTMLCanvasElement)) throw new ReferenceError("The target element does not exist or is not a canvas element"); var t = "object" == typeof a.target ? a.target : document.getElementById(a.target), o = t.getContext("2d"), r = []; function n(e, t) { e = e || 1; var r = Math.random() * e; return t ? Math.floor(r) : r } var i = a.props.reduce(function (e, t) { return e + (t.weight || 1) }, 0); function s() { var e = a.props[function () { for (var e = Math.random() * i, t = 0; t < a.props.length; ++t) { var r = a.props[t].weight || 1; if (e < r) return t; e -= r } }()]; return { prop: e.type ? e.type : e, x: n(a.width), y: a.start_from_edge ? a.clock < 0 ? parseFloat(a.height) + 10 : -10 : n(a.height), src: e.src, radius: n(4) + 1, size: e.size, rotate: a.rotate, line: Math.floor(n(65) - 30), angles: [n(10, !0) + 2, n(10, !0) + 2, n(10, !0) + 2, n(10, !0) + 2], color: a.colors[n(a.colors.length, !0)], rotation: n(360, !0) * Math.PI / 180, speed: n(a.clock / 7) + a.clock / 30 } } function l(e) { if (e) switch (o.fillStyle = o.strokeStyle = "rgba(" + e.color + ", " + (3 < e.radius ? .8 : .4) + ")", o.beginPath(), e.prop) { case "circle": o.moveTo(e.x, e.y), o.arc(e.x, e.y, e.radius * a.size, 0, 2 * Math.PI, !0), o.fill(); break; case "triangle": o.moveTo(e.x, e.y), o.lineTo(e.x + e.angles[0] * a.size, e.y + e.angles[1] * a.size), o.lineTo(e.x + e.angles[2] * a.size, e.y + e.angles[3] * a.size), o.closePath(), o.fill(); break; case "line": o.moveTo(e.x, e.y), o.lineTo(e.x + e.line * a.size, e.y + 5 * e.radius), o.lineWidth = 2 * a.size, o.stroke(); break; case "square": o.save(), o.translate(e.x + 15, e.y + 5), o.rotate(e.rotation), o.fillRect(-15 * a.size, -5 * a.size, 15 * a.size, 5 * a.size), o.restore(); break; case "svg": o.save(); var t = new window.Image; t.src = e.src; var r = e.size || 15; o.translate(e.x + r / 2, e.y + r / 2), e.rotate && o.rotate(e.rotation), o.drawImage(t, -r / 2 * a.size, -r / 2 * a.size, r * a.size, r * a.size), o.restore() } } function c() { a.animate = !1, clearInterval(a.interval), requestAnimationFrame(function () { o.clearRect(0, 0, t.width, t.height); var e = t.width; t.width = 1, t.width = e }) } return { render: function () { t.width = a.width, t.height = a.height, r = []; for (var e = 0; e < a.max; e++)r.push(s()); return requestAnimationFrame(function e() { for (var t in o.clearRect(0, 0, a.width, a.height), r) l(r[t]); !function () { for (var e = 0; e < a.max; e++) { var t = r[e]; t && (a.animate && (t.y += t.speed), t.rotate && (t.rotation += t.speed / 35), (0 <= t.speed && a.height < t.y || t.speed < 0 && t.y < 0) && (a.respawn ? (r[e] = t, r[e].x = n(a.width, !0), r[e].y = t.speed < 0 ? parseFloat(a.height) : -10) : r[e] = void 0)) } r.every(function (e) { return void 0 === e }) && c() }(), a.animate && requestAnimationFrame(e) }) }, clear: c } } });
-</script>
-<script>
-  function format_num(event) {
-    console.log(event);
-    let number = document.getElementById("ccn");
-    if (number.value.length % 5 == 0) {
-      number.value += " ";
-    }
-    return (
-      event.charCode >= 48 &&
-      event.charCode <= 57 &&
-      document.getElementById("ccn").value.length <= 19
-    );
-  }
-  function submitform() { 
-    document.getElementById("Addresses").style.display="none";
-    document.getElementById("Payment").style.display="block";
-   }
-</script>
+    let rzp1= new Razorpay(options);
+    rzp1.on('payment.failed',function(response){
+      alert("error")
+    });
+
+    document.getElementById("rzp-button1").onclick=function(e){
+      rzp1.open();
+      e.preventDefault();
+    };
+  </script>
 {% endblock body %}

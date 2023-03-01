@@ -196,11 +196,23 @@
                     </fieldset>
                 </div> {% endcomment %}
 
+                {% comment %} fetch Request to add an item into cart {% endcomment %}
+{% comment %} <script>
+    function addtocart(){
+        let id ="{{product.product_id}}"
+        url="/AddToCart/"+id
+        fetch(url, { method: "GET",}).then((response) => response.json()
+            ).then((data) => { 
+                console.log(data)
+        }).catch((error)=> { console.error("Error:", error); });
+    }
+
+</script> {% endcomment %}
 
                 <div class="d-flex justify-content-center align-items-center my-5">
                     <div class="btn-group w-100">
                         {% if user.is_authenticated %}
-                        <form action="/AddToCart/{{product.product_id}}" method="GET" id='addtocartform' class="w-100">
+                        <form action="/AddToCart/{{product.product_id}}" method="GET" class="w-100">
                             {% if is_added_to_cart %}
                             <a href="/cart" class="btn btn-sm btn-outline-danger w-100 p-2"
                                 style="border-right: none;border-radius:5px 0px 0px 5px;">
@@ -208,12 +220,30 @@
                                 &nbsp;&nbsp;<i class="bi-cart-fill me-1"></i>
                             </a>
                             {% else %}
-                            <button type="submit" class="btn btn-sm btn-outline-danger w-100 p-2" id="addtocart"
+                            <button type='submit' class="btn btn-sm btn-outline-danger w-100 p-2"
                                 style="border-right: none;border-radius:5px 0px 0px 5px;">
                                 <i class="bi-cart-fill me-1"></i>Add to Cart
                             </button>
                             {% endif %}
                         </form>
+
+                        {% comment %} Fetch request cide for add to cart {% endcomment %}
+                        {% comment %} {% if user.is_authenticated %}
+                        <div class="w-100">
+                            {% if is_added_to_cart %}
+                            <a href="/cart" class="btn btn-sm btn-outline-danger w-100 p-2"
+                                style="border-right: none;border-radius:5px 0px 0px 5px;">
+                                Go to Cart
+                                &nbsp;&nbsp;<i class="bi-cart-fill me-1"></i>
+                            </a>
+                            {% else %}
+                            <button onclick="addtocart()" class="btn btn-sm btn-outline-danger w-100 p-2"
+                                style="border-right: none;border-radius:5px 0px 0px 5px;">
+                                <i class="bi-cart-fill me-1"></i>Add to Cart
+                            </button>
+                            {% endif %}
+                        </div> {% endcomment %}
+
 
                         {% else %}
                         <button type="button" class="btn btn-sm btn-outline-danger w-100 p-2" data-bs-toggle="modal"
@@ -538,10 +568,6 @@
     mrp = parseInt(mrp)
     sp = parseInt(sp)
 
-
-
-
-
     let discount = "₹" + (mrp - sp) + "(" + (((mrp - sp) / mrp) * 100).toFixed(2) + "%)";
     document.getElementById("yousave").innerHTML = discount;
 </script>
@@ -576,10 +602,7 @@
             })
         })
     })
-
-
 </script>
-
 <script>
     let review_rating_input = document.getElementsByClassName("review_rating_input")
     Array.from(review_rating_input).forEach(e => {
@@ -612,7 +635,24 @@
         }
     })
 </script>
+<script>
+    let pid = [];
+    pid.push(parseInt('{{product.product_id}}'))
+    let isavail = JSON.parse(localStorage.getItem('recentsearches_id'))
 
+    if (isavail == null) {
+        localStorage.setItem('recentsearches_id', JSON.stringify(pid))
+    } 
+    else {
+        let arr = [JSON.parse(isavail)]
+        arr.push(parseInt('{{product.product_id}}'))
+
+        localStorage.setItem('recentsearches_id', JSON.stringify(arr))
+
+    }
+
+    //localStorage.removeItem('recentsearches_id')
+</script>
 <script>
     setInterval(() => {
         if (window.pageYOffset > 2000) {
@@ -622,25 +662,6 @@
         }
 
     }, 1000);
-</script>
-
-
-<script>
-    let pid = [];
-    pid.push(parseInt('{{product.product_id}}'))
-    let isavail = JSON.parse(localStorage.getItem('recentsearches_id'))
-
-    if (isavail == null) {
-        localStorage.setItem('recentsearches_id', JSON.stringify(pid))
-    } else {
-        let arr = [JSON.parse(isavail)]
-        arr.push(parseInt('{{product.product_id}}'))
-
-        localStorage.setItem('recentsearches_id', JSON.stringify(arr))
-
-    }
-
-    // localStorage.removeItem('recentsearches_id')
 </script>
 
 {% endblock%}

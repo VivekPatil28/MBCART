@@ -4,10 +4,10 @@ from django.contrib import admin
 from .models import *
 admin.site.register(Coursal)
 admin.site.register(Contact)
+admin.site.register(StaticImage)
 
 admin.site.register(Category)
 admin.site.register(SubCategory)
-admin.site.register(StaticImage)
 admin.site.register(Cart)
 
 admin.site.register(ProductImages)
@@ -24,9 +24,35 @@ class ProductDescriptionImagesAdmin(admin.StackedInline):
     model = ProductDescriptionImages
 
 
+# @admin.register(Post)
+# class PostAdmin(admin.ModelAdmin):
+#     list_display = ('title', 'slug', 'author', 'publish', 'status')
+
+#     # to make a filter sidebar for filtering Posts
+#     list_filter = ('status', 'created', 'publish', 'author')
+
+#     # To Add a search field in the admin site
+
+#     search_fields = ('title', 'body')
+
+#     #to	prepopulate	the	slug field with the input of the title field
+#     prepopulated_fields = {'slug': ('title',)}
+
+#     raw_id_fields = ('author',)
+
+#     # to navigate through a data hierarchy
+#     date_hierarchy = 'publish'
+
+#     # To add a ordering functionality on the admin site
+#     ordering = ('status', 'publish')
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-
+    list_display=('product_name','product_rating','product_price')
+    list_filter = ('product_publish_date','product_price','product_rating')
+    search_fields = ('product_name', 'product_desc')
+    date_hierarchy = 'product_publish_date'
+    ordering = ('product_rating','product_publish_date',)
     inlines = [ProductImageAdmin, ProductDescriptionImagesAdmin]
 
     class Meta:
