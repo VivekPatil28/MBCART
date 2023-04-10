@@ -23,5 +23,6 @@ urlpatterns = [
     path('getCartItems', views.getCartItems, name="getCartItems"),
     path('payment', views.payment, name="payment"),
     path('getMyRecentSearchItems', views.getMyRecentSearchItems,name="getMyRecentSearchItems"),
+    path('search', views.search_product,name="search_product"),
     
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

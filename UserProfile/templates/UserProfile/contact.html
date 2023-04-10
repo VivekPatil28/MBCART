@@ -1,7 +1,8 @@
 {% extends 'UserProfile/base.html' %}
 {%block contact %} active {%endblock contact%}
+{% block title %}Contact{% endblock title %}
 {%block body%}
-<div class="container">
+<div class="container card mt-3">
   <form action="contact" method="post">
     {%csrf_token%}
     <div class="container w-50 my-5">
@@ -21,10 +22,10 @@
       </div>
       <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">How may we help you?</label>
-        <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="1"></textarea>
+        <textarea class="form-control" name="description" id="exampleFormControlTextarea1" rows="10"></textarea>
       </div>
-      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <input class="btn btn-primary" type="submit" value="Submit" />
+      <div class="">
+        <input class="btn btn-primary w-100" type="submit" value="Submit" />
       </div>
     </div>
   </form>

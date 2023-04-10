@@ -1,5 +1,4 @@
-from itertools import product
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from datetime import date
 from UserProfile.models import Address
@@ -12,10 +11,9 @@ from fuzzysearch import find_near_matches
 from django.contrib import messages
 from redmail import gmail
 
-# Create your views here.
-
-
 # Home Page
+
+
 def index(request):
     products = Product.objects.all()
     coursal = Coursal.objects.all()
@@ -57,7 +55,7 @@ def index(request):
 
 #  Search functionality using fuzzysearch module
 # tries to match the patterns and return response
-def search(request):
+def search(request):  # sourcery skip: low-code-quality
     query = request.GET.get("search", "")
     query = query.strip()
     ids = set()
@@ -70,20 +68,20 @@ def search(request):
     subcat = SubCategory.objects.all()
     products = Product.objects.all()
     for cat in category:
-        s = find_near_matches(query, cat.name.lower(), max_l_dist=0)
+        s = find_near_matches(query, cat.name.lower(), max_l_dist=1)
         if s != []:
             product = Product.objects.filter(Category_id=cat.id)
             for i in product:
                 ids.add(i.product_id)
 
     for sc in subcat:
-        s = find_near_matches(query, sc.name.lower(), max_l_dist=0)
+        s = find_near_matches(query, sc.name.lower(), max_l_dist=1)
         if s != []:
             product = Product.objects.filter(Sub_Category_id=sc.id)
             for i in product:
                 ids.add(i.product_id)
 
-    if len(ids) == 0:
+    if not ids:
         for product in products:
             split_names = product.product_name.split(" ")
             split_names = split_names
@@ -130,8 +128,6 @@ def about(request):
 def product_desc(request, id):
     product = Product.objects.get(product_id=id)
     sub_cat = SubCategory.objects.get(id=product.Sub_Category_id)
-    productimg = ProductImages.objects.filter(product_id=id)
-    product_desc_imgs = ProductDescriptionImages.objects.filter(product_id=id)
     samecategory = (Product.objects.filter(Category_id=product.Category_id)).exclude(
         product_id=id
     )
@@ -141,13 +137,9 @@ def product_desc(request, id):
     what_is_in_the_box = product.what_is_in_the_box
     what_is_in_the_box = what_is_in_the_box.split("\n")
 
-    product_tech_d = []
     details = product.product_techinical_details
-    for i in details.split("\n"):
-        product_tech_d.append(i.split("\t"))
-        
+    product_tech_d = [i.split("\t") for i in details.split("\n")]
     Reviews = Review.objects.filter(product=product)
-    ReviewImages = ReviewImage.objects.filter(product_id=product)
     user_review = Reviews.filter(user_id=request.user.id)
 
     is_added_to_cart = False
@@ -158,46 +150,10 @@ def product_desc(request, id):
             if product == item.product:
                 is_added_to_cart = True
 
-    total_ratings = 0
-
-    for r in Reviews:
-        total_ratings += r.rating
-
-    if len(Reviews) > 0:
-        product_rating = total_ratings / len(Reviews)
-    else:
-        product_rating = 0
-
+    total_ratings = sum(r.rating for r in Reviews)
+    product_rating = total_ratings / len(Reviews) if len(Reviews) > 0 else 0
     product.product_rating = product_rating
     product.save(force_update=True)
-
-
-
-    params = {'product': product,
-              'sc': samecategory,
-              'user_review': user_review,
-              'sub_cat': sub_cat,
-              'is_added_to_cart': is_added_to_cart,
-              'Reviews': Reviews,
-              'ReviewImages': ReviewImages,
-              'productimgs': productimg,
-              'product_desc': product_desc_imgs,
-              'aboutthisitem': desc,
-              'techinical_details':product_tech_d,
-              'what_is_in_the_box': what_is_in_the_box}
-    
-    params = {'product': product,
-              'sc': samecategory,
-              'user_review': user_review,
-              'sub_cat': sub_cat,
-              'is_added_to_cart': is_added_to_cart,
-              'Reviews': Reviews,
-              'ReviewImages': ReviewImages,
-              'productimgs': productimg,
-              'product_desc': product_desc_imgs,
-              'aboutthisitem': desc,
-              'techinical_details':product_tech_d,
-              'what_is_in_the_box': what_is_in_the_box}
 
     params = {
         "product": product,
@@ -205,10 +161,6 @@ def product_desc(request, id):
         "user_review": user_review,
         "sub_cat": sub_cat,
         "is_added_to_cart": is_added_to_cart,
-        "Reviews": Reviews,
-        "ReviewImages": ReviewImages,
-        "productimgs": productimg,
-        "product_desc": product_desc_imgs,
         "aboutthisitem": desc,
         "techinical_details": product_tech_d,
         "what_is_in_the_box": what_is_in_the_box,
@@ -218,12 +170,12 @@ def product_desc(request, id):
 
     # For recent viewed items
     # response.delete_cookie('recentitems')
-    if not request.COOKIES.get("recentitems"):
-        arr = []
-        arr.append(product.product_id)
-    else:
-        arr = eval(request.COOKIES.get("recentitems"))
-        arr.append(product.product_id)
+    arr = (
+        eval(request.COOKIES.get("recentitems"))
+        if request.COOKIES.get("recentitems")
+        else []
+    )
+    arr.append(product.product_id)
     response.set_cookie("recentitems", str(arr))
     return response
 
@@ -233,7 +185,8 @@ def AddToCart(request, id):
     if request.method == "GET":
         product = Product.objects.get(product_id=id)
         cartitem, is_added = Cart.objects.get_or_create(
-            user=request.user, product=product, totalprice=product.product_price)
+            user=request.user, product=product, totalprice=product.product_price
+        )
         messages.success(request, "Item Successfully Added To Cart")
         getCartItems(request)
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -250,16 +203,14 @@ def AddToCart(request, id):
 #         messages.success(request, "Item Successfully Added To Cart")
 #         getCartItems(request)
 #         return JsonResponse("True", safe=False)
-    
-    
-    
+
+
 def removecartitem(request):
     if request.method == "POST":
-        id = request.POST["id"]
-        Cart.objects.filter(id=id).delete()
+        item = request.POST["id"]
+        Cart.objects.filter(id=item).delete()
         messages.error(request, "Item Successfully Removed From Cart")
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-    
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
 def cart(request):
@@ -279,6 +230,11 @@ def signup(request):
         lname = request.POST.get("lname")
         email = request.POST.get("email")
         password = request.POST.get("password")
+
+        if User.objects.filter(username=username):
+            messages.error(request, "The Username has already been taken !")
+            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+
         try:
             myuser = User.objects.create_user(username, email, password)
             myuser.first_name = fname
@@ -292,6 +248,7 @@ def signup(request):
 
 # Sign in and Signout functions to sign in or out
 
+
 def signin(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -300,10 +257,10 @@ def signin(request):
         if user is not None:
             login(request, user)
             messages.success(request, "Successfully Logged In")
-            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+
         else:
             messages.error(request, "Invalid Credentials")
-            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
 def signout(request):
@@ -335,17 +292,21 @@ def submitReview(request):
 
             review.save()
             for img in imgs:
-                ReviewImage.objects.create(image=img, review=review, product=product)
+                ReviewImage.objects.create(image=img, review=review)
             messages.success(request, "Review Successfully Submitted")
         except Exception as e:
+            print(e)
+            print("going")
             messages.error(request, "Something went wrong try again later !")
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
 def liked(request):
     if request.method == "POST":
         reviewId = request.POST["reviewId"]
         review = Review.objects.get(id=reviewId)
+        if item := Dislike.objects.filter(user=request.user, content_object=review):
+            item.delete()
         item, is_added = Like.objects.get_or_create(
             user=request.user, content_object=review
         )
@@ -356,10 +317,13 @@ def disliked(request):
     if request.method == "POST":
         reviewId = request.POST["reviewId"]
         review = Review.objects.get(id=reviewId)
+        if item := Like.objects.filter(user=request.user, content_object=review):
+            item.delete()
         item, is_added = Dislike.objects.get_or_create(
             user=request.user, content_object=review
         )
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+
 
 def category(request, string):
     cat = Category.objects.get(name=string)
@@ -373,6 +337,7 @@ def subcategory(request, string):
     products = Product.objects.filter(Sub_Category=scat)
     return render(request, "shop/category_desc.html", {"products": products})
 
+
 def payment(request):
     addresses = Address.objects.filter(user_id=request.user).order_by(
         "-default_address"
@@ -380,15 +345,18 @@ def payment(request):
 
     if request.COOKIES.get("cartitems"):
         cart_items = eval(request.COOKIES.get("cartitems"))
+    else:
+        return HttpResponseRedirect("/")
 
     ids = [int(x[0]) for x in cart_items]
 
     qs = list(Product.objects.filter(product_id__in=ids).values())
+
     for j in cart_items:
-        for i in range(len(qs)):
-            if qs[i]["product_id"] == int(j[0]):
-                qs[i]["quantity"] = int(j[1])
-                qs[i]["total_price"] = int(j[1]) * qs[i]["product_price"]
+        for q in qs:
+            if q["product_id"] == int(j[0]):
+                q["quantity"] = int(j[1])
+                q["total_price"] = int(j[1]) * q["product_price"]
 
     sub_total = 0
     total = 0
@@ -409,21 +377,39 @@ def payment(request):
         "shipping_charges": shipping_charges,
         "addresses": addresses,
     }
-    createOrder(request,total,params)
-    if request.method=='POST':
-        address_id = request.POST['address_id']
+
+    import razorpay
+    from shop.keys import keys as k
+
+    client = razorpay.Client(auth=(k.key1, k.key2))
+    payment = client.order.create(
+        {"amount": total * 100, "currency": "INR", "payment_capture": 1}
+    )
+    params["payment"] = payment
+
+    if request.method == "POST":
+        address_id = request.POST["address_id"]
         razorpay_payment_id = request.POST["razorpay_payment_id"]
         razorpay_order_id = request.POST["razorpay_order_id"]
         razorpay_signature = request.POST["razorpay_signature"]
-        
+
         address = Address.objects.get(id=address_id)
         product_list_string = ""
         for prd in qs:
             product = Product.objects.get(product_id=prd["product_id"])
-            product_list_string += product.product_name + ", "
-            order = Order.objects.create(user=request.user, product=product,quantity=prd['quantity'], address=address, final_price=prd['total_price'],payment_id=razorpay_payment_id,order_id=razorpay_order_id,signature=razorpay_signature)
+            product_list_string += f"{product.product_name}, "
+            order = Order.objects.create(
+                user=request.user,
+                product=product,
+                quantity=prd["quantity"],
+                address=address,
+                final_price=prd["total_price"],
+                payment_id=razorpay_payment_id,
+                order_id=razorpay_order_id,
+                signature=razorpay_signature,
+            )
             order.save()
-        
+
         template = f"""<!DOCTYPE html>
                     <html>
                     <head>
@@ -645,7 +631,9 @@ def payment(request):
                     </body>
                     </html>
                     """
+
         from shop.keys import gmailkey as gk
+
         gmail.username = gk.username
         gmail.password = gk.password
         # print(request.user.email)
@@ -656,26 +644,29 @@ def payment(request):
             html=template,
             # body_images={'image ': image, }
         )
-        # print("success")
-        return render(request,"shop/success.html")
+        return render(request, "shop/success.html", params)
     return render(request, "shop/paymentGateway.html", params)
 
-def createOrder(request,total,params):
-    import razorpay
-    from shop.keys import keys as k
-    client = razorpay.Client(auth=(k.key1,k.key2))
-    payment = client.order.create({"amount": total * 100, "currency": "INR", "payment_capture": 1})
-    params["payment"] = payment
-    
+
 def getMyRecentSearchItems(request):
     if request.method == "GET":
         return JsonResponse("ewrdg", safe=False)
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
+
 # An Fetch request to update the cart items every time
 def getCartItems(request):
-    if request.user.is_authenticated:
-        if request.method == "GET":
-            items = Cart.objects.filter(user_id=request.user.id)
-            data = {"num": len(items)}
-            return JsonResponse(data, safe=False)
+    if request.user.is_authenticated and request.method == "GET":
+        items = Cart.objects.filter(user_id=request.user.id)
+        data = {"num": len(items)}
+        return JsonResponse(data, safe=False)
+    return JsonResponse("", safe=False)
+
+
+def search_product(request):
+    if query := request.GET.get("value"):
+        products = Product.objects.filter(
+            product_name__icontains=query, product_desc__icontains=query
+        )
+        payload = [p.product_name for p in products]
+    return JsonResponse({"data": payload})

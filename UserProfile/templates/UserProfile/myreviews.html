@@ -1,5 +1,7 @@
 {% extends 'UserProfile/base.html' %} 
-{% block myreviewsactive  %}active{%endblock myreviewsactive %} {% block body %}
+{% block myreviewsactive  %}active{%endblock myreviewsactive %} 
+{% block title %}My Reviews{% endblock title %}
+{% block body %}
 <section class="py-1">
 
   {% for review in reviews %}

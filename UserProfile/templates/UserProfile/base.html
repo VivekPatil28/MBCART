@@ -1,11 +1,11 @@
+{% load static%}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no" />
-  <link rel="shortcut icon" href="media/shop/logo.jpg" type="image/x-icon" />
+  <link rel="shortcut icon" href="{% static 'favicon/favicon.ico'%}" type="image/x-icon" />
   <title>{% block title %}MBCART{%endblock%}</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
@@ -14,10 +14,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 
 <body>
-  <!--Main Navigation-->
   <style>
     body {
       background-color: #fbfbfb;
@@ -86,11 +86,11 @@
   <header>
     <!-- Sidebar -->
 
-    <nav id="sidebarMenu" class="d-lg-block sidebar bg-white p-0">
+    <nav id="sidebarMenu" class="d-lg-block sidebar bg-light p-0">
       <div class="mt-5">
         <div class="list-group list-group-flush mx-3 mt-5">
           <a href="/profile"
-            class="list-group-item list-group-item-action py-2 ripple {% block profileactive %}{% endblock profileactive %}"
+            class="list-group-item list-group-item-action py-2 mb-3 ripple {% block profileactive %}{% endblock profileactive %}"
             aria-current="true">
             <div class="row display-flex align-items-center">
               <i class="fas fa-tachometer-alt col-3"></i>
@@ -99,7 +99,7 @@
           </a>
 
           <a href="/profile/myorders"
-            class="list-group-item list-group-item-action py-2 ripple {% block myordersactive %}{% endblock myordersactive %}">
+            class="list-group-item list-group-item-action py-2 mb-3 ripple {% block myordersactive %}{% endblock myordersactive %}">
             <div class="row">
               <i class="bi bi-cart-check-fill col-3"></i>
               <span class="col-9 p-0">My Orders</span>
@@ -107,7 +107,7 @@
           </a>
 
           <a href="/profile/myreviews"
-            class="list-group-item list-group-item-action py-2 ripple {% block myreviewsactive %}{% endblock myreviewsactive %}">
+            class="list-group-item list-group-item-action py-2 mb-3 ripple {% block myreviewsactive %}{% endblock myreviewsactive %}">
             <div class="row display-flex align-items-center">
               <i class="bi bi-star-half col-3"></i>
               <span class="col-9 p-0">My Reviews</span>
@@ -115,20 +115,20 @@
           </a>
 
           <a href="/profile/myaddresses"
-            class="list-group-item list-group-item-action py-2 ripple {% block myaddressesactive %}{% endblock myaddressesactive %}">
+            class="list-group-item list-group-item-action py-2 mb-3 ripple {% block myaddressesactive %}{% endblock myaddressesactive %}">
             <div class="row display-flex align-items-center">
               <i class="bi bi-geo-alt-fill col-3"></i>
               <span class="col-9 p-0">Manage Addresses</span>
             </div>
           </a>
           <a href="/profile/contact"
-            class="list-group-item list-group-item-action py-2 ripple {% block contact %}{% endblock contact %}">
+            class="list-group-item list-group-item-action py-2 mb-3 ripple {% block contact %}{% endblock contact %}">
             <div class="row display-flex align-items-center">
               <i class="bi bi-person-lines-fill col-3"></i>
               <span class="col-9 p-0">Contact</span>
             </div>
           </a>
-          <a href="/" class="list-group-item list-group-item-action py-2 ripple">
+          <a href="/" class="list-group-item list-group-item-action py-2 mb-3 ripple">
             <div class="row display-flex align-items-center">
               <i class="bi bi-house-heart-fill col-3"></i>
               <span class="col-9 p-0">Back To Home</span>
@@ -136,7 +136,7 @@
           </a>
           <form action="/signout" method="post">
             {% csrf_token %}
-            <button type="submit" class="list-group-item list-group-item-action py-2 ripple border-0">
+            <button type="submit" class="list-group-item list-group-item-action py-2 mb-3 ripple border-0">
               <div class="row display-flex align-items-center">
                 <i class="fas fa-money-bill col-3"></i>
                 <span class="col-9 p-0">Log Out</span>
@@ -158,7 +158,8 @@
         {{message}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-      {%endfor%} {% block body %} {% endblock body %}
+      {%endfor%} 
+      {% block body %} {% endblock body %}
     </div>
   </main>
   <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"

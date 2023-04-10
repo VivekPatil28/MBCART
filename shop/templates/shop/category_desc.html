@@ -1,10 +1,11 @@
 {%extends 'shop/basic.html'%}
-{%block title%}MBCART{%endblock title%}
+{%block title%}{% with product=products.first %}{{product.Category}}{%endwith%}{%endblock title%}
 {%block body%}
 {% load humanize %}
 {% load static %}
 
 <div class="container my-5 d-flex justify-content-center flex-column">
+  
       {% for i in products %}
     <div class="row px-3">
         <div class="col-lg-4 col-xl-3">

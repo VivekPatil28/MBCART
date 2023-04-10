@@ -1,5 +1,5 @@
 {% extends 'shop/basic.html' %}
-{%block title%}MBCART / Products{%endblock title%}
+{%block title%}{{product.product_name}}{%endblock title%}
 {%block body %}
 {% load humanize %}
 <style>
@@ -7,10 +7,11 @@
         position: fixed;
         bottom: 15px;
         right: 20px;
+        z-index:999;
     }
 </style>
 
-<a id="back-to-top" href="#" class="btn btn-info btn-lg back-to-top uparr visually-hidden" role="button"><i
+<a id="back-to-top" href="#" class="btn btn-info btn back-to-top uparr visually-hidden" role="button"><i
         class="fas fa-chevron-up"></i></a>
 
 <!-- Product section-->
@@ -55,15 +56,14 @@
     <div class="container-fluid ">
         <div class="row align-items-start clss">
             <div id="imgcont" class="mt-2 col-md-5 mt-md-5 d-flex justify-content-start align-items-center flex-column">
-
-                <img style="width:80%;object-fit: contain;" id="main_img" class="card-img-top mb-md-5"
+                <img style="width:80%;object-fit: contain;" id="main_img" class="card-img-top mb-md-3"
                     src='/media/{{product.image}}' alt="image" />
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center flex-row flex-wrap mt-3">
                     <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;box-shadow:0px 0px 2px 2px rgba(0, 128, 0, 0.358);border: 2px solid green;box-sizing:border-box;"
-                        class="card-img-top mx-2 product_images" src='/media/{{product.image}}' alt="image" />
-                    {% for img in productimgs %}
+                        class="card-img-top mx-2 mb-1 product_images" src='/media/{{product.image}}' alt="image" />
+                    {% for img in product.product_images.all %}
                     <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;border: 1px solid grey;"
-                        class="card-img-top  mx-2 product_images" src='/media/{{img.image}}' alt="description images" />
+                        class="card-img-top  mx-2 mb-1 product_images" src='/media/{{img.image}}' loading="lazy" alt="description images" />
                     {% endfor %}
                 </div>
             </div>
@@ -254,12 +254,11 @@
                         {% endif %}
 
 
-                        <form action="/AddToCart/{{product.product_id}}" method="post" class="w-100">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm btn-outline-success w-100 p-2"
+                        <div class="w-100">
+                            <button onclick="checkout()" class="btn btn-sm btn-outline-success w-100 p-2"
                                 style="border-radius:0px 5px 5px 0px;">Buy Now
                             </button>
-                        </form>
+                        </div>
                     </div>
 
                 </div>
@@ -278,8 +277,6 @@
                         {{aboutthisitem|unordered_list}}
                     </ul>
                 </div>
-
-
                 <div class="container desc mt-5">
                     <table class="table table-striped ">
                         <thead>
@@ -299,10 +296,6 @@
 
             </div>
         </div>
-
-
-
-
     </div>
 </section>
 
@@ -329,7 +322,7 @@
 <!-- Description Images -->
 <h4 class="mt-2 ms-4">From the manufacturer</h4>
 <div class="w-100 container mt-3 p-0">
-    {% for img in product_desc %}
+    {% for img in product.product_description_images.all %}
     <div class="">
         <img src="/media/{{img.image}}" class="img-fluid w-100" alt="DescImages" loading="lazy">
     </div>
@@ -338,7 +331,7 @@
 
 
 <section style="background-color: #e7effd;" class="py-5">
-    {% for review in Reviews %}
+    {% for review in product.comments.all %}
     <div class="container  py-2 text-dark">
         <div class="row d-flex justify-content-center">
             <div class="col-md-11 col-lg-9 col-xl-7">
@@ -370,15 +363,14 @@
                                 </div>
                                 <p class="small">{{review.created}}</p>
                                 <h6 class="">{{review.heading}}</h6>
-
-
-                                <br> {% for revImg in ReviewImages%} {% if review.id == revImg.review_id %}
+                                <br> 
+                                {% for revImg in review.review_images.all%} 
                                 <a>
                                     <img class="img-fluid z-depth-2 img-thumbnail" loading="lazy" style="height:100px;"
                                         src="/media/{{revImg.image}}" alt="image" data-toggle="modal"
                                         data-target="#modal1">
                                 </a>
-                                {% endif %} {% endfor %}
+                                {% endfor %}
                                 <pre>{{review.body}}</pre>
 
                                 <div class="d-flex justify-content-between align-items-center">
@@ -389,7 +381,10 @@
                                             <input type="text" name="reviewId" value="{{review.id}}" hidden>
                                             <button type="submit" name="like" class="link-muted me-2 bg-white border-0">
                                                 <i class="fas fa-thumbs-up me-1"></i>
-                                                {{review.like_set.count}}
+                                               {% comment %} {{request.user}} {% endcomment %}
+                                                {% if review.Like.get == request.user %}
+                                                {{review.Like.get}}
+                                                {% endif %}
                                             </button>
                                         </form>
                                         <form action="{%url 'disliked'%}" class="dislikeddata contactform" method="POST"
@@ -411,6 +406,7 @@
         </div>
     </div>
     {% endfor %}
+
 </section>
 
 
@@ -662,6 +658,19 @@
         }
 
     }, 1000);
+</script>
+<script>
+    function checkout() {
+    let cookie_arr = new Array();
+      let pid = "{{product.product_id}}"
+      let quantity = 1
+      let id_quantity_arr = new Array();
+      id_quantity_arr.push(pid);
+      id_quantity_arr.push(quantity);
+      cookie_arr.push(id_quantity_arr);
+    document.cookie = "cartitems=" + JSON.stringify(cookie_arr) + ";path=/";
+    document.location.href = "/payment";
+  }
 </script>
 
 {% endblock%}

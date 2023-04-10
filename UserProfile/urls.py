@@ -12,6 +12,7 @@ urlpatterns = [
     path("deleteAddress/<int:id>", views.removeAddress, name="RemoveAddress"),
     path("addProduct", views.addProduct, name="addProduct"),
     path("contact",views.contact,name="contact"),
+    path("cancelOrder/<int:id>",views.cancelOrder,name="cancelOrder"),
     path(
         "defaultAddressChanged",
         views.defaultAddressChanged,

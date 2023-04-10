@@ -48,7 +48,7 @@ ROOT_URLCONF = "MBCART.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -128,6 +128,11 @@ MESSAGE_TAGS = {
     messages.ERROR: "danger",
 }
 
-razor_pay_key_id = "rzp_test_5jmsbT9aIzMxzY"
 
-key_secret = "gqFlou0OwEasc7RMzMVkuLtT"
+from shop.keys import gmailkey as gk
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = gk.username
+EMAIL_HOST_PASSWORD = gk.password

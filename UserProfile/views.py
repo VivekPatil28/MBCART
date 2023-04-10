@@ -97,3 +97,9 @@ def defaultAddressChanged(request):
         address.default_address = True
         address.save()
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+
+def cancelOrder(request,id):
+    order = Order.objects.get(id=id)
+    order.canceled = True
+    order.save()
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))

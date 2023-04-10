@@ -7,7 +7,7 @@ admin.site.register(Address)
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('product','address','quantity', 'order_date')
+    list_display = ('address','product','quantity', 'order_date')
     list_filter = ('order_date',)
     search_fields = ('address', 'product')
     

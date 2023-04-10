@@ -1,5 +1,6 @@
 {% extends 'UserProfile/base.html' %}
 {% block myaddressesactive %}active{%endblock myaddressesactive %} 
+{% block title %}Add a new Address{% endblock title %}
 {% block body %}
 
 <div class="row d-flex justify-content-center align-items-center flex-column">
@@ -9,7 +10,7 @@
                 <h5 class="mb-0">Add a New Address</h5>
             </div>
             <div class="card-body">
-                <form action="addAddress" method="POST" class="needs-validation" novalidate autocomplete="on">
+                <form method="POST" class="needs-validation" novalidate autocomplete="on">
                     {% csrf_token %}
 
                     <div class="mb-4">
@@ -445,31 +446,13 @@
                         </div>
                     </div>
 
-
-                    <!-- <div class="form-floating mb-4">
-                            <textarea class="form-control" placeholder="Road Name, Area, Colony" id="rac"
-                                style="height: 100px" required></textarea>
-                            <label for="rac">Road Name, Area, Colony</label>
-                        </div> -->
-
-
                     <div class="form-floating mb-4">
                         <input type="text" class="form-control" id="rdc" placeholder="Road Name, Area, Colony"
                             name="area" required>
                         <label for="rdc">Road Name, Area, Colony</label>
                     </div>
 
-                    <!-- <div class="float-right w-25 mb-4">
-                        <select class="form-select" required aria-label="select example" required>
-                            <option value="">Type of Address</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                    </div> -->
-
-
-                    <button type="submit" class="w-100 btn btn-primary btn-lg btn-block">Add Address</button>
+                    <button type="submit" class="w-100 btn btn-primary btn-lg btn-block animate__animated" id="add_Address">Add Address</button>
 
 
                 </form>
@@ -485,13 +468,22 @@
 
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
         var forms = document.querySelectorAll('.needs-validation')
-
+        let btn = document.getElementById("add_Address")
         // Loop over them and prevent submission
         Array.prototype.slice.call(forms)
             .forEach(function (form) {
                 form.addEventListener('submit', function (event) {
                     if (!form.checkValidity()) {
                         event.preventDefault()
+                        btn.classList.add('animate__shakeX')
+                        btn.classList.add('btn-danger')
+                        setTimeout(()=>{
+                            console.log("triggered")
+                            btn.classList.remove('animate__shakeX')
+                            btn.classList.remove('btn-danger')
+                            
+                        },2000)
+    
                         event.stopPropagation()
                     }
 

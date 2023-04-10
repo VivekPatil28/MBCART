@@ -48,7 +48,7 @@ class StaticImage(models.Model):
         return str(self.image)
 
 class ProductImages(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name = "product_images")
     image = models.ImageField(upload_to="images", default="")
 
     def __str__(self):
@@ -57,7 +57,7 @@ class ProductImages(models.Model):
 
 # Product Description Images
 class ProductDescriptionImages(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,related_name="product_description_images")
     image = models.ImageField(upload_to="DescImages", default="")
 
     def __str__(self):
@@ -72,7 +72,7 @@ class Coursal(models.Model):
     image_url = models.CharField(max_length=1000)
 
     def __str__(self):
-        return "Coursal_Image " + str(self.coursal_id)
+        return f"Coursal_Image {str(self.coursal_id)}"
 
 
 # Contact model
@@ -115,12 +115,12 @@ class Review(models.Model):
         ordering = ("created",)
 
     def __str__(self):
-        return "comment by {} on {}".format(self.name, self.product)
+        return f"comment by {self.name} on {self.product}"
 
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content_object = models.ForeignKey(Review, on_delete=models.CASCADE)
+    content_object = models.ForeignKey(Review, on_delete=models.CASCADE,related_name="Like")
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
@@ -137,8 +137,7 @@ class Dislike(models.Model):
 
 
 class ReviewImage(models.Model):
-    review = models.ForeignKey(Review, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE,related_name="review_images")
     image = models.ImageField(upload_to="Reviewimages")
 
     def __str__(self):

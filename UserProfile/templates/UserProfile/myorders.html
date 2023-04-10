@@ -1,5 +1,6 @@
 {% extends 'UserProfile/base.html' %}
 {% block myordersactive %}active{%endblock myordersactive %}
+{%block title %}My Orders{%endblock%}
 {% block body %} {% load humanize %}
 <style>
   .bs4-order-tracking {
@@ -122,7 +123,7 @@
           <p class="text-muted">Qt: <span>{{order.quantity}}</span></p>
           <h4 class="mt-3 mb-4 bold">
             <span class="mt-5">&#x20B9;</span>{{order.final_price|intcomma}}
-            <span class="small text-muted"> via (COD) </span>
+            <span class="small text-muted"> via (UPI) </span>
           </h4>
           <p class="text-muted">
             Tracking Status on: <span class="Today">11:30pm, Today</span>
@@ -184,13 +185,18 @@
         <small>Canceled</small>
       </button>
       {% else %}
-      <button class="col my-auto border-0 text-decoration-none bg-white text-primary" data-bs-toggle="modal"
-        data-bs-target="#ordercancel" {%if order.shipped %} disabled {%endif%}>
-        <input type="text" name="id" value="{{order.id}}" hidden />
+      {% if order.shipped %}
+        <button href="#" class="col my-auto border-0 bg-white text-muted" disabled>
         <small>Cancel</small>
       </button>
+      {% else %}
+      <button class="col my-auto border-0 text-decoration-none bg-white text-primary" data-bs-toggle="modal"
+        data-bs-target="#order{{order.id}}">
+        <small>Cancel</small>
+      </button>
+      {% endif %}
       <!-- modal for order cancellation -->
-      <div class="modal fade" id="ordercancel" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
+      <div class="modal fade" id="order{{order.id}}" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
@@ -202,31 +208,31 @@
             </div>
             <div class="modal-body">
               <b> Please Choose a Reason For Cancellation</b>
-              <div class="form-group">
-                <label for="exampleFormControlSelect1">Example select</label>
-                <select class="form-control" id="inputstate">
-                  <option>I have changed my mind</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+              <div class="form-group my-4">
+                <select class="form-control" id="inputstate" >
+                  <option value='1'>Please select an option...</option>
+                  <option value=''>I have changed my mind</option>
+                  <option value=''>Ordered by mistake</option>
+                  <option value=''>I have purchased the product form elsewhere</option>
+                  <option value=''>Need a different size or color</option>
+                  <option value=''>Price for the product has decreased</option>
+                  <option value=''>I want to cancel due to some product quality issues</option>
                 </select>
               </div>
               <div class="form-group">
-                <label for="exampleFormControlTextarea1">Example textarea</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <label class='float-start mb-2' for="exampleFormControlTextarea1">Comments (optional)</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" ></textarea>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Cancel
-              </button>
-              <input id="rzp-button1" type="submit" value="Place Order" class="btn btn-primary btn-block" />
+              <form action="cancelOrder/{{order.id}}" method="post">
+                {% csrf_token %}
+                <input id="rzp-button1" type="submit" value="Cancel Order" class="btn btn-primary btn-block" />
+              </form>
             </div>
           </div>
         </div>
       </div>
-
       {% endif %}
     </div>
   </div>
@@ -235,4 +241,5 @@
 <p class="bg-primary mt-5 fs-5 text-center p-2 text-white">
   You haven't placed any Orders yet
 </p>
-{% endfor %} {% endblock body %}
+{% endfor %} 
+{% endblock body %}
