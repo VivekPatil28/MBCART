@@ -5,8 +5,8 @@ from .models import *
 admin.site.register(Coursal)
 admin.site.register(Contact)
 admin.site.register(StaticImage)
-
 admin.site.register(Category)
+
 admin.site.register(SubCategory)
 admin.site.register(Cart)
 
@@ -57,6 +57,22 @@ class ProductAdmin(admin.ModelAdmin):
 
     class Meta:
         model = Product
+        
+
+
+
+
+# #  For product 
+# class SpecificationAdmin(admin.StackedInline):
+#     model = Specification
+    
+# @admin.register(Category)
+# class CategoryAdmin(admin.ModelAdmin):
+#     inlines = [SpecificationAdmin]
+
+#     class Meta:
+#         model = Category
+        
 
 
 class ReviewImageAdmin(admin.StackedInline):
@@ -78,3 +94,5 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(ReviewImage)
 class PostImageAdmin(admin.ModelAdmin):
     pass
+
+

@@ -7,10 +7,20 @@ class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=250)
     image = models.ImageField(upload_to="Category_thumbnail", default="")
+    specifications=models.CharField(max_length=1000,default='') 
+    specifications_json = models.JSONField(null=True,blank=True) #editable = False
 
     def __str__(self):
         return self.name
 
+from django.db.models.signals import post_save ,pre_save
+from django.dispatch import receiver
+
+@receiver(pre_save, sender=Category)
+def do_something(sender, instance, **kwargs):
+    words = instance.specifications.split(',')
+    json = eval('{' + ''.join(f"'{word}':'', " for word in words) +"}")
+    instance.specifications_json = json
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=250)
@@ -18,15 +28,14 @@ class SubCategory(models.Model):
 
     def __str__(self):
         return self.name
-
-
+    
+    
 class Product(models.Model):
     product_id = models.AutoField(primary_key=True)
     Category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     Sub_Category = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
     product_name = models.TextField()
     product_desc = models.TextField()
-    product_techinical_details = models.TextField(default=" ")
     what_is_in_the_box = models.TextField()
     product_price = models.IntegerField()
     image = models.ImageField(upload_to="thumbnail_image", default="")
@@ -34,10 +43,17 @@ class Product(models.Model):
     product_shipping_charges = models.IntegerField(default=0)
     product_initial_price = models.IntegerField()
     product_publish_date = models.DateField()
+    product_specifications = models.JSONField(blank=True,null=True)
+    
 
     def __str__(self):
         return self.product_name
-
+    
+@receiver(pre_save, sender=Product)
+def do_something(sender, instance, **kwargs):
+    if instance.product_specifications is None:
+        instance.product_specifications = instance.Category.specifications_json
+        
 
 # Product Images
 class StaticImage(models.Model):

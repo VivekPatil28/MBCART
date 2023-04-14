@@ -177,24 +177,37 @@
   </div>
   <div class="card-footer bg-white px-sm-3 px-0">
     <div class="row text-center">
-      <button href="#" class="col my-auto border-0 bg-white text-primary">
-        <small>Need Help</small>
-      </button>
-      {% if order.canceled %}
-      <button href="#" class="col my-auto border-0 bg-white text-primary" disabled>
-        <small>Canceled</small>
-      </button>
-      {% else %}
-      {% if order.shipped %}
-        <button href="#" class="col my-auto border-0 bg-white text-muted" disabled>
-        <small>Cancel</small>
-      </button>
-      {% else %}
-      <button class="col my-auto border-0 text-decoration-none bg-white text-primary" data-bs-toggle="modal"
-        data-bs-target="#order{{order.id}}">
-        <small>Cancel</small>
-      </button>
-      {% endif %}
+      <div class="col">
+        <form action="profile/downloadinvoice" method="post">
+        {% csrf_token %}
+        <input type="text" name="id" value="{{order.id}}" hidden>
+        <button type="submit" class="col my-auto border-0 bg-white text-primary">
+          <small>Download Invoice</small>
+        </button>
+      </form>
+      </div>
+      <div class="col">
+        {% if order.canceled %}
+        <button href="#" class="col my-auto border-0 bg-white text-primary" disabled>
+          <small>Canceled</small>
+        </button>
+        {% else %}
+        {% if order.shipped %}
+          <button href="#" class="col my-auto border-0 bg-white text-muted" disabled>
+          <small>Cancel</small>
+        </button>
+        {% else %}
+        <button class="col my-auto border-0 text-decoration-none bg-white text-primary" data-bs-toggle="modal"
+          data-bs-target="#order{{order.id}}">
+          <small>Cancel</small>
+        </button>
+        {% endif %}
+      </div>
+      
+      
+
+
+
       <!-- modal for order cancellation -->
       <div class="modal fade" id="order{{order.id}}" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">

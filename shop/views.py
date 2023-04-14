@@ -1,6 +1,5 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from datetime import date
 from UserProfile.models import Address
 from UserProfile.models import Order
 from .models import *
@@ -11,9 +10,8 @@ from fuzzysearch import find_near_matches
 from django.contrib import messages
 from redmail import gmail
 
+
 # Home Page
-
-
 def index(request):
     products = Product.objects.all()
     coursal = Coursal.objects.all()
@@ -44,13 +42,17 @@ def index(request):
 
     if request.COOKIES.get("recentitems"):
         recent_items = eval(request.COOKIES.get("recentitems"))
-        params["recent_items"] = recent_items[6::-1]
+        params["recent_items"] = recent_items[3::-1]
+        print(recent_items)
+    else:
+        print("not avail")
 
     if request.COOKIES.get("recentsearch"):
         recent_search = eval(request.COOKIES.get("recentsearch"))
-        params["recent_search"] = recent_search[:6]
+        print(recent_search)
+        params["recent_search"] = recent_search[3::-1]
 
-    return render(request, "shop\index.html", params)
+    return render(request, "shop/index.html", params)
 
 
 #  Search functionality using fuzzysearch module
@@ -133,12 +135,11 @@ def product_desc(request, id):
     )
     desc = product.product_desc
     desc = desc.split("\n")
+    
 
     what_is_in_the_box = product.what_is_in_the_box
     what_is_in_the_box = what_is_in_the_box.split("\n")
 
-    details = product.product_techinical_details
-    product_tech_d = [i.split("\t") for i in details.split("\n")]
     Reviews = Review.objects.filter(product=product)
     user_review = Reviews.filter(user_id=request.user.id)
 
@@ -162,7 +163,6 @@ def product_desc(request, id):
         "sub_cat": sub_cat,
         "is_added_to_cart": is_added_to_cart,
         "aboutthisitem": desc,
-        "techinical_details": product_tech_d,
         "what_is_in_the_box": what_is_in_the_box,
     }
 
@@ -403,7 +403,7 @@ def payment(request):
                 product=product,
                 quantity=prd["quantity"],
                 address=address,
-                final_price=prd["total_price"],
+                final_price=total,
                 payment_id=razorpay_payment_id,
                 order_id=razorpay_order_id,
                 signature=razorpay_signature,
@@ -636,7 +636,7 @@ def payment(request):
 
         gmail.username = gk.username
         gmail.password = gk.password
-        # print(request.user.email)
+        print(request.user.email)
         gmail.send(
             subject="Order Confirmation, Your Order has been Successfully Placed",
             receivers=[request.user.email],

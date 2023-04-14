@@ -222,15 +222,18 @@
                     <div class="card-body pt-xl-3 pt-md-1">
                         <p class="card-text p-0 m-0">
                             <div>
-                                <a href="/product/{{i.product_id}}" style="display:inline-block;min-height:100px;text-decoration: none;text-align:center;">{{i.product_name|truncatechars:100}}
-            </a>
-
+                                <a href="/product/{{i.product_id}}" style="display:inline-block;min-height:100px;text-decoration: none;text-align:center;">{{i.product_name|truncatechars:100}}</a>
                                 <div class="text-center">
-                                    <span class="text-bg-success" style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
-                  style="position:relative;top: -1px;left:4px;font-size:9px;" class="bi bi-star-fill"></small></span>
+                                    <span class="text-bg-success" style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}
+                                        <small style="position:relative;top: -1px;left:4px;font-size:9px;" class="bi bi-star-fill"></small>
+                                    </span>
                                     <span>({{i.order_set.count}})</span>
                                 </div>
-                                <h6 class="blockquote mt-3 text-center">₹{{i.product_price|intcomma}} &nbsp;<strike class="text-muted "><small>₹{{i.product_initial_price|intcomma}}</small></strike></h6>
+                                <h6 class="blockquote mt-3 text-center">₹{{i.product_price|intcomma}} &nbsp;
+                                    <strike class="text-muted ">
+                                        <small>₹{{i.product_initial_price|intcomma}}</small>
+                                    </strike>
+                                </h6>
                             </div>
                         </p>
                         <div class="d-flex justify-content-center align-items-center">
@@ -245,28 +248,4 @@
 
     </div>
 </div>
-
-
-<script>
-    s = JSON.parse(localStorage.getItem('arr'))
-    if (s != null) {
-        p = s.slice(-4, ).reverse()
-    }
-
-    fetch("{%url 'getMyRecentSearchItems' %}", {
-            method: "GET",
-            data: JSON.stringify(p),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8'
-            }
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log('success');
-        })
-        .catch((error) => {
-            console.error("Error:");
-        });
-</script>
-
 {%endblock%}

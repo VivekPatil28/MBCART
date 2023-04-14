@@ -86,7 +86,7 @@
                 </div>
                 <div>
                     <h5 class="small mt-2" style="color:rgba(0, 0, 0, 0.5);">{{product.order_set.count}} Orders &
-                        {{Reviews.count}} Reviews</h5>
+                        {{product.comments.count}} Reviews</h5>
                 </div>
                 <div class="fs-5 mb-5">
                     <span>
@@ -283,11 +283,11 @@
                             <h5 style="font-weight: bold;">Specifications</h5>
                         </thead>
                         <tbody>
-                            {% for rowval in techinical_details %}
+                            
+                            {% for key , val in product.product_specifications.items %}
                             <tr>
-                                {% for val in rowval %}
+                                <td>{{key}}</td>
                                 <td>{{val}}</td>
-                                {% endfor %}
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -634,19 +634,18 @@
 <script>
     let pid = [];
     pid.push(parseInt('{{product.product_id}}'))
-    let isavail = JSON.parse(localStorage.getItem('recentsearches_id'))
+    let isavail = JSON.parse(localStorage.getItem('recentsearch'))
 
     if (isavail == null) {
-        localStorage.setItem('recentsearches_id', JSON.stringify(pid))
+        localStorage.setItem('recentsearch', JSON.stringify(pid))
     } 
     else {
-        let arr = [JSON.parse(isavail)]
+        let arr = isavail
         arr.push(parseInt('{{product.product_id}}'))
 
-        localStorage.setItem('recentsearches_id', JSON.stringify(arr))
+        localStorage.setItem('recentsearch', JSON.stringify(arr))
 
     }
-
     //localStorage.removeItem('recentsearches_id')
 </script>
 <script>

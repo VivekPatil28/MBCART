@@ -18,5 +18,6 @@ urlpatterns = [
         views.defaultAddressChanged,
         name="defaultAddressChanged",
     ),
+    path('profile/downloadinvoice',views.downloadinvoice,name='downloadinvoice')
     # path('myaddresses', views.address, name="ok"),
 ]

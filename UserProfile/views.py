@@ -3,6 +3,10 @@ from django.shortcuts import render, redirect
 from shop import models as model
 from .models import *
 from django.contrib import messages
+import os
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 
 def profile(request):
@@ -103,3 +107,36 @@ def cancelOrder(request,id):
     order.canceled = True
     order.save()
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+
+def downloadinvoice(request):
+    # Load the HTML template
+    if request.method == 'POST':
+        template = get_template('UserProfile/invoice.html')
+        id=request.POST['id']
+        order= Order.objects.get(id=id)
+        html = template.render({'request':request,'order': order})
+
+        # Generate the PDF file
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="invoice-{order.product.product_name[:40]}....pdf"'
+        pisa_status = pisa.CreatePDF(
+            html, dest=response, link_callback=link_callback)
+        #pdf downloading
+
+        # Return the generated PDF file as a response
+        if pisa_status.err:
+            return HttpResponse('Failed to generate PDF', status=500)
+        return response
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER",'/'))
+
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths so xhtml2pdf can access those resources
+    """
+    from django.conf import settings
+    from django.contrib.staticfiles import finders
+    if result := finders.find(uri):
+        return result
+    else:
+        return os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    

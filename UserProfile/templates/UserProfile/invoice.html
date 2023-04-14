@@ -1,0 +1,166 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+  <title>Invoice - {{order.product.product_name|truncatechars:"50"}}</title>
+</head>
+
+<body>
+  <style>
+    /* Custom CSS styles */
+    body {
+      font-family: "Helvetica", sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #333;
+    }
+    .text-center {
+      text-align: center;
+    }
+  </style>
+
+
+  <table border='0' style="width: 100vw;">
+    <tr class="text-center ">
+      <td>MBCART</td>
+      <td>Contact us</td>
+      <td>Tax Invoice</td>
+    </tr>
+  </table>
+  <hr />
+  <table border='0' style="width: 100vw;">
+    <tr>
+      <td>
+        <p class="strong">Order ID :{{order.order_id}}</p>
+        <p>Order Date : {{order.order_date}}</p>
+        <p>Invoice Date : {{order.order_date}}</p>
+        <p>VAT/TIN : 897645312</p>
+      </td>
+      <td>
+        <p class="strong">Billing Address</p>
+        <address>
+          {{order.address.full_name}} <br>
+          {{order.address.house_no}} 
+          {{order.address.area}}  <br>
+          {{order.address.pincode}}  <br>
+          {{order.address.city}} {{order.address.state}} <br>
+          {{order.address.phone_number}}
+        </address>
+      </td>
+      <td>
+        <p class="strong">Shipping Address</p>
+        <address>
+          {{order.address.full_name}} <br>
+          {{order.address.house_no}}
+          {{order.address.area}} <br>
+          {{order.address.pincode}} <br>
+          {{order.address.city}} {{order.address.state}} <br>
+          {{order.address.phone_number}}
+        </address>
+      </td>
+    </tr>
+  </table>
+  <hr />
+  <table border='0' style="width:100vw;">
+    <tr class='td'>
+      <td style="width: 500px;">Product</td>
+      <td>Qty</td>
+      <td>Price</td>
+      <td>Tax</td>
+      <td>Total</td>
+    </tr>
+  </table>
+  <hr>
+  <table border='0' style="width: 100vw;">
+    <tr class='tr'>
+      <td style="width: 500px;">
+        {{order.product.product_name|truncatechars:"100"}}
+      </td>
+      <td class="td text-center">
+        {{order.quantity}}
+      </td>
+      <td class="td text-center">{{order.product.product_price|intcomma}}</td>
+      <td class="td text-center">{{order.product.product_shipping_charges|intcomma}}</td>
+      <td class="td text-center">{{order.final_price|intcomma}}</td>
+    </tr>
+  </table>
+  <hr>
+  <div class="row">
+    <center> <small>This is a computer generated invoice. No signature required.</small></center>
+  </div>
+
+
+
+  <!-- <div class="container">
+      <div class="row">
+        <div class="col">MBCART</div>
+        <div class="col">Contact us</div>
+        <div class="col">Tax Invoice</div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col">
+          <p class="strong">Order ID : 798645dg54{{order.id}}</p>
+          <p>Order Date : 97845{{order.id}}</p>
+          <p>Invoice Date :987645312 {{order.id}}</p>
+          <p>VAT/TIN : 897645312 {{order.id}}</p>
+        </div>
+        <div class="col">
+          <p class="strong">Billing Address</p>
+          <address>asdflkva sdfvjasdmngxvlkas dgxvkna,sdlgnkals</address>
+        </div>
+        <div class="col">
+          <p class="strong">Shipping Address</p>
+          <address>askdghk asdga ldksg sdnagkxl</address>
+        </div>
+        <div class="col">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Est, quaerat.
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col-4">Product</div>
+        <div class="col-2">Qty</div>
+        <div class="col-2">Price</div>
+        <div class="col-2">Tax</div>
+        <div class="col-2">Total</div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col-4">Product</div>
+        <div class="col-2">Qty</div>
+        <div class="col-2">Price</div>
+        <div class="col-2">Tax</div>
+        <div class="col-2">Total</div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col-4 text-center">Total ₹</div>
+        <div class="col">8645 ₹</div>
+        <div class="col">86453 ₹</div>
+        <div class="col">645 ₹</div>
+        <div class="col">1599.30 ₹</div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col-10">
+          <p class="float-end me-5">Grand Total</p>
+        </div>
+        <div class="col-2">8654653 ₹</div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col text-center">
+          <small class="text-muted"
+            >This is a computer generated invoice. No signature required.</small
+          >
+        </div>
+      </div>
+    </div> -->
+</body>
+
+</html>
