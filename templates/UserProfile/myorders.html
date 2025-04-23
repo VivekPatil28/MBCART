@@ -1,0 +1,261 @@
+{% extends 'UserProfile/base.html' %}
+{% block myordersactive %}active{%endblock myordersactive %}
+{%block title %}My Orders{%endblock%}
+{% block body %} {% load humanize %}
+<style>
+  .bs4-order-tracking {
+    margin-bottom: 30px;
+    overflow: hidden;
+    color: #878788;
+    padding-left: 0px;
+    margin-top: 30px;
+  }
+
+  .bs4-order-tracking li {
+    list-style-type: none;
+    font-size: 13px;
+    width: 25%;
+    float: left;
+    position: relative;
+    font-weight: 400;
+    color: #878788;
+    text-align: center;
+  }
+
+  .bs4-order-tracking li:first-child:before {
+    margin-left: 15px !important;
+    padding-left: 11px !important;
+    text-align: left !important;
+  }
+
+  .bs4-order-tracking li:last-child:before {
+    margin-right: 5px !important;
+    padding-right: 11px !important;
+    text-align: right !important;
+  }
+
+  .bs4-order-tracking li>div {
+    color: #fff;
+    width: 29px;
+    text-align: center;
+    line-height: 29px;
+    display: block;
+    font-size: 12px;
+    background: #878788;
+    border-radius: 50%;
+    margin: auto;
+  }
+
+  .bs4-order-tracking li:after {
+    content: "";
+    width: 150%;
+    height: 2px;
+    background: #878788;
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    top: 15px;
+    z-index: -1;
+  }
+
+  .bs4-order-tracking li:first-child:after {
+    left: 50%;
+  }
+
+  .bs4-order-tracking li:last-child:after {
+    left: 0% !important;
+    width: 0% !important;
+  }
+
+  .bs4-order-tracking li.active {
+    font-weight: bold;
+    color: #dc3545;
+  }
+
+  .bs4-order-tracking li.active>div {
+    background: #dc3545;
+  }
+
+  .bs4-order-tracking li.active:after {
+    background: #dc3545;
+  }
+
+  .card-timeline {
+    background-color: #fff;
+    z-index: 0;
+  }
+</style>
+
+{% for order in orders %}
+<div class="container card my-2">
+  <div class="card-header bg-white py-3">
+    <div class="row justify-content-between">
+      <div class="col">
+        <div class="row">
+          <div class="col-12 col-sm-6 text-muted">
+            Order ID
+            <span class="font-weight-bold text-dark">{{order.order_id}}</span>
+          </div>
+          <div class="col-12 col-sm-6 text-muted text-start text-sm-end">
+            Placed On
+            <span class="font-weight-bold text-dark">{{order.order_date|date}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body p-0 pt-sm-4">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="d-flex justify-content-center">
+          <a href="/product/{{order.product.product_id}}" style="display: grid; place-items: center">
+            <img class="img-fluid" style="width: 180px; height: 180px; object-fit: contain"
+              src="/media/{{order.product.image}}" />
+          </a>
+        </div>
+      </div>
+      <div class="col">
+        <div class="media-body">
+          <h5 class="bold">
+            {{order.product.product_name|truncatechars:"100"}}
+          </h5>
+          <p class="text-muted">Qt: <span>{{order.quantity}}</span></p>
+          <h4 class="mt-3 mb-4 bold">
+            <span class="mt-5">&#x20B9;</span>{{order.final_price|intcomma}}
+            <span class="small text-muted"> via (UPI) </span>
+          </h4>
+          <p class="text-muted">
+            Tracking Status on: <span>{% now "g:i A" %} Today</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row px-3">
+    <div class="col">
+      {% if order.canceled %}
+      <div class="card card-timeline px-2 border-none" style="border: none">
+        <ul class="bs4-order-tracking">
+          <li class="step active">
+            <div><i class="fas fa-user"></i></div>
+            Order Placed
+          </li>
+          <li class="step active">&nbsp;</li>
+          <li class="step active">&nbsp;</li>
+          <li class="step active">
+            <div>
+              <i class="bi bi-check-lg"></i>
+            </div>
+            Canceled
+          </li>
+        </ul>
+      </div>
+      {% else %}
+      <div class="card card-timeline px-2 border-none" style="border: none">
+        <ul class="bs4-order-tracking">
+          <li class="step active">
+            <div><i class="fas fa-user"></i></div>
+            Order Placed
+          </li>
+          <li class="step {% if order.shipped %}active{% endif %}">
+            <div><i class="fas fa-bread-slice"></i></div>
+            Shipped
+          </li>
+          <li class="step {% if order.outfordelivery %}active{% endif %}">
+            <div><i class="fas fa-truck"></i></div>
+            Out for delivery
+          </li>
+          <li class="step {% if order.delivered %}active{% endif %}">
+            <div><i class="bi bi-check-lg"></i></div>
+            Delivered
+          </li>
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card-footer bg-white px-sm-3 px-0">
+    <div class="row text-center">
+      <div class="col">
+        {% if not order.canceled and order.shipped %}
+          <form action="profile/downloadinvoice" method="post">
+            {% csrf_token %}
+            <input type="text" name="id" value="{{order.id}}" hidden>
+            <button type="submit" class="col my-auto border-0 bg-white text-primary">
+              <small>Download Invoice</small>
+            </button>
+          </form>
+        {% else %}
+          <button type="submit" class="col my-auto border-0 bg-white text-secondary" disabled>
+              <small>Download Invoice</small>
+          </button>
+        {% endif %}
+      </div>
+      <div class="col">
+        {% if order.canceled %}
+        <button href="#" class="col my-auto border-0 bg-white text-secondary" disabled>
+          <small>Canceled</small>
+        </button>
+        {% else %}
+        {% if order.shipped %}
+          <button href="#" class="col my-auto border-0 bg-white text-muted" disabled>
+          <small>Cancel</small>
+        </button>
+        {% else %}
+        <button class="col my-auto border-0 text-decoration-none bg-white text-primary" data-bs-toggle="modal"
+          data-bs-target="#order{{order.id}}">
+          <small>Cancel</small>
+        </button>
+        {% endif %}
+      </div>
+
+
+      <!-- modal for order cancellation -->
+      <div class="modal fade" id="order{{order.id}}" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Order Cancellation
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <b> Please Choose a Reason For Cancellation</b>
+              <div class="form-group my-4">
+                <select class="form-control" id="inputstate" >
+                  <option value='1'>Please select an option...</option>
+                  <option value=''>I have changed my mind</option>
+                  <option value=''>Ordered by mistake</option>
+                  <option value=''>I have purchased the product form elsewhere</option>
+                  <option value=''>Need a different size or color</option>
+                  <option value=''>Price for the product has decreased</option>
+                  <option value=''>I want to cancel due to some product quality issues</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class='float-start mb-2' for="exampleFormControlTextarea1">Comments (optional)</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" ></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <form action="cancelOrder/{{order.id}}" method="post">
+                {% csrf_token %}
+                <input id="rzp-button1" type="submit" value="Cancel Order" class="btn btn-primary btn-block" />
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{%empty%}
+<p class="bg-primary mt-5 fs-5 text-center p-2 text-white">
+  You haven't placed any Orders yet
+</p>
+{% endfor %} 
+{% endblock body %}

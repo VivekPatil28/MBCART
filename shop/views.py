@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from UserProfile.models import Address
 from UserProfile.models import Order
+from UserProfile.models import Notification
 from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -9,6 +10,15 @@ from django.http import JsonResponse
 from fuzzysearch import find_near_matches
 from django.contrib import messages
 from redmail import gmail
+
+from shop.keys import gmailkey as gk
+from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.template.loader import get_template
+from django.http import HttpResponse, HttpResponseRedirect
+
+from xhtml2pdf import pisa
+import os
 
 
 # Home Page
@@ -43,13 +53,9 @@ def index(request):
     if request.COOKIES.get("recentitems"):
         recent_items = eval(request.COOKIES.get("recentitems"))
         params["recent_items"] = recent_items[3::-1]
-        print(recent_items)
-    else:
-        print("not avail")
 
     if request.COOKIES.get("recentsearch"):
         recent_search = eval(request.COOKIES.get("recentsearch"))
-        print(recent_search)
         params["recent_search"] = recent_search[3::-1]
 
     return render(request, "shop/index.html", params)
@@ -57,7 +63,7 @@ def index(request):
 
 #  Search functionality using fuzzysearch module
 # tries to match the patterns and return response
-def search(request):  # sourcery skip: low-code-quality
+def search(request):  
     query = request.GET.get("search", "")
     query = query.strip()
     ids = set()
@@ -121,6 +127,25 @@ def search(request):  # sourcery skip: low-code-quality
     return response
 
 
+def compareview(request):
+    ids = eval(request.COOKIES.get("CompareValues"))
+    prods = Product.objects.filter(product_id__in=ids)
+
+    samecategory = Product.objects.filter(Category_id=prods.first().Category_id)
+    params={'compareproductlist':prods,
+            'sc':samecategory,}
+    return render(request,'shop/compare.html',params)
+
+def add_compare_item(request):
+    item_id = request.GET.get('item')
+    ids = eval(request.COOKIES.get("CompareValues"))
+    prods = Product.objects.filter(product_id__in=ids)
+    category = prods.first().Category
+    for i in prods:
+        if i.Category!= category:
+            return JsonResponse({"is_valid": False})
+    return JsonResponse({"is_valid":True})
+
 # About section page
 def about(request):
     return render(request, "shop/about.html")
@@ -130,6 +155,9 @@ def about(request):
 def product_desc(request, id):
     product = Product.objects.get(product_id=id)
     sub_cat = SubCategory.objects.get(id=product.Sub_Category_id)
+    if not request.user:
+        my_orders=Order.objects.filter(user=request.user).values_list(flat=True)
+    my_orders=""
     samecategory = (Product.objects.filter(Category_id=product.Category_id)).exclude(
         product_id=id
     )
@@ -155,8 +183,16 @@ def product_desc(request, id):
     product_rating = total_ratings / len(Reviews) if len(Reviews) > 0 else 0
     product.product_rating = product_rating
     product.save(force_update=True)
-
+    
+    
+    if request.COOKIES.get("CompareValues"):
+        compare_items = eval(request.COOKIES.get("CompareValues"))
+        prods = Product.objects.filter(product_id__in=compare_items)
+    else:
+        prods=[]
+    
     params = {
+        "compare_items":prods,
         "product": product,
         "sc": samecategory,
         "user_review": user_review,
@@ -164,6 +200,7 @@ def product_desc(request, id):
         "is_added_to_cart": is_added_to_cart,
         "aboutthisitem": desc,
         "what_is_in_the_box": what_is_in_the_box,
+        "my_orders":my_orders,
     }
 
     response = render(request, "shop/product_desc.html", params)
@@ -280,7 +317,6 @@ def submitReview(request):
         body = request.POST["body"]
         try:
             product = Product.objects.get(product_id=product_id)
-
             review = Review.objects.create(
                 user=request.user,
                 product=product,
@@ -292,11 +328,9 @@ def submitReview(request):
 
             review.save()
             for img in imgs:
-                ReviewImage.objects.create(image=img, review=review)
+                ReviewImage.objects.create(image=img,review=review)
             messages.success(request, "Review Successfully Submitted")
         except Exception as e:
-            print(e)
-            print("going")
             messages.error(request, "Something went wrong try again later !")
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
@@ -342,14 +376,13 @@ def payment(request):
     addresses = Address.objects.filter(user_id=request.user).order_by(
         "-default_address"
     )
-
     if request.COOKIES.get("cartitems"):
         cart_items = eval(request.COOKIES.get("cartitems"))
     else:
         return HttpResponseRedirect("/")
 
     ids = [int(x[0]) for x in cart_items]
-
+    
     qs = list(Product.objects.filter(product_id__in=ids).values())
 
     for j in cart_items:
@@ -632,36 +665,94 @@ def payment(request):
                     </html>
                     """
 
-        from shop.keys import gmailkey as gk
-
-        gmail.username = gk.username
-        gmail.password = gk.password
+        
+        from django.core.mail import send_mail
+        from django.template.loader import render_to_string
+        from django.conf import settings
+        from django.http import HttpResponse
+        
+        subject = 'Welcome to our site!'
+        to_email = request.user.email
         print(request.user.email)
-        gmail.send(
-            subject="Order Confirmation, Your Order has been Successfully Placed",
-            receivers=[request.user.email],
-            text="Hi, Customer",
-            html=template,
-            # body_images={'image ': image, }
+        from_email = settings.DEFAULT_FROM_EMAIL
+
+        # Context data for the email template
+        context = {
+            'name': 'John Doe',  # Pass dynamic data for personalization
+        }
+
+        # Render the HTML template
+        html_message = render_to_string('UserProfile/invoice.html', context)
+
+        # Send the email
+        send_mail(
+            subject,               # Subject of the email
+            '',                    # Plain text message (leave empty if sending HTML only)
+            from_email,            # From email address
+            [to_email],            # Recipient email list
+            html_message=html_message,  # The HTML email content
         )
+        
+        # template = get_template('UserProfile/invoice.html')
+        # html = template.render({'request': request, 'order': order})
+
+        # # Generate the PDF file
+        # response = HttpResponse(content_type='application/pdf')
+        # response['Content-Disposition'] = f'attachment; filename="invoice-{order.product.product_name[:40]}....pdf"'
+        # pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+
+        # # Check if PDF generation was successful
+        # if pisa_status.err:
+        #     return HttpResponse('Failed to generate PDF', status=500)
+
+        # # Create an EmailMessage instance
+        # email = EmailMessage(
+        #     "Order Confirmation, Your Order has been Successfully Placed",
+        #     "Hi, Customer",
+        #     gk.username,
+        #     [request.user.email],
+        #     html_message=template
+        # )
+        
+        # email.attach(f'invoice-{order.product.product_name[:40]}....pdf', response.getvalue(), 'application/pdf')
+        # email.send()
+
         return render(request, "shop/success.html", params)
     return render(request, "shop/paymentGateway.html", params)
 
+def link_callback(uri, rel):
+    from django.conf import settings
+    from django.contrib.staticfiles import finders
+    if result := finders.find(uri):
+        return result
+    else:
+        return os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
 
 def getMyRecentSearchItems(request):
     if request.method == "GET":
         return JsonResponse("ewrdg", safe=False)
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+def faq(request):
+    return render(request,'shop/FAQ.html')
 
-
+from django.core import serializers
 # An Fetch request to update the cart items every time
 def getCartItems(request):
     if request.user.is_authenticated and request.method == "GET":
         items = Cart.objects.filter(user_id=request.user.id)
-        data = {"num": len(items)}
+        notifications=Notification.objects.filter(user_id=request.user.id,is_read=False).order_by("-created_at")
+        ns=serializers.serialize('json', notifications)
+        data = {"num": len(items),"notifications":ns}
         return JsonResponse(data, safe=False)
     return JsonResponse("", safe=False)
 
+def notifications_viewed(request):
+    if request.user.is_authenticated and request.method == "GET":
+        notifications=Notification.objects.filter(user_id=request.user.id,is_read=False)
+        for i in notifications:
+            i.is_read=True
+            i.save()
+    return JsonResponse("", safe=False)
 
 def search_product(request):
     if query := request.GET.get("value"):
@@ -670,3 +761,30 @@ def search_product(request):
         )
         payload = [p.product_name for p in products]
     return JsonResponse({"data": payload})
+
+
+def show_similar_products(request):
+    if request.method=='POST':
+        prod_id = request.POST['product_id']
+        product= Product.objects.get(product_id=prod_id)
+        samecategory = (Product.objects.filter(Category_id=product.Category_id)).exclude(product_id=prod_id)
+        params={'products':samecategory,}
+        return render(request,'shop/similar_products.html',params)
+    
+#chatbot Integration
+from django.http import JsonResponse
+from .chatbot.engine import get_bot_response
+
+def chatbot_response(request):
+    if request.user.is_authenticated:
+        message = request.GET.get("message", "")
+        product_id = request.GET.get("product", "")
+        if product_id:
+            product = Product.objects.get(product_id=product_id)
+        else:
+            product=None
+        print(product)
+        reply = get_bot_response(message,request,product)
+    else: 
+        reply = "Login for Chatbot Usage"
+    return JsonResponse({'response': reply})

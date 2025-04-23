@@ -14,23 +14,21 @@ SECRET_KEY = "django-insecure-hl#sh%ibkwsf62*pmz3lw3x*f%5p8s6w71aki=1ctswkk+=*9a
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
 
 INSTALLED_APPS = [
     "django.contrib.humanize",
-    "shop.apps.ShopConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "shop",
     "UserProfile",
-    "SellerDashboard",
 ]
 
 MIDDLEWARE = [
@@ -48,7 +46,7 @@ ROOT_URLCONF = "MBCART.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates'),],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -99,11 +97,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
+TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
+USE_I18N = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -114,9 +110,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-MEDIA_URL = "media/"
+
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_ROOT = BASE_DIR / "media"
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 
 # Default primary key field type
@@ -131,8 +129,9 @@ MESSAGE_TAGS = {
 
 from shop.keys import gmailkey as gk
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'smtp.gmail.com'  
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = gk.username
-EMAIL_HOST_PASSWORD = gk.password
+EMAIL_HOST_USER = gk.username 
+EMAIL_HOST_PASSWORD =  gk.password 
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

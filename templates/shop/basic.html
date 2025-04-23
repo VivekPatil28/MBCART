@@ -1,0 +1,461 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no" />
+  <link rel="shortcut icon" href="{% static 'favicon/favicon.ico'%}" type="image/x-icon" />
+  <title>{% block title %}{%endblock%}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/tarekraafat-autocomplete.js/10.2.7/css/autoComplete.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="{% static 'jquery/jquery-3.6.0.min.js'%}"></script>
+</head>
+
+<body class="{% block bodyclasses %}{% endblock bodyclasses %} p-0 m-0 ">
+
+
+
+  {% include 'shop/signin.html' %}
+  {% include 'shop/signup.html' %}
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+
+    }
+
+    /* Robot button */
+    #chatbot-icon {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    #chatbot-icon img {
+      width: 30px;
+      height: 30px;
+    }
+
+    /* Chat window popup */
+    #chat-popup {
+      display: none;
+      position: fixed;
+      bottom: 75px;
+      right: 20px;
+      width: 320px;
+      height: 420px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      z-index: 998;
+      flex-direction: column;
+    }
+
+    #chat-header {
+      background-color: #007bff;
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    #chat-body {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background-color: #f4f4f4;
+      font-size: 14px;
+    }
+
+    .message {
+      margin: 8px 0;
+    }
+
+    .user {
+      text-align: right;
+      color: blue;
+    }
+
+    .bot {
+      text-align: left;
+      color: green;
+    }
+
+    #chat-input-area {
+      padding: 10px;
+      border-top: 1px solid #ddd;
+    }
+
+    #user-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+  </style>
+
+  <button id="chatbot-icon" onclick="toggleChat()">
+    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712027.png" alt="Chatbot Icon">
+  </button>
+
+  <!-- Chat Popup -->
+  <div id="chat-popup">
+    <div id="chat-header">🤖 Ask Me Anything</div>
+    <div id="chat-body"></div>
+    <div id="chat-input-area">
+      <input type="text" id="user-input"  onkeyup="sendMessage(event)" placeholder="Type your message..." />
+    </div>
+  </div>
+
+
+  <nav class="navbar bg-dark {% block position %}{% endblock position %} top-0"
+    style="z-index: 2;border-bottom:2px solid rgb(130, 238, 240)">
+    <div class="nav container-fluid d-flex justify-content-around mx-sm-4">
+      <a href="/" class="navbar-brand text-white order-sm-0 mx-sm-5">MBCART</a>
+
+      <div class="d-flex order-sm-2">
+        {% if user.is_authenticated %}
+
+        <div class="dropdown mt-2">
+          <div class="position-relative me-4 " style="cursor:pointer;" id="bell">
+            <i class="fa-solid fa-bell fa-xl" style="color: #0B5ED7;"></i>
+            <span id="notifications_length"
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+          </div>
+        </div>
+
+        <a href="/cart" class="btn btn-primary position-relative me-4">
+          <i class="bi bi-cart3"></i>
+          <span id="cart_items_count"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+        </a>
+        <!-- <form method="post" action="/signout"> -->
+        <!-- <form method="post" action="/profile">
+                    {%csrf_token%} -->
+        <div class="btn-group">
+          <a href="/profile" class="btn btn-primary dropdown-toggle" data-bs-toggle="tooltip" data-bs-placement="left"
+            title="Go to Profile">
+            {{request.user|truncatechars:'15'}}
+          </a>
+        </div>
+        <!-- </form> -->
+
+        {% else %}
+        <button type="button" class="btn btn-primary me-2 px-4" data-bs-toggle="modal" data-bs-target="#signinModal">
+          <i class="bi bi-cart3"></i>
+        </button>
+        <button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#signinModal">
+          Login
+        </button>
+        {% endif %}
+      </div>
+      <form class="d-flex flex-grow-1 order-sm-1 p-3 mx-sm-5" role="search" action="/searchResult" method="get">
+        <div class="input-group mx-lg-5">
+          <input type="text" class="form-control" placeholder="Search" aria-label="Search"
+            aria-describedby="basic-addon1" name="search" id="search" value="{{query}}" />
+          <button type="submit" class="border-0 px-3 text-bg-danger">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </nav>
+
+  <!--Notifiction Container-->
+  <div class="notifications position-fixed"
+    style="top:100px;right:100px;z-index:5;overflow:auto;height:0px;opacity:0;transition:0.5s all ease;width:300px;"
+    id="notifications_container">
+    <div class="card text-bg-dark">
+      <ul class="list-group list-group-flush" id="notification_list">
+
+      </ul>
+    </div>
+  </div>
+
+  <!-- Toast Alert -->
+  <div class="toast-container position-fixed" style="bottom: 10px; right: 10px">
+    {% for message in messages %}
+    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="bi bi-exclamation-circle-fill me-2 text-{{message.tags}}"></i>
+        <strong class="me-auto">MBCART</strong>
+        <small class="text-muted">just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">{{message}}</div>
+    </div>
+
+    {% endfor %}
+  </div>
+
+  {%block body%}
+  {%endblock body%}
+
+  <!-- Footer -->
+  <footer class="text-center text-lg-start bg-dark bg-opacity-90 text-white">
+    <!-- Section: Social media -->
+    <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+      <!-- Left -->
+      <div class="me-5 d-none d-lg-block">
+        <span>Get connected with us on social networks:</span>
+      </div>
+      <!-- Left -->
+
+      <!-- Right -->
+      <div class="">
+        <a href="" class="me-4 link-secondary text-decoration-none">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="" class="me-4 link-secondary text-decoration-none">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="" class="me-4 link-secondary text-decoration-none">
+          <i class="fab fa-google"></i>
+        </a>
+        <a href="" class="me-4 link-secondary text-decoration-none">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="" class="me-4 link-secondary text-decoration-none">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="" class="me-4 link-secondary text-decoration-none">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+      <!-- Right -->
+    </section>
+    <!-- Section: Social media -->
+
+    <!-- Section: Links  -->
+    <section class="">
+      <div class="container text-center text-md-start mt-5">
+        <!-- Grid row -->
+        <div class="row mt-3">
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+            <!-- Content -->
+            <h6 class="text-uppercase fw-bold mb-4">
+              <i class="fas fa-gem me-3 text-secondary"></i>MBCART
+            </h6>
+            <p class="text-white-50">
+              MBCART is an Indian e-commerce company. The company initially
+              focused on online book sales before expanding into other product
+              categories such as consumer electronics, fashion, home
+              essentials products.
+            </p>
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4 text-white-50">
+            <!-- Links -->
+            <h6 class="text-uppercase fw-bold mb-4 text-white">
+              Make Money with Us
+            </h6>
+            <p>
+              <a href="#" class="text-reset">Sell on MBCART</a>
+            </p>
+            <p>
+              <a href="#!" class="text-reset">Sell under MBCART</a>
+            </p>
+            <p>
+              <a href="#!" class="text-reset">Advertise Your Products</a>
+            </p>
+            <p>
+              <a href="#!" class="text-reset">MBCART Pay on Merchants</a>
+            </p>
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4 text-white-50">
+            <!-- Links -->
+            <h6 class="text-uppercase fw-bold mb-4 text-white">Help</h6>
+            <p>
+              <a href="#!" class="text-reset">Payments</a>
+            </p>
+            <p>
+              <a href="#!" class="text-reset">Shipping</a>
+            </p>
+            <p>
+              <a href="#!" class="text-reset">Cancellation & Returns</a>
+            </p>
+            <p>
+              <a href="#!" class="text-reset">FAQ</a>
+            </p>
+          </div>
+          <!-- Grid column -->
+          <!-- Grid column -->
+          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+            <!-- Links -->
+            <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+            <p>
+              <i class="fas fa-home me-3 text-secondary"></i>MBCART Internet
+              Private Limited
+            </p>
+            <p>
+              <i class="fas fa-envelope me-3 text-secondary"></i>
+              MBCART@gmail.com
+            </p>
+            <p>
+              <i class="fas fa-phone me-3 text-secondary"></i> + 91 9373259907
+            </p>
+            <p>
+              <i class="fas fa-phone me-3 text-secondary"></i> + 91 9370307771
+            </p>
+          </div>
+          <!-- Grid column -->
+        </div>
+        <!-- Grid row -->
+      </div>
+    </section>
+    <!-- Section: Links  -->
+
+    <!-- Copyright -->
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.025)">
+      © <span id="current_year"></span> Copyright:
+      <a class="text-reset" href="/">MBCART.com</a>
+    </div>
+    <!-- Copyright -->
+  </footer>
+  {% comment %}
+  <div id="load"></div>
+  <style>
+    #load {
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 9999;
+      filter: invert();
+      background: url("{% static 'loader/MBCART.gif' %}") no-repeat center center rgba(0, 0, 0, 0.25);
+    }
+  </style>
+  {% endcomment %}
+  <!-- Footer -->
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+    crossorigin="anonymous"></script>
+
+  <script>
+    const chatPopup = document.getElementById('chat-popup');
+    const chatBody = document.getElementById('chat-body');
+
+    function toggleChat() {
+      chatPopup.style.display = ( chatPopup.style.display === ''|| chatPopup.style.display === 'none') ? 'flex' : 'none';
+      document.getElementById("user-input").focus();
+    }
+
+    function appendMessage(sender, message) {
+      const msg = document.createElement('div');
+      msg.className = 'message ' + sender;
+      msg.innerText = `${sender === 'user' ? 'You' : 'Bot'}: ${message}`;
+      chatBody.appendChild(msg);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function sendMessage(event) {
+      if(event.keyCode==13){
+
+      const userInput = document.getElementById('user-input');
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      appendMessage('user', message);
+      userInput.value = '';
+
+      fetch(`/chatbot/?message=${encodeURIComponent(message)}&product=${encodeURIComponent("{{product.product_id}}")}`)
+        .then(res => res.json())
+        .then(data => {
+          appendMessage('bot', data.response);
+        })
+        .catch(() => {
+          appendMessage('bot', 'Oops! Something went wrong.');
+        });
+      }
+    }
+  </script>
+
+
+  <script>
+
+    fetch("{%url 'getCartItems' %}", { method: "GET" })
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById("cart_items_count").innerText = data["num"];
+        let arr = JSON.parse(data["notifications"])
+        document.getElementById("notifications_length").textContent = arr.length;
+        let container = document.getElementById("notification_list")
+
+        arr.forEach(function (item) {
+          var paragraph = document.createElement("li");
+          paragraph.classList.add("list-group-item");
+          paragraph.classList.add("text-white");
+          paragraph.classList.add("bg-dark");
+          paragraph.innerHTML = `<div class='row'><div>${item.fields["notification"]}</div></div>`;
+
+          container.appendChild(paragraph);
+
+        });
+
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  </script>
+
+  <script>
+    const year = document.getElementById("current_year");
+    year.textContent = new Date().getFullYear();
+  </script>
+  <script>
+    $(document).ready(function () {
+      var down = false;
+
+
+      $('#bell').click(function (e) {
+        if (down) {
+          $('#notifications_container').css('height', '0px');
+          $('#notifications_container').css('opacity', '0');
+          down = false;
+        } else {
+
+          $('#notifications_container').css('height', 'auto');
+          $('#notifications_container').css('opacity', '1');
+          /*fetch("{% url 'notifications_viewed' %}",{method:"GET"}).then((response)=>{
+            document.getElementById("notifications_length").textContent=0;
+          })*/
+          down = true;
+
+        }
+
+      });
+
+    });
+  </script>
+</body>
+
+</html>

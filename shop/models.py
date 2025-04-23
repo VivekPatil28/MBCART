@@ -1,26 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
-
+from django.db.models.signals import post_save ,pre_save
+from django.dispatch import receiver
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=250)
     image = models.ImageField(upload_to="Category_thumbnail", default="")
-    specifications=models.CharField(max_length=1000,default='') 
-    specifications_json = models.JSONField(null=True,blank=True) #editable = False
-
     def __str__(self):
         return self.name
 
-from django.db.models.signals import post_save ,pre_save
-from django.dispatch import receiver
-
-@receiver(pre_save, sender=Category)
-def do_something(sender, instance, **kwargs):
-    words = instance.specifications.split(',')
-    json = eval('{' + ''.join(f"'{word}':'', " for word in words) +"}")
-    instance.specifications_json = json
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=250)
@@ -44,16 +34,9 @@ class Product(models.Model):
     product_initial_price = models.IntegerField()
     product_publish_date = models.DateField()
     product_specifications = models.JSONField(blank=True,null=True)
-    
-
     def __str__(self):
-        return self.product_name
+        return self.product_name   
     
-@receiver(pre_save, sender=Product)
-def do_something(sender, instance, **kwargs):
-    if instance.product_specifications is None:
-        instance.product_specifications = instance.Category.specifications_json
-        
 
 # Product Images
 class StaticImage(models.Model):
@@ -159,48 +142,3 @@ class ReviewImage(models.Model):
     def __str__(self):
         return str(self.id)
 
-
-# class Color(models.Model):
-#     name = models.CharField(max_length=28)
-#     code = models.CharField(max_length=20, blank=True, null=True)
-#     def __str__(self) -> str:
-#             return self.name
-#     def color_tag(self):
-#         if self.code is not None:
-#             return mark_safe("f<p style='background-color:{self.code}'>Color</p>")
-#         else:
-#             return ""
-
-# class Size(models.Model):
-#     name = models.CharField(max_length=20)
-#     code = models.CharField(max_length=10, blank=True, null=True)
-
-#     def __str__(self) -> str:
-#         return self.name
-
-
-# class Variant(models.Model):
-#     title = models.CharField(max_length=150, blank=True, null=True)
-#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-#     color=models.ForeignKey(Color,on_delete=models.CASCADE,blank=True,null=True)
-#     size=models.ForeignKey(Size,on_delete=models.CASCADE,blank=True,null=True)
-#     image_id = models.ForeignKey(ProductImages,on_delete=models.CASCADE)
-#     quantity=models.IntegerField(default=1)
-#     price =models.FloatField(default=0)
-
-#     def __str__(self) -> str:
-#         return self.title
-#     def image(self):
-#         img=Image.objects.get(id=self.image_id)
-#         if img.id is not None:
-#             var=img.image.url
-#         else:
-#             var=''
-#         return var
-
-#     def image_tag(self):
-#         img =Image.objects.get(id=self.image_id)
-#         if img.id is not None:
-#             return mark_safe(f"<img src='{img.image_url}' height='50' />")
-#         else:
-#             return ''

@@ -1,0 +1,161 @@
+{% extends 'shop/basic.html' %}
+{% block body %}    
+<style>
+    d{
+        display:flex;
+        justify-content:stretch ;
+        align-items: stretch;
+    }
+</style>
+    <div class="container" style="min-height:100vh;display:flex;align-items:stretch;justify-content:center;flex-flow:column;">
+        <div class="accordion py-5" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                    How can I place an order on MBCART?
+                </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <p>To place an order on MBCART, simply browse our website and add the products you want to purchase to your cart. Once
+                    you're ready to checkout, fill in your shipping and payment details and click "Place Order". You will receive a
+                    confirmation email with your order details.</p>
+                </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                    What are the payment options available on MBCART?
+                </button>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p>
+                        We accept various payment options, including credit/debit cards, net banking, and digital wallets such as Paytm and
+                        PayPal. We also offer Cash on Delivery (COD) for eligible orders.
+                    </p>
+                </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                    What is the estimated delivery time for my order?
+                </button>
+                </h2>
+                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p>
+                        Delivery times vary depending on your location and the product you have ordered. Typically, delivery times range from 2-7 business days. You can track your order status using the tracking number provided in your confirmation email.
+                    </p>
+                </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseFour">
+                        Can I track my order status on MBCART?
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p>
+                            Yes, you can track your order status using the tracking number provided in your confirmation email. Simply enter the
+                            tracking number on our website to view the latest updates on your order status.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseFive">
+                        What is your return policy?
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p>
+                            We have a hassle-free return policy for eligible products. If you are not satisfied with your purchase, you can return
+                            the product within 7 days of delivery for a refund or exchange. Please refer to our Returns & Refunds policy for more
+                            details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseSix" aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseSix">
+                        How can I cancel my order?
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseSix" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p>
+                            You can cancel your order by contacting our customer support team via phone or email. Please note that cancellations are
+                            subject to certain conditions and may not be possible in all cases.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseSeven" aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseSeven">
+                        Is it safe to shop on MBCART?
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseSeven" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p>
+                            Yes, we use industry-standard encryption technologies to protect your personal and financial information. We also have
+                            robust security measures in place to prevent unauthorized access to our website and servers.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseEight" aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseEight">
+                        Do you offer warranty on your products?
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseEight" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p>
+                            Yes, we offer warranty on eligible products. The duration and terms of the warranty vary depending on the product and
+                            the manufacturer's policies. Please refer to the product page or contact our customer support team for more details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#panelsStayOpen-collapseNine" aria-expanded="false"
+                        aria-controls="panelsStayOpen-collapseNine">
+                        Can I get a refund if the product is faulty or damaged?
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseNine" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        <p>
+                            Yes, if the product is found to be faulty or damaged, you can return it for a refund or exchange within 7 days of
+                            delivery.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

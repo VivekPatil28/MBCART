@@ -1,0 +1,225 @@
+{%extends 'shop/basic.html'%} {%block title%}{{query}} - Buy Products Online on
+Best Price{%endblock title%} {%block body%} {% load humanize %} {% load static%}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-2">
+      <div class="row">
+        <h5 class="section-title position-relative text-uppercase mb-3">
+          <span class="bg-secondary pr-3">Filter by price</span>
+        </h5>
+        <div class="bg-light p-4 mb-30">
+          <form>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" checked id="price-all" />
+              <label class="form-check-label" for="price-all">All Price</label>
+              <span class="badge border font-weight-normal bg-dark">1000</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="price-1" />
+              <label class="form-check-label" for="price-1">$0 - $100</label>
+              <span class="badge border font-weight-normal bg-dark">150</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="price-2" />
+              <label class="form-check-label" for="price-2">$100 - $200</label>
+              <span class="badge border font-weight-normal bg-dark">295</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="price-3" />
+              <label class="form-check-label" for="price-3">$200 - $300</label>
+              <span class="badge border font-weight-normal bg-dark">246</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="price-4" />
+              <label class="form-check-label" for="price-4">$300 - $400</label>
+              <span class="badge border font-weight-normal bg-dark">145</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between">
+              <input type="checkbox" class="form-check-input" id="price-5" />
+              <label class="form-check-label" for="price-5">$400 - $500</label>
+              <span class="badge border font-weight-normal bg-dark">168</span>
+            </div>
+          </form>
+        </div>
+        
+
+        <h5 class="section-title position-relative text-uppercase mb-3">
+          <span class="bg-secondary pr-3">Filter by color</span>
+        </h5>
+        <div class="bg-light p-4 mb-30">
+          <form>
+            <div class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" checked="" id="color-all" />
+              <label class="form-check-label" for="color-all">All Color</label>
+              <span class="badge border font-weight-normal bg-dark">1000</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="color-1" />
+              <label class="form-check-label" for="color-1">Black</label>
+              <span class="badge border font-weight-normal bg-dark">150</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="color-2" />
+              <label class="form-check-label" for="color-2">White</label>
+              <span class="badge border font-weight-normal bg-dark">295</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="color-3" />
+              <label class="form-check-label" for="color-3">Red</label>
+              <span class="badge border font-weight-normal bg-dark">246</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="color-4" />
+              <label class="form-check-label" for="color-4">Blue</label>
+              <span class="badge border font-weight-normal bg-dark">145</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between">
+              <input type="checkbox" class="form-check-input" id="color-5" />
+              <label class="form-check-label" for="color-5">Green</label>
+              <span class="badge border font-weight-normal bg-dark">168</span>
+            </div>
+          </form>
+        </div>
+
+        <h5 class="text-muted mt-3">
+          <span class="mt-5">Filter by size</span>
+        </h5>
+        <div class="bg-light p-4 mb-30">
+          <form>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" checked="" id="size-all" />
+              <label class="form-check-label" for="size-all">All Size</label>
+              <span class="badge border font-weight-normal bg-dark">1000</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="size-1" />
+              <label class="form-check-label" for="size-1">XS</label>
+              <span class="badge border font-weight-normal bg-dark">150</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="size-2" />
+              <label class="form-check-label" for="size-2">S</label>
+              <span class="badge border font-weight-normal bg-dark">295</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="size-3" />
+              <label class="form-check-label" for="size-3">M</label>
+              <span class="badge border font-weight-normal bg-dark">246</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between mb-3">
+              <input type="checkbox" class="form-check-input" id="size-4" />
+              <label class="form-check-label" for="size-4">L</label>
+              <span class="badge border font-weight-normal bg-dark">145</span>
+            </div>
+            <div
+              class="control checkbox d-flex align-items-center justify-content-between">
+              <input type="checkbox" class="form-check-input" id="size-5" />
+              <label class="form-check-label" for="size-5">XL</label>
+              <span class="badge border font-weight-normal bg-dark">168</span>
+            </div>
+          </form>
+        </div>
+        </div>
+      </div>
+    <div class="col-10">
+        <div class="container my-3">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+            {% for i in product %}
+            <div class="col">
+              <div class="card shadow-sm" style="min-height: 500px">
+                <img
+                  class=""
+                  style="height: 200px; object-fit: contain"
+                  src="/media/{{i.image}}"
+                  alt="img" />
+                <div
+                  class="card-body"
+                  style="
+                    display: flex;
+                    justify-content: start;
+                    align-items: stretch;
+                    flex-flow: column;
+                  ">
+                  <p class="card-text">
+                    <font style="vertical-align: inherit; width: 250px">
+                      <a
+                        href="/product/{{i.product_id}}"
+                        target="_blank"
+                        style="
+                          vertical-align: inherit;
+                          -webkit-line-clamp: 3;
+                          text-decoration: none;
+                          display: -webkit-box;
+                          -webkit-box-orient: vertical;
+                          overflow: hidden;
+                          min-height: 100px;
+                        "
+                        >{{i.product_name}}</a
+                      >
+                      <span
+                        class="text-bg-success"
+                        style="
+                          border-radius: 5px;
+                          padding: 2px 8px;
+                          font-size: 12px;
+                          margin-top: 15px;
+                          display: inline-block;
+                        "
+                        >{{i.product_rating}}<small
+                          style="
+                            position: relative;
+                            top: -1px;
+                            left: 4px;
+                            font-size: 9px;
+                          "
+                          class="bi bi-star-fill"></small
+                      ></span>
+                      <span>(53,265)</span>
+                      <h6 class="blockquote">
+                        ₹{{i.product_price|intcomma}} &nbsp;<strike class="text-muted"
+                          ><small>₹{{i.product_initial_price|intcomma}}</small></strike
+                        >
+                      </h6>
+                      <font
+                        style="
+                          vertical-align: inherit;
+                          -webkit-line-clamp: 2;
+                          display: -webkit-box;
+                          -webkit-box-orient: vertical;
+                          overflow: hidden;
+                        "
+                        >{{i.product_desc}}</font
+                      >
+                    </font>
+                  </p>
+                </div>
+              </div>
+            </div>
+            {%empty%}
+            <p class="bg-primary m-5 fs-5 text-center p-2 text-white">
+              Your search not found
+            </p>
+            {% endfor %}
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+{%endblock%}

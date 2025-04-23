@@ -111,16 +111,16 @@ def cancelOrder(request,id):
 def downloadinvoice(request):
     # Load the HTML template
     if request.method == 'POST':
-        template = get_template('UserProfile/invoice.html')
         id=request.POST['id']
         order= Order.objects.get(id=id)
+        
+        template = get_template('UserProfile/invoice.html')
         html = template.render({'request':request,'order': order})
 
         # Generate the PDF file
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="invoice-{order.product.product_name[:40]}....pdf"'
-        pisa_status = pisa.CreatePDF(
-            html, dest=response, link_callback=link_callback)
+        pisa_status = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
         #pdf downloading
 
         # Return the generated PDF file as a response
@@ -130,9 +130,6 @@ def downloadinvoice(request):
     return HttpResponseRedirect(request.META.get("HTTP_REFERER",'/'))
 
 def link_callback(uri, rel):
-    """
-    Convert HTML URIs to absolute system paths so xhtml2pdf can access those resources
-    """
     from django.conf import settings
     from django.contrib.staticfiles import finders
     if result := finders.find(uri):

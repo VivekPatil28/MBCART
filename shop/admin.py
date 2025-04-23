@@ -48,7 +48,7 @@ class ProductDescriptionImagesAdmin(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display=('product_name','product_rating','product_price')
+    list_display=('image','product_name','product_rating','product_price')
     list_filter = ('product_publish_date','product_price','product_rating')
     search_fields = ('product_name', 'product_desc')
     date_hierarchy = 'product_publish_date'
