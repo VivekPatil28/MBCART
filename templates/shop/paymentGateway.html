@@ -1,0 +1,242 @@
+{% extends 'shop/basic.html' %} {% load humanize %}
+{% block title %}Payment{% endblock title %}
+
+{% block body %}
+<style>
+  .quantity-input {
+    text-align: center;
+  }
+
+  .form-control::-webkit-outer-spin-button,
+  .form-control::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  #Payment{
+    display: none;
+  }
+</style>
+
+{% comment %} {% for product in products %}
+<h1>{{product.quantity}}</h1>
+{% endfor %} {% endcomment %}
+<form action="/payment" method="POST" id="form-data" >
+  {% csrf_token %}
+    <section id="Addresses" class="h-100">
+      <div class="container-xl py-5">
+        <div class="row d-flex justify-content-center my-4">
+          <div class="col-md-8">
+            <div class="card mb-4">
+              <div class="card-header py-3">
+                <h4 class="text-muted">Select Address</h4>
+              </div>
+              <div class="card-body">
+                {% if addresses.count %} 
+                {% for address in addresses %}
+                <div class="my-2 card">
+                  <div class="row card-body">
+                    <label
+                      for="{{address.id}}"
+                      class="col-2 d-flex justify-content-center align-items-center rounded card-header border-0"
+                      style="cursor: pointer"
+                    >
+                      <input type="radio" required name="address_id" value="{{address.id}}" id="{{address.id}}" class="form-check-input radio" {%if address.default_address  %} checked {%endif%}/>
+                    </label>
+
+                    <div class="col-9 p-2 bg-white">
+                      <div>
+                        <small class="text-muted mb-0"
+                          >{{address.full_name}}</small
+                        >
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0"
+                          >{{address.house_no}}</small
+                        >
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0">{{address.area}}</small>
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0">{{address.city}}</small>
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0"
+                          >{{address.state}} - {{address.pincode}}</small
+                        >
+                      </div>
+                      <div>
+                        <small class="text-muted mb-0"
+                          >Phone No. {{address.phone_number}} {% if address.alternate_phone_number %}, {{address.alternate_phone_number}}{% endif %}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %} 
+                {% else %}
+                <p class="bg-primary fs-5 text-center p-2 text-white">
+                  You haven't added any Addresses
+                </p>
+                {% endif %}
+                <div class="col-12 center">
+                  <a
+                    href="profile/myaddresses/addAddress"
+                    class="btn btn-primary btn-md btn-block float-end mt-2"
+                  >
+                    <i class="bi bi-plus"> </i> Add a new address
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-4">
+              <div class="card-body">
+                <p><strong>Expected shipping delivery</strong></p>
+                <p class="mb-0">12.10.2020 - 14.10.2020</p>
+              </div>
+            </div>
+            <div class="card mb-4 mb-lg-0">
+              <div class="card-body">
+                <p><strong>We accept</strong></p>
+                <img
+                  class="me-2"
+                  width="45px"
+                  src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+                  alt="Visa"
+                />
+                <img
+                  class="me-2"
+                  width="45px"
+                  src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+                  alt="American Express"
+                />
+                <img
+                  class="me-2"
+                  width="45px"
+                  src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+                  alt="Mastercard"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card mb-4" style="position: sticky; top: 20px">
+              <div class="card-header py-3">
+                <h5 class="mb-0">Summary</h5>
+              </div>
+              <div class="card-body">
+                {% for item in products %}
+                <div class="row item">
+                  <div class="col-4 align-self-center">
+                    <img class="img-fluid" src="media/{{item.image}}" />
+                  </div>
+                  <div class="col-8">
+                    <div class="row text-muted">
+                      {{item.product_name|truncatechars:44}}
+                    </div>
+                    <b class="row">₹{{item.total_price|intcomma}}</b>
+                    <div class="row">Qty:{{item.quantity}}</div>
+                  </div>
+                </div>
+                <hr class="hr mb-1" />
+                {% endfor %}
+
+                <ul class="list-group list-group-flush">
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0"
+                  >
+                    <span
+                      >Subtotal (<span class="totalselecteditems"></span
+                      >items):</span
+                    >
+                    <span id="totalcartprice">{{sub_total|intcomma}}</span>
+                  </li>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center px-0"
+                  >
+                    <span>Shipping Charges</span>
+                    <span class="Shippingcharges"
+                      >{{shipping_charges|intcomma}}</span
+                    >
+                  </li>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3"
+                  >
+                    <strong>Total amount</strong>
+                    <strong>
+                      <p class="mb-0">{{total|intcomma}}</p>
+                    </strong>
+                  </li>
+                </ul>
+                <button type="button" class="btn btn-primary btn-lg btn-block" data-bs-toggle="modal" data-bs-target="#confirmorder">
+                  Place Order
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  <!--Confirm Address Delete Modal -->
+  <div class="modal fade" id="confirmorder" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Place Order
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body container">
+          Are You Sure To Place Order
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <input id="rzp-button1" type="submit" value="Place Order" class="btn btn-primary btn-block"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="text" id="razorpay_payment_id" name="razorpay_payment_id" value="" hidden>
+  <input type="text" id="razorpay_order_id" name="razorpay_order_id" value="" hidden>
+  <input type="text" id="razorpay_signature" name="razorpay_signature" value="" hidden>
+</form>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  let options = {
+    "key": "rzp_test_5jmsbT9aIzMxzY",
+    "amount": parseInt("{{payment.amount}}"),
+    "currency": "INR",
+    "name": "MBCART",
+    "description": "Test",
+    //"image":"S",
+    "order_id": "{{payment.id}}",
+    "handler": function(response) {
+      document.getElementById("razorpay_payment_id").setAttribute('value', response.razorpay_payment_id)
+      document.getElementById("razorpay_order_id").setAttribute('value', response.razorpay_order_id)
+      document.getElementById("razorpay_signature").setAttribute('value', response.razorpay_signature)
+      let form = document.getElementById("form-data");
+        form.submit();
+    },
+    "theme": {
+      "color": "#3399cc"
+    }
+  };
+
+  let rzp1 = new Razorpay(options);
+  rzp1.on('payment.failed', function(response) {
+    alert("error")
+  });
+
+  document.getElementById("form-data").onsubmit = function(e) {
+    e.preventDefault();
+    rzp1.open();
+  };
+
+</script>
+
+{% endblock body %}

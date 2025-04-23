@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About</title>
+    <style>
+      * {
+        user-select: none;
+        padding: 0;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin: 0;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url("https://wallpapercave.com/wp/wp3537549.jpg");
+        background-position: center;
+        background-size: cover;
+      }
+
+      #container {
+        height: 500px;
+        width: 900px;
+        background: rgba(37, 28, 28, 0.103);
+        box-shadow: 0 8px 32px 0 rgb(17, 13, 13);
+        backdrop-filter: blur(20px);
+        border-radius: 10px;
+        border: 5px solid rgba(255, 255, 255, 0.678);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-flow: column;
+      }
+
+      #h1 {
+        color: rgba(206, 206, 206, 0.89);
+        margin-bottom: 50px;
+        font-size: 60px;
+        font-weight: 100;
+        font-weight: 900;
+      }
+
+      p {
+        padding: 0px 20px;
+        font-size: 20px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.808);
+        line-height: 40px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="h1">MBCART</div>
+      <p>
+        &nbsp;Welcome to our college project ecommerce website! <br />
+        We hope you enjoy your shopping experience with us!
+        <br />
+        Note: As this is a college project, please keep in mind that the website
+        may not be fully operational and some features may be limited.
+      </p>
+    </div>
+  </body>
+</html>

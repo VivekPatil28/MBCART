@@ -1,0 +1,24 @@
+{% extends 'UserProfile/base.html' %}
+{% block body %}
+
+<form action="" method="post">
+    {% csrf_token %}
+
+    <div class="form-floating mb-4">
+        <textarea class="form-control" placeholder="Product Name" id="pa" style="height: 100px"
+            required></textarea>
+        <label for="pa">Enter Product Name</label>
+    </div>
+    <div class="form-floating mb-4">
+        <textarea class="form-control" placeholder="Product Description" id="pd" style="height: 100px"
+            required></textarea>
+        <label for="pd">Enter Product Description</label>
+    </div>
+    <div class="mb-3">
+        <input type="file" name="imgs[]" multiple class="form-control" aria-label="Choose Product Images">
+    </div>
+    <div class="mb-3">
+        <input type="file" name="imgs[]" multiple class="form-control" aria-label="Choose Product Description Images">
+    </div>
+</form>
+{% endblock body %}

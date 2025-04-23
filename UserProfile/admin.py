@@ -15,3 +15,4 @@ class OrderAdmin(admin.ModelAdmin):
         model = Order
         
 # admin.site.register(User)
+admin.site.register(Notification)

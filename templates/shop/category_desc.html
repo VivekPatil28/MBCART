@@ -1,0 +1,49 @@
+{%extends 'shop/basic.html'%}
+{%block title%}{% with product=products.first %}{{product.Category}}{%endwith%}{%endblock title%}
+{%block body%}
+{% load humanize %}
+{% load static %}
+
+<div class="container my-5 d-flex justify-content-center flex-column">
+  
+      {% for i in products %}
+    <div class="row px-3">
+        <div class="col-lg-4 col-xl-3">
+          <a href="/product/{{i.product_id}}"><img class="img-fluid" style="width:280px;height:200px;object-fit:contain;"
+              src='/media/{{i.image}}' /></a>
+        </div>
+        <div class="card-body col-lg-8 col-xl-9" >
+          <p class="m-0 card-text">
+              <a href="/product/{{i.product_id}}" target="_blank" style="text-decoration: none;font-size: large;font-weight: 600;width:auto;
+                          display: -webkit-box;
+                          -webkit-box-orient: vertical;
+                          -webkit-line-clamp:2;
+                          overflow: hidden;">
+                  {{i.product_name}}</a>
+              <div class="mb-2">
+                <span class="text-bg-success"
+                style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
+                  style="position:relative;top: -1px;left:4px;font-size:9px;" class="bi bi-star-fill"></small></span>
+              <span>(53,265)</span>
+              </div>
+
+              <p class="blockquote">₹{{i.product_price|intcomma}}
+                <small><strike class="text-muted fs-6">₹{{i.product_initial_price|intcomma}}</strike></small>
+              </p>
+          
+            
+
+            <small>Get it by Tuesday, August 16</small>
+           <br>
+           <small> FREE Delivery by Amazon</small>
+           <br>
+           <small> Only 1 left in stock.</small>
+          </p>
+        </div>
+        {% if not forloop.last %}
+        <hr class="my-4" />{% endif %}
+    </div>
+    {% endfor %}
+    </div>
+
+{%endblock%}

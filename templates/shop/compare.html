@@ -1,0 +1,308 @@
+{% extends 'shop/basic.html' %}
+{% load humanize %}
+{% load static %}
+{% block body %}
+        <style>
+            .uparr {
+                position: fixed;
+                bottom: 15px;
+                right: 20px;
+                z-index: 999;
+            }
+        </style>
+
+        <a id="back-to-top" href="#" class="btn btn-info btn back-to-top uparr visually-hidden" role="button"><i
+                class="fas fa-chevron-up"></i></a>
+<div class="row mt-3 container-fluid bg-light">
+
+
+    
+   {% for product in compareproductlist %}
+        <div class="col card mx-2">  
+        <section class="mt-3">
+            <div class="container-fluid ">
+                <div>
+                    <div id="imgcont" class="d-flex justify-content-center flex-row flex-wrap" >
+                        <img style="object-fit: contain;max-width:60%;" id="main_img" class="card-img-top mb-md-3 "
+                            src='/media/{{product.image}}' alt="image" />
+                        <div class="d-flex justify-content-center flex-row flex-wrap mt-3">
+                            <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;box-shadow:0px 0px 2px 2px rgba(0, 128, 0, 0.358);border: 2px solid green;box-sizing:border-box;"
+                                class="card-img-top mx-2 mb-1 product_images" src='/media/{{product.image}}' alt="image" />
+                            {% for img in product.product_images.all %}
+                            <img style="width:50px;height:50px;object-fit:contain;box-sizing:border-box;border: 1px solid grey;"
+                                class="card-img-top  mx-2 mb-1 product_images" src='/media/{{img.image}}' loading="lazy" alt="description images" />
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="mb-1" style="color:rgba(0, 0, 0, 0.8);">{{sub_cat.name}}</div>
+                        <h4 class="text-muted mt-3" style="min-height: 120px;">{{product.product_name}}</h4>
+                        <div>
+                            <style>
+                                .checked {
+                                    color: rgb(227, 227, 0);
+                                }
+                            </style>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span>&nbsp;{{product.product_rating}}</span>
+                        </div>
+                        <div>
+                            <h5 class="small mt-2" style="color:rgba(0, 0, 0, 0.5);">{{product.order_set.count}} Orders &
+                                {{product.comments.count}} Reviews</h5>
+                        </div>
+                        <div class="fs-5 mb-5">
+                            <span>
+                                <h1 id="sp">₹{{product.product_price|intcomma}}</h1>
+                            </span>
+                            <span>M.R.P. : <span class="text-decoration-line-through"
+                                    id="mrp">₹{{product.product_initial_price|intcomma}}</span></span>
+                            <h6>You save : <span id="yousave"></span></h6>
+                        </div>
+                        <style>
+                            .inf i {
+                                font-size: 30px;
+                            }
+
+                            .inf {
+                                background-color: rgb(247, 247, 247);
+                                padding: 5px 0;
+                                display: flex;
+                                justify-content: space-evenly;
+                                align-items: center;
+                                flex-wrap: wrap;
+                            }
+
+                            .inf h6 {
+                                font-size: 12px;
+                                text-align: center;
+                            }
+
+                  
+                            .icon-width {
+                                margin: 5px 10px;
+                                width: 20%;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                flex-flow: column;
+                                padding: 0 40px;
+                            }
+                        </style>
+
+                        <div class="inf">
+                            <div class="icon-width border-right-2 border-secondary">
+                                <i class="bi bi-wallet2"></i>
+                                <h6>Pay on Delivery</h6>
+                            </div>
+                            <div class="icon-width">
+                                <i class="bi bi-arrow-repeat"></i>
+                                <h6>7 days Replacement</h6>
+                            </div>
+                            <div class="icon-width">
+                                <i class="bi bi-truck"></i>
+                                <h6>MBCART Delivered</h6>
+                            </div>
+                            <div class="icon-width">
+                                <i class="bi bi-shield-check"></i>
+                                <h6>1 Year Warranty</h6>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center align-items-center my-5">
+                            <div class="btn-group w-100">
+                                {% if user.is_authenticated %}
+                                <form action="/AddToCart/{{product.product_id}}" method="GET" class="w-100">
+                                    {% if is_added_to_cart %}
+                                    <a href="/cart" class="btn btn-sm btn-outline-danger w-100 p-2"
+                                        style="border-right: none;border-radius:5px 0px 0px 5px;">
+                                        Go to Cart
+                                        &nbsp;&nbsp;<i class="bi-cart-fill me-1"></i>
+                                    </a>
+                                    {% else %}
+                                    <button type='submit' class="btn btn-sm btn-outline-danger w-100 p-2"
+                                        style="border-right: none;border-radius:5px 0px 0px 5px;">
+                                        <i class="bi-cart-fill me-1"></i>Add to Cart
+                                    </button>
+                                    {% endif %}
+                                </form>
+
+                                {% else %}
+                                <button type="button" class="btn btn-sm btn-outline-danger w-100 p-2" data-bs-toggle="modal"
+                                    data-bs-target="#signinModal" style="border-right: none;border-radius:5px 0px 0px 5px;">
+                                    <i class="bi-cart-fill me-1"></i>
+                                    Login for Add to Cart
+                                </button>
+                                {% endif %}
+
+
+                                <div class="w-100">
+                                    <button onclick="checkout()" class="btn btn-sm btn-outline-success w-100 p-2"
+                                        style="border-radius:0px 5px 5px 0px;">Buy Now
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--  -->
+
+
+
+                        <!-- <div class="container desc mt-5">
+                            <h5 style="font-weight: bold;">About this item</h5>
+                            <ul class="lead fs-6">
+                                <style>
+                                    .desc li {
+                                        font-weight: 500;
+                                    }
+                                </style>
+                                {{aboutthisitem|unordered_list}}
+                            </ul>
+                        </div> -->
+                        
+                        <div class="container desc mt-5">
+                            <table class="table table-striped ">
+                                <thead>
+                                    <h5 style="font-weight: bold;">Specifications</h5>
+                                </thead>
+                                <tbody>
+                                    
+                                    {% for key , val in product.product_specifications.items %}
+                                    <tr>
+                                        <td>{{key}}</td>
+                                        <td>{{val}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        </div>
+
+        {% if compareproductlist|length <= 1 %} 
+            <div class="col card mx-2 d-flex align-items-center">
+                <div class="row">
+                    <form action="/similar_products" method="POST" id="add_compare_form">
+                        {%csrf_token%}
+                        <div class="col card m-5 px-5 bg-light" onclick="form_submit()">
+                            <div class="d-flex justify-content-center align-items-center flex-column mb-5">
+                                <i class="fa-duotone fa-plus text-muted" style="font-size: 200px;"></i>
+                                <input type="text" name="product_id" hidden value="{{compareproductlist.0.product_id}}">
+                                <h3 class="text-muted">Add Another Product</h3>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+
+        {% endfor %}
+    </div>
+    <script>
+    function form_submit(){
+        document.getElementById('add_compare_form').submit();
+
+    }
+</script>
+    <!-- Related items section-->
+    
+    <section class="py-5 bg-light">
+        <div class="container px-4 px-lg-5 mt-5">
+            <h2 class="fw-bolder mb-4">Recommended</h2>
+            <div class="row gx-1 gx-lg-1 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                {% for i in sc %}
+                <div class="col mb-5 mx-2" style="min-width:250px;">
+                    <div class="card h-100">
+                        <!-- Sale badge-->
+                        <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale
+                        </div>
+                        <!-- Product image-->
+                        <a href="/product/{{i.product_id}}"><img class="card-img-top"
+                                style="padding:20px;height:150px;object-fit:contain;" src='/media/{{i.image}}'
+                                alt="image" /></a>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <a href="/product/{{i.product_id}}" style="text-decoration:none;"
+                                    class="fw-bolder user-select-none">{{i.product_name|truncatechars:55}}</a>
+                                <!-- Product price-->
+                                <br>
+                                <span class="text-bg-success "
+                                    style="border-radius:5px;padding:2px 8px;font-size: 12px;margin-top:15px;display: inline-block;">{{i.product_rating}}<small
+                                        style="position:relative;top: -1px;left:4px;font-size:9px;"
+                                        class="bi bi-star-fill"></small></span>
+                                <span>({{i.order_set.count|intcomma}})</span>
+                                <br>
+    
+    
+                                <h6 class="blockquote">₹{{i.product_price|intcomma}} &nbsp;<strike
+                                        class="text-muted "><small>₹{{i.product_initial_price|intcomma}}</small></strike>
+                                </h6>
+                                </p>
+                            </div>
+                        </div>
+    
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+    <script>
+        let product_images = document.getElementsByClassName("product_images")
+
+       
+        Array.from(product_images).forEach(e => {
+            e.addEventListener('mouseover', function () {
+                let src = e.getAttribute('src')
+                Array.from(e.parentElement.getElementsByTagName('img')).forEach(e => {
+                    e.style.border = "1px solid grey"
+                    e.style.boxShadow = "None";
+                });
+                e.style.border = "2px solid green"
+                e.style.boxShadow = "0px 0px 2px 2px rgba(0, 128, 0, 0.358)";
+                let main_img = e.parentElement.parentElement.getElementsByTagName('img')[0]
+                main_img.setAttribute('src', src)
+
+
+            })
+        });
+
+        const rating = parseInt("{{product.product_rating}}");
+        const rating_stars = document.querySelectorAll('.fa-star');
+        for (let i = 0; i <= (rating - 1); i++) {
+            rating_stars[i].classList.add("checked")
+        }
+
+        let mrp = document.getElementById("mrp").innerHTML;
+        let sp = document.getElementById("sp").innerHTML;
+        mrp = mrp.replace("₹", '');
+
+        mrp = mrp.replace(",", '')
+
+        sp = sp.replace("₹", '')
+        sp = sp.replace(",", '')
+
+        mrp = parseInt(mrp)
+        sp = parseInt(sp)
+
+        let discount = "₹" + (mrp - sp) + "(" + (((mrp - sp) / mrp) * 100).toFixed(2) + "%)";
+        document.getElementById("yousave").innerHTML = discount;
+    </script>
+{% endblock body %}

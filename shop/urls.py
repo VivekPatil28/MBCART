@@ -24,5 +24,10 @@ urlpatterns = [
     path('payment', views.payment, name="payment"),
     path('getMyRecentSearchItems', views.getMyRecentSearchItems,name="getMyRecentSearchItems"),
     path('search', views.search_product,name="search_product"),
-    
-]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+    path('FAQ', views.faq,name="faq"),
+    path('compare',views.compareview,name="Compare"),
+    path('add_compare_item',views.add_compare_item,name="add_compare_item"),
+    path('similar_products',views.show_similar_products,name='similar_products'),
+    path('notifications_viewed',views.notifications_viewed,name='notifications_viewed'),
+    path('chatbot/',views.chatbot_response,name='chatbot_response'),
+]

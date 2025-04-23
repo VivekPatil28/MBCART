@@ -1,5 +1,7 @@
 from shop import models as model
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Address(models.Model):
@@ -29,6 +31,7 @@ class Order(models.Model):
         model.User,
         on_delete=models.SET_DEFAULT,
         default=None,
+        related_name="orders",
     )
     quantity = models.IntegerField(default=1)
     order_date = models.DateTimeField(auto_now_add=True)
@@ -46,3 +49,47 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.product)
+
+@receiver(post_save, sender=Order)
+def do_something(sender, instance,created, **kwargs):
+    if instance.canceled:
+        n=Notification.objects.create(user=instance.user,notification=f"Your Product <a href='/profile/myorders'>{' '.join(instance.product.product_name.split(' ')[:5])+'...'}</a> has been Cancelled")
+        n.save()
+    elif instance.delivered:                                                               
+        n=Notification.objects.create(user=instance.user,notification=f"Your Product <a href='/profile/myorders'>{' '.join(instance.product.product_name.split(' ')[:5])+'...'}</a> has been Delivered")
+        n.save()
+    elif instance.outfordelivery:
+        print(instance.outfordelivery)
+        n=Notification.objects.create(user=instance.user,notification=f"Your Product <a href='/profile/myorders'>{' '.join(instance.product.product_name.split(' ')[:5])+'...'}</a> has been Out For Delievery")
+        n.save()
+    elif instance.shipped:
+        n=Notification.objects.create(user=instance.user,notification=f"Your Product <a href='/profile/myorders'>{' '.join(instance.product.product_name.split(' ')[:5])+'...'}</a> has been shipped Now")
+        n.save()
+    elif created:
+        n=Notification.objects.create(user=instance.user,notification=f"Your Product <a href='/profile/myorders'>{ ' '.join(instance.product.product_name.split(' ')[:5])+'...' }</a> has been Ordered")
+        n.save()
+
+from datetime import datetime
+class Notification(models.Model):
+    user=models.ForeignKey(model.User,on_delete=models.CASCADE)
+    notification=models.CharField(max_length=500)
+    created_at=models.DateTimeField(auto_now_add=True)
+    is_read=models.BooleanField(default=False)
+    def how_old(self):
+        date = self.created_at.replace(tzinfo=None)
+        if (datetime.now()-date).total_seconds() < 3600:
+            return f"{int((datetime.now() - date).total_seconds() // 60)}m"
+        elif (datetime.now() - date).days < 1:
+            return f'{int((datetime.now() - date).total_seconds()//3600)}h'
+        elif (datetime.now() - date).days < 7:
+            return f'{int((datetime.now() - date).total_seconds()//84600)}d'
+        elif (datetime.now() - date).days < 30:
+            return (datetime.now() - date).days//7
+        elif (datetime.now() - date).days < 365:
+            return (datetime.now() - date).days//30.5
+        else:
+            return (datetime.now() - date).days//365
+        
+    def __str__(self) -> str:
+        return self.notification
+
